@@ -209,6 +209,12 @@ function PlayerHelper:everyPlayerLookAt (toobjid, afterSeconds)
   end, afterSeconds)
 end
 
+function PlayerHelper:everyPlayerPlayAct (act, afterSeconds)
+  self:everyPlayerDoSomeThing(function (player)
+    player.action:playAct(act)
+  end, afterSeconds)
+end
+
 -- 改变玩家视角模式
 function PlayerHelper:changeVMode (objid, viewmode, islock)
   viewmode = viewmode or VIEWPORTTYPE.BACKVIEW

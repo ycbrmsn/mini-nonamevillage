@@ -17,5 +17,5 @@ function MyPlayer:new (objid)
 end
 
 function MyPlayer:initMyPlayer ()
-  PlayerHelper:setJumpPower(self.objid, 95)
+  
 end

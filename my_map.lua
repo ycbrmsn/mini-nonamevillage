@@ -4,7 +4,7 @@ MyMap = {
     
   },
   ITEM = {
-    
+    SWORD = 4097, -- 桃木剑
   },
   ACTOR = {
     

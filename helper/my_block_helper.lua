@@ -2,7 +2,9 @@
 MyBlockHelper = {
   unableBeoperated = {},
   unableDestroyed = {},
-  luckyBlockInfos = {}
+  switchPos = MyPosition:new(4, 6, 73),
+  vasePos = MyPosition:new(9.5, 8.5, 72.5),
+  vaseid = 948, -- 大瓷花盆
 }
 
 -- 初始化
@@ -18,6 +20,23 @@ function MyBlockHelper:initBlocks ()
   for i, v in ipairs(self.unableDestroyed) do
     BlockHelper:setBlockSettingAttState(v, BLOCKATTR.ENABLE_DESTROYED, false) -- 不可被破坏
   end
+end
+
+-- 点击大花盆
+function MyBlockHelper:clickVase (objid, blockid, x, y, z)
+  if (blockid == self.vaseid) then
+    local pos = MyPosition:new(x, y, z)
+    local distance = MathHelper:getDistance(self.vasePos, pos)
+    if (distance < 1) then -- 位置正确
+      if (PlayerHelper:isMainPlayer(objid)) then -- 房主
+        BlockHelper:toggleSwitch(self.switchPos)
+      else
+        ChatHelper:sendMsg(objid, '你发现你转不动，也许应该换个人试试')
+      end
+      return true
+    end
+  end
+  return false
 end
 
 -- 事件
