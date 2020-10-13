@@ -864,11 +864,11 @@ function ActorHelper:tryMoveToPos (objid, x, y, z, speed)
 end
 
 -- 寻路到目标位置
-function ActorHelper:tryNavigationToPos (objid, x, y, z, cancontrol)
+function ActorHelper:tryNavigationToPos (objid, x, y, z, cancontrol, bshowtip)
   return CommonHelper:callIsSuccessMethod(function (p)
-    return Actor:tryNavigationToPos(objid, x, y, z, cancontrol)
+    return Actor:tryNavigationToPos(objid, x, y, z, cancontrol, bshowtip)
   end, '寻路到目标位置', 'objid=', objid, ',x=', x, ',y=', y, ',z=', z,
-    ',cancontrol=', cancontrol)
+    ',cancontrol=', cancontrol, ',bshowtip=', bshowtip)
 end
 
 -- 设置生物行为状态
