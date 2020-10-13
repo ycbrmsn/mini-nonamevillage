@@ -1,6 +1,7 @@
 -- 我的剧情工具类
 MyStoryHelper = {
-  index = 1
+  index = 1,
+  openBoxes = {}, -- 打开的箱子集合
 }
 
 function MyStoryHelper:init ()
@@ -208,4 +209,18 @@ end
 -- 生物死亡
 function MyStoryHelper:actorDie (objid, toobjid)
   -- body
+end
+
+-- 容器内有道具取出
+function MyStoryHelper:backpackItemTakeOut (blockid, x, y, z, itemid, itemnum)
+  -- body
+  local pos = MyPosition:new(x, y, z)
+  for i, v in ipairs(MyBackpackHelper.boxInfos) do
+    if (itemid == v.itemid) then -- 道具没错
+      local distance = MathHelper:getDistance(v.pos, pos)
+      if (distance < 1) then -- 位置正确
+        LogHelper:debug('这是')
+      end
+    end
+  end
 end

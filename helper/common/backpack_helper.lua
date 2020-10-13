@@ -98,6 +98,13 @@ function BackpackHelper:getFirstEmptyGrid (playerid)
   return gridid
 end
 
+-- 事件
+
+-- 容器内有道具取出
+function BackpackHelper:backpackItemTakeOut (blockid, x, y, z, itemid, itemnum)
+  -- body
+end
+
 -- 封装原始接口
 
 -- 添加道具到背包
