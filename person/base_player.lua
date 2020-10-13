@@ -74,7 +74,7 @@ function BasePlayer:thinkTo (playerids, afterSeconds, ...)
     end
   elseif (type(playerids) == 'table') then
     for i, v in ipairs(playerids) do
-      self:thinkTo(v)
+      self:thinkTo(v, afterSeconds, ...)
     end
   end
 end
