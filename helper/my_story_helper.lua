@@ -37,8 +37,6 @@ end
 -- 玩家进入游戏
 function MyStoryHelper:playerEnterGame (objid)
     MyStoryHelper:init()
-  -- local player = PlayerHelper:getPlayer(objid)
-  -- StoryHelper:recover(player) -- 恢复剧情
 end
 
 -- 玩家离开游戏
@@ -49,6 +47,9 @@ end
 -- 玩家进入区域
 function MyStoryHelper:playerEnterArea (objid, areaid)
   -- body
+  local story = StoryHelper:getStory()
+  if (story:enterArea(objid, areaid)) then
+  end
 end
 
 -- 玩家离开区域

@@ -23,6 +23,22 @@ function ChatHelper:think (name, toobjid, ...)
   return ChatHelper:sendMsg(toobjid, name, '：', StringHelper.speakColor, '（', content, StringHelper.speakColor, '）')
 end
 
+-- 等待后说
+function ChatHelper:waitSpeak (name, toobjid, seconds, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond(function ()
+    ChatHelper:speak(name, toobjid, content)
+  end, seconds)
+end
+
+-- 等待后想
+function ChatHelper:waitThink (name, toobjid, seconds, ...)
+  local content = StringHelper:concat(...)
+  TimeHelper:callFnAfterSecond(function ()
+    ChatHelper:think(name, toobjid, content)
+  end, seconds)
+end
+
 -- 封装原始接口
 
 -- 发送系统消息，默认发送给所有玩家
@@ -61,7 +77,7 @@ function UIHelper:setRightLittleDesc (...)
   UIHelper:setGBattleUI('right_little_desc', StringHelper:concat(...))
 end
 
--- 封装原水接口
+-- 封装原始接口
 
 -- 世界坐标转换到小地图
 function UIHelper:world2RadarPos (x, z)

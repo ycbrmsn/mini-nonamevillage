@@ -6,24 +6,19 @@ MyGameHelper = {
 function MyGameHelper:setGBattleUI ()
   local player = PlayerHelper:getHostPlayer()
   if (player) then
-    TimerHelper:pauseTimer(self.timerid)
-    local teamid = PlayerHelper:getTeam(player.objid)
-    local teamScore = TeamHelper:getTeamScore(teamid)
-    local time = TimerHelper:getTimerTime(self.timerid)
-    local result = PlayerHelper:getGameResults(player.objid)
-    local score = math.floor(time / 3) + teamScore -- 剩余时间 + 金币得分
-    if (score < teamScore or result == 2) then
-      score = teamScore
-    end
+    local story = StoryHelper:getStory()
+    local result = PlayerHelper:getGameResults(objid)
     local msg
-    if (result and result == 1) then
-      msg = '成功抵达了终点，得分：'
+    if (result == TEAM_RESULTS.TEAM_RESULTS_WIN) then -- 胜利
+      msg = story.winMsg
     else
-      msg = '在中途被淘汰，得分：'
+      msg = story.loseMsg
     end
-    UIHelper:setGBattleUI('left_desc', player:getName() .. msg .. score)
-    UIHelper:setGBattleUI('left_little_desc', '获得金币数：' .. player.coinNum)
-    UIHelper:setGBattleUI('right_little_desc', '剩余时间：' .. time)
+    UIHelper:setGBattleUI('left_desc', msg)
+    -- UIHelper:setGBattleUI('left_little_desc', '获得金币数：' .. player.coinNum)
+    -- UIHelper:setGBattleUI('right_little_desc', '剩余时间：' .. time)
+    UIHelper:setLeftTitle('获得称号：')
+    UIHelper:setRightTitle(story.name)
   end
   UIHelper:setGBattleUI('result', false)
 end

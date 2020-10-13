@@ -36,3 +36,6 @@ function MyStory:init ()
   
 end
 
+function MyStory:enterArea (objid, areaid)
+  return false
+end

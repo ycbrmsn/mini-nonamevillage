@@ -316,3 +316,7 @@ end
 function BasePlayer:getClickActor ()
   return self.clickActor
 end
+
+function BasePlayer:runTo (positions, callback, param)
+  self.action:runTo(positions, callback, param)
+end
