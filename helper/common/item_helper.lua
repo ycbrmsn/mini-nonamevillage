@@ -53,6 +53,14 @@ function ItemHelper:selectItem (objid, itemid)
   end
 end
 
+function ItemHelper:clickBlock (objid, blockid, x, y, z)
+  local itemid = PlayerHelper:getCurToolID(objid)
+  local item = self:getItem(itemid)
+  if (item) then -- 手持自定义特殊道具点击方块
+    item:clickBlock(objid, blockid, x, y, z)
+  end
+end
+
 -- 记录投掷物伤害 投掷物id、人物id、道具、伤害
 function ItemHelper:recordProjectile (projectileid, objid, item, o)
   o = o or {}

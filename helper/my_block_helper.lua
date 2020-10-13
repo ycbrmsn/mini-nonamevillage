@@ -5,6 +5,7 @@ MyBlockHelper = {
   switchPos = MyPosition:new(4, 6, 73),
   vasePos = MyPosition:new(9.5, 8.5, 72.5),
   vaseid = 948, -- 大瓷花盆
+  ironDoor = 814, -- 铁门
 }
 
 -- 初始化
@@ -31,7 +32,7 @@ function MyBlockHelper:clickVase (objid, blockid, x, y, z)
       if (PlayerHelper:isMainPlayer(objid)) then -- 房主
         BlockHelper:toggleSwitch(self.switchPos)
       else
-        ChatHelper:sendMsg(objid, '你发现你转不动，也许应该换个人试试')
+        ChatHelper:sendMsg(objid, '你发现你转不动，也许应该让其他人试试')
       end
       return true
     end
