@@ -17,7 +17,7 @@ MyMap = {
     KEY9 = 4107, -- 林树树
   },
   ACTOR = {
-    
+    CHIMO = 2, -- 池末
   },
   BUFF = {
     CONTINUE = 999, -- 继续探险

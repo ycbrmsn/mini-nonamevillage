@@ -3,6 +3,12 @@ MyActorHelper = {}
 
 -- 初始化actors
 function MyActorHelper:init ()
+  chimo = Chimo:new()
+  local myActors = { chimo }
+  for i, v in ipairs(myActors) do
+    TimeHelper:initActor(v)
+  end
+  LogHelper:debug('创建人物完成')
 end
 
 -- 事件

@@ -1,5 +1,6 @@
 -- 常量
 BaseConstant = {
+  UNKNOWN_BLOCK = 4095, -- 未知方块
   BODY_EFFECT = {
     SMOG1 = 1226, -- 一团小烟雾随即消失
 

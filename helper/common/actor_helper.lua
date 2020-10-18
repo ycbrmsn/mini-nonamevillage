@@ -36,6 +36,7 @@ ActorHelper = {
   actors = {}, -- objid -> actor
   clickActors = {}, -- 玩家点击的actor：objid -> actor
   actormotions = {}, -- 生物及其当前对应的状态 { objid -> motion }
+  initActorObjids = {}, -- 初始化生物时，每个玩家附近的所有生物的id数组 { time -> objids }
 }
 
 function ActorHelper:new (o)
@@ -83,6 +84,31 @@ end
 -- 设置生物行为
 function ActorHelper:setActorMotion (objid, actormotion)
   self.actormotions[objid] = actormotion
+end
+
+-- 获取初始化生物时玩家附近找到的生物数组
+function ActorHelper:getInitActorObjids ()
+  local time = TimeHelper:getTime()
+  local objids = self.initActorObjids[time]
+  if (not(objids)) then
+    objids = {}
+    PlayerHelper:everyPlayerDoSomeThing(function (player)
+      local pos = player:getMyPosition()
+      if (pos) then
+        local ids = WorldHelper:getCreaturesAroundPos(pos)
+        if (ids and #ids > 0) then
+          for i, objid in ipairs(ids) do
+            table.insert(objids, objid)
+          end
+        end
+      end
+    end)
+    self.initActorObjids[time] = objids
+    TimeHelper:callFnAfterSecond(function ()
+      self.initActorObjids[time] = nil
+    end, 1)
+  end
+  return objids
 end
 
 function ActorHelper:getMyPosition (objid)

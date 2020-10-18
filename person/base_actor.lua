@@ -63,6 +63,14 @@ function BaseActor:isActive ()
     end
     return true
   else
+    local blockid = BlockHelper:getBlockID(self.x, self.y, self.z)
+    if (blockid and blockid ~= BaseConstant.UNKNOWN_BLOCK) then -- 表示生物不见了（多半是因bug被销毁）
+      local objids = WorldHelper:spawnCreature(self.x, self.y, self.z, self.actorid, 1)
+      if (objids and #objids > 0) then -- 创建生物成功
+        self.objid = objids[1]
+        return true
+      end
+    end
     return false
   end
 end
@@ -403,7 +411,7 @@ function BaseActor:init (hour)
   -- body
 end
 
-function BaseActor:initActor (initPosition)
+function BaseActor:initActor ()
   if (self:isFind()) then
     ActorHelper:addActor(self) -- 生物加入集合中
     -- 加入蜡烛台数据
@@ -432,8 +440,17 @@ end
 
 -- 是否找到该生物
 function BaseActor:isFind ()
-  local actorid = CreatureHelper:getActorID(self.objid)
-  return actorid and actorid == self.actorid
+  -- local actorid = CreatureHelper:getActorID(self.objid)
+  -- return actorid and actorid == self.actorid
+  local objids = ActorHelper:getInitActorObjids()
+  for i, objid in ipairs(objids) do
+    local actorid = CreatureHelper:getActorID(objid)
+    if (actorid and actorid == self.actorid) then
+      self.objid = objid
+      return true
+    end
+  end
+  return false
 end
 
 -- 是否完成初始化
