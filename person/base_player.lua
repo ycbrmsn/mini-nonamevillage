@@ -8,7 +8,8 @@ BasePlayer = {
   prevAreaId = nil, -- 上一进入区域id
   hold = nil, -- 手持物品
   clickActor = nil, -- 最近点击的actor
-  active = true -- 是否活跃，即未离开房间
+  active = true, -- 是否活跃，即未离开房间
+  talkWithActor = nil, -- 与生物交谈
 }
 
 function BasePlayer:new (o)

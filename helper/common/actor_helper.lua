@@ -713,24 +713,31 @@ end
 
 -- NPC与玩家对话
 function ActorHelper:talkWith (actor, playerid)
+  local progressInfo = ActorHelper:getProgressInfo(actor, playerid)
+  local index = ActorHelper:getTalkIndex(actor, playerid)
+  local talkInfo = progressInfo[index]
+  if (talkInfo) then
+    ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
+  else
+    actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+  end
+end
+
+function ActorHelper:getProgressInfo (actor, playerid)
   local mainIndex = StoryHelper:getMainStoryIndex()
   local mainInfo = actor.talkInfos[mainIndex]
-  if (not(mainInfo)) then -- 没有该剧情的对话
-    actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-    return
+  if (not(mainInfo)) then
+    return nil
   end
   local progressInfo = mainInfo[0] -- 任意进度均此对话
   if (not(progressInfo)) then -- 没找到
     local mainProgress = StoryHelper:getMainStoryProgress()
     progressInfo = mainInfo[mainProgress]
     if (not(progressInfo)) then -- 没有对话
-      actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-      return
+      return nil
     end
   end
-  local index = ActorHelper:getTalkIndex(actor, playerid)
-  local talkInfo = progressInfo[index]
-  ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
+  return progressInfo
 end
 
 function ActorHelper:getTalkIndex (actor, playerid)
@@ -742,15 +749,20 @@ function ActorHelper:getTalkIndex (actor, playerid)
   return index
 end
 
+-- 对话序数跳转 默认跳一个
 function ActorHelper:turnTalkIndex (actor, playerid, max, index)
   if (not(index)) then
     index = ActorHelper:getTalkIndex(actor, playerid) + 1
   end
   if (index > max) then
     index = 1
+    actor.talkIndex[playerid] = index
     ChatHelper:sendMsg(playerid, '---------')
+    return false
+  else
+    actor.talkIndex[playerid] = index
+    return true
   end
-  actor.talkIndex[playerid] = index
 end
 
 function ActorHelper:handleTalkInfo (actor, playerid, info, max)
@@ -773,6 +785,44 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
       player:thinkSelf(0, info.msg)
     end
     ActorHelper:turnTalkIndex(actor, playerid, max)
+  end
+end
+
+-- 选择对话
+function ActorHelper:selectTalk (playerid)
+  local player = PlayerHelper:getPlayer(playerid)
+  local actor = player:getClickActor()
+  if (not(actor)) then -- 没有选择过特定生物
+    return
+  end
+  local progressInfo = ActorHelper:getProgressInfo(actor, playerid)
+  if (not(progressInfo)) then
+    return
+  end
+  local index = ActorHelper:getTalkIndex(actor, playerid)
+  local info = progressInfo[index]
+  if (not(info) or type(info.msg) ~= 'table') then -- 当前不是选择项
+    return
+  end
+  local index = PlayerHelper:getCurShotcut(playerid) + 1
+  if (index > #info.msg) then -- 没有该选项
+    return
+  end
+  -- 选择了
+  local playerTalk = info.msg[index]
+  local max = #progressInfo
+  if (not(playerTalk.t) or playerTalk.t == 1) then -- 继续
+    if (ActorHelper:turnTalkIndex(actor, playerid, max)) then
+      ActorHelper:talkWith(actor, playerid)
+    end
+  elseif (playerTalk.t == 2) then -- 跳转
+    if (ActorHelper:turnTalkIndex(actor, playerid, max, playerTalk.other)) then
+      ActorHelper:talkWith(actor, playerid)
+    end
+  elseif (playerTalk.t == 3) then -- 终止
+    ActorHelper:turnTalkIndex(actor, playerid, max, max + 1)
+  elseif (playerTalk.t == 4) then -- 任务
+
   end
 end
 
