@@ -45,8 +45,9 @@ function Chimo:new ()
               StoryHelper:goTo(2, 1)
               StoryHelper:resetTalkIndex(player, 0)
             end),
-            PlayerTalk:new('2不要', 3),
+            PlayerTalk:new('2不要', 1),
           }),
+          TalkInfo:new(3, '我不小心走错门了，抱歉。'),
         },
       },
       [2] = {

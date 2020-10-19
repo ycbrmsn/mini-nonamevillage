@@ -48,7 +48,7 @@ end
 function MyStoryHelper:playerEnterArea (objid, areaid)
   -- body
   local story = StoryHelper:getStory()
-  if (story:enterArea(objid, areaid)) then
+  if (story and story:enterArea(objid, areaid)) then
   end
 end
 
