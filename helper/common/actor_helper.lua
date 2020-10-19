@@ -714,10 +714,14 @@ end
 -- NPC与玩家对话
 function ActorHelper:talkWith (actor, playerid)
   local progressInfo = ActorHelper:getProgressInfo(actor, playerid)
-  local index = ActorHelper:getTalkIndex(actor, playerid)
-  local talkInfo = progressInfo[index]
-  if (talkInfo) then
-    ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
+  if (progressInfo) then
+    local index = ActorHelper:getTalkIndex(actor, playerid)
+    local talkInfo = progressInfo[index]
+    if (talkInfo) then
+      ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
+    else
+      actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+    end
   else
     actor:speakTo(playerid, 0, actor.defaultTalkMsg)
   end
@@ -763,6 +767,11 @@ function ActorHelper:turnTalkIndex (actor, playerid, max, index)
     actor.talkIndex[playerid] = index
     return true
   end
+end
+
+-- 重置序数
+function ActorHelper:resetTalkIndex (actor, playerid, index)
+  actor.talkIndex[playerid] = index or 1
 end
 
 function ActorHelper:handleTalkInfo (actor, playerid, info, max)
@@ -811,6 +820,9 @@ function ActorHelper:selectTalk (playerid)
   -- 选择了
   local playerTalk = info.msg[index]
   local max = #progressInfo
+  if (playerTalk.f) then
+    playerTalk.f(player)
+  end
   if (not(playerTalk.t) or playerTalk.t == 1) then -- 继续
     if (ActorHelper:turnTalkIndex(actor, playerid, max)) then
       ActorHelper:talkWith(actor, playerid)

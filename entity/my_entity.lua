@@ -222,12 +222,13 @@ end
 
 PlayerTalk = {}
 
--- msg(玩家的话) t(选择: 1继续(默认)；2跳转；3终止；4任务) other(对应选项：数字表示跳转项；任务)
-function PlayerTalk:new (msg, t, other)
+-- msg(玩家的话) t(选择: 1继续(默认)；2跳转；3终止；4任务) other(对应选项：数字表示跳转项；任务) f(函数)
+function PlayerTalk:new (msg, t, other, f)
   local o = {
     msg = msg,
     t = t,
     other = other,
+    f = f,
   }
   setmetatable(o, self)
   self.__index = self
