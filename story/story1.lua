@@ -3,19 +3,13 @@ Story1 = MyStory:new()
 
 function Story1:new ()
   local data = {
-    title = '第一关',
+    title = '剧情一',
     name = '无名称',
     desc = '无描述',
     tips = {
       '无事。',
     },
-    initPos = MyPosition:new(5.5, 7.5, -20.5), -- 初始位置
-    outVillagePoses = {
-      MyPosition:new(5.5, 7.5, 18.5)
-    }, -- 前往位置
-    inVillagePoses = {
-      MyPosition:new(5.5, 7.5, 29.5)
-    }
+    aroundBedPos = MyPosition:new(-3.5, 8.5, 41.5), -- 床旁边
   }
   self:checkData(data)
 
@@ -57,11 +51,3 @@ function Story1:enter (objid)
   BackpackHelper:addItem(objid, MyMap.ITEM.SWORD, 1)
 end
 
-function Story1:think ()
-  local ws = WaitSeconds:new()
-  PlayerHelper:everyPlayerThinkToSelf(ws:use(), '嗯……这种感觉……')
-  PlayerHelper:everyPlayerThinkToSelf(ws:use(), '进去看看再说。')
-  PlayerHelper:everyPlayerDoSomeThing(function (player)
-    player.action:runTo(self.inVillagePoses)
-  end, ws:use())
-end

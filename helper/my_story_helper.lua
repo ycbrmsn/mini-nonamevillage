@@ -6,7 +6,7 @@ MyStoryHelper = {
 
 function MyStoryHelper:init ()
   if (#StoryHelper:getStorys() == 0) then
-    local ss = { Story0 }
+    local ss = { Story0, Story1 }
     for i, v in ipairs(ss) do
       local s = v:new()
       s:init()

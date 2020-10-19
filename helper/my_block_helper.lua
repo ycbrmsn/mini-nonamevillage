@@ -1,6 +1,8 @@
 -- 我的方块工具类
 MyBlockHelper = {
-  unableBeoperated = {},
+  unableBeoperated = {
+    BlockHelper.bedid
+  },
   unableDestroyed = {},
   switchPos = MyPosition:new(4, 6, 73),
   vasePos = MyPosition:new(9.5, 8.5, 72.5),
@@ -35,6 +37,30 @@ function MyBlockHelper:clickVase (objid, blockid, x, y, z)
         ChatHelper:sendMsg(objid, '你发现你转不动，也许应该让其他人试试')
       end
       return true
+    end
+  end
+  return false
+end
+
+function MyBlockHelper:clickBed (objid, blockid, x, y, z)
+  LogHelper:debug(blockid)
+  if (blockid == BlockHelper.bedid) then
+    local player = PlayerHelper:getPlayer(objid)
+    if (player:isHostPlayer()) then
+      local pos = MyPosition:new(x, y, z)
+      local mainIndex = StoryHelper:getMainStoryIndex()
+      local mainProgress = StoryHelper:getMainStoryProgress()
+      if (mainIndex == 2 and mainProgress == 1) then
+        local story = StoryHelper:getStory()
+        local distance = MathHelper:getDistance(story.aroundBedPos, pos)
+        LogHelper:debug(distance)
+        if (distance < 5) then
+          player:runTo({ story.aroundBedPos }, function ()
+            player:thinkSelf(0, '也许晚点的时候，我可以来探查一番。')
+          end)
+          return true
+        end
+      end
     end
   end
   return false

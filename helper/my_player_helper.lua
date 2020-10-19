@@ -79,7 +79,8 @@ function MyPlayerHelper:playerClickBlock (objid, blockid, x, y, z)
   PlayerHelper:playerClickBlock(objid, blockid, x, y, z)
   MyStoryHelper:playerClickBlock(objid, blockid, x, y, z)
   -- body
-  if (MyBlockHelper:clickVase(objid, blockid, x, y, z)) then
+  if (MyBlockHelper:clickBed(objid, blockid, x, y, z)) then
+  elseif (MyBlockHelper:clickVase(objid, blockid, x, y, z)) then
   end
 end
 
