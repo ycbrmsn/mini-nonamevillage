@@ -14,6 +14,9 @@ BaseActor = {
   isAIOpened = true,
   isInit = false, -- 是否初始化完成
   sealTimes = 0, -- 封魔叠加次数
+  talkIndex = {}, -- 对话进度 { playerid -> index }
+  talkInfos = {}, -- 对话信息
+  defaultTalkMsg = '你好。', -- 默认对话
 }
 
 function BaseActor:new (actorid, objid)
@@ -354,34 +357,6 @@ function BaseActor:wantAtHour (hour)
   -- 各个生物重写此方法内容
 end
 
--- 一般重写此方法
-function BaseActor:playerClickEvent (objid)
-  self.action:playFree2(2)
-end
-
-function BaseActor:defaultPlayerClickEvent (playerid)
-  local actorTeam = CreatureHelper:getTeam(self.objid)
-  local playerTeam = PlayerHelper:getTeam(playerid)
-  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
-    local pos = self:getMyPosition()
-    if (not(AreaHelper:isAirArea(pos))) then -- 生物不在空气中，则移动到玩家位置
-      local player = PlayerHelper:getPlayer(playerid)
-      local newPos = player:getDistancePosition(1)
-      self:setPosition(newPos)
-      ChatHelper:sendMsg(playerid, '你把', self:getName(), '拉了过来')
-    else
-      self.action:stopRun()
-    end
-    self:wantLookAt(nil, playerid, 60)
-    self:playerClickEvent(playerid)
-  end
-end
-
-function BaseActor:candleEvent (myPlayer, candle)
-  local nickname = myPlayer:getName()
-  self:speakTo(myPlayer.objid, 0, nickname, '，你搞啥呢')
-end
-
 function BaseActor:getName ()
   if (not(self.actorname)) then
     self.actorname = CreatureHelper:getActorName(self.objid)
@@ -456,6 +431,34 @@ end
 -- 是否完成初始化
 function BaseActor:isFinishInit ()
   return self.isInit
+end
+
+function BaseActor:candleEvent (myPlayer, candle)
+  local nickname = myPlayer:getName()
+  self:speakTo(myPlayer.objid, 0, nickname, '，你搞啥呢')
+end
+
+-- 一般重写此方法
+function BaseActor:playerClickEvent (objid)
+  self.action:playFree2(2)
+end
+
+function BaseActor:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local pos = self:getMyPosition()
+    if (not(AreaHelper:isAirArea(pos))) then -- 生物不在空气中，则移动到玩家位置
+      local player = PlayerHelper:getPlayer(playerid)
+      local newPos = player:getDistancePosition(1)
+      self:setPosition(newPos)
+      ChatHelper:sendMsg(playerid, '你把', self:getName(), '拉了过来')
+    else
+      self.action:stopRun()
+    end
+    self:wantLookAt(nil, playerid, 60)
+    self:playerClickEvent(playerid)
+  end
 end
 
 function BaseActor:collidePlayer (playerid, isPlayerInFront)

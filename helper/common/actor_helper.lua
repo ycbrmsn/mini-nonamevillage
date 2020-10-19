@@ -711,6 +711,71 @@ function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
   end
 end
 
+-- NPC与玩家对话
+function ActorHelper:talkWith (actor, playerid)
+  local mainIndex = StoryHelper:getMainStoryIndex()
+  local mainInfo = actor.talkInfos[mainIndex]
+  if (not(mainInfo)) then -- 没有该剧情的对话
+    actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+    return
+  end
+  local progressInfo = mainInfo[0] -- 任意进度均此对话
+  if (not(progressInfo)) then -- 没找到
+    local mainProgress = StoryHelper:getMainStoryProgress()
+    progressInfo = mainInfo[mainProgress]
+    if (not(progressInfo)) then -- 没有对话
+      actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+      return
+    end
+  end
+  local index = ActorHelper:getTalkIndex(actor, playerid)
+  local talkInfo = progressInfo[index]
+  ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
+end
+
+function ActorHelper:getTalkIndex (actor, playerid)
+  local index = actor.talkIndex[playerid]
+  if (not(index)) then
+    index = 1
+    actor.talkIndex[playerid] = index
+  end
+  return index
+end
+
+function ActorHelper:turnTalkIndex (actor, playerid, max, index)
+  if (not(index)) then
+    index = ActorHelper:getTalkIndex(actor, playerid) + 1
+  end
+  if (index > max) then
+    index = 1
+    ChatHelper:sendMsg(playerid, '---------')
+  end
+  actor.talkIndex[playerid] = index
+end
+
+function ActorHelper:handleTalkInfo (actor, playerid, info, max)
+  local player = PlayerHelper:getPlayer(playerid)
+  if (info.t == 1) then
+    actor:speakTo(playerid, 0, info.msg)
+    ActorHelper:turnTalkIndex(actor, playerid, max)
+  elseif (info.t == 2) then
+    actor:thinkTo(playerid, 0, info.msg)
+    ActorHelper:turnTalkIndex(actor, playerid, max)
+  elseif (type(info.msg) == 'table') then -- 选项
+    ChatHelper:sendMsg(playerid, '---------')
+    for i, v in ipairs(info.msg) do
+      ChatHelper:sendMsg(playerid, v.msg)
+    end
+  else -- 对话
+    if (info.t == 3) then
+      player:speakSelf(0, info.msg)
+    elseif (info.t == 4) then
+      player:thinkSelf(0, info.msg)
+    end
+    ActorHelper:turnTalkIndex(actor, playerid, max)
+  end
+end
+
 -- 设置生物可移动状态
 function ActorHelper:setEnableMoveState (objid, switch)
   return self:setActionAttrState(objid, CREATUREATTR.ENABLE_MOVE, switch)

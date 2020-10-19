@@ -57,6 +57,10 @@ function BasePlayer:speakTo (playerids, afterSeconds, ...)
   end
 end
 
+function BasePlayer:speakSelf (afterSeconds, ...)
+  self:speakTo(self.objid, afterSeconds, ...)
+end
+
 function BasePlayer:thinks (afterSeconds, ...)
   if (afterSeconds > 0) then
     self.action:thinkAfterSeconds(afterSeconds, ...)
@@ -77,6 +81,10 @@ function BasePlayer:thinkTo (playerids, afterSeconds, ...)
       self:thinkTo(v, afterSeconds, ...)
     end
   end
+end
+
+function BasePlayer:thinkSelf (afterSeconds, ...)
+  self:thinkTo(self.objid, afterSeconds, ...)
 end
 
 function BasePlayer:updatePositions ()

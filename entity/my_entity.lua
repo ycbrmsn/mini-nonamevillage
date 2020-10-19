@@ -206,3 +206,60 @@ function WaitSeconds:use (seconds)
   self:add(seconds)
   return time
 end
+
+TalkInfo = {}
+
+-- t（1npc说, 2npc想, 3player说, 4player想）；msg（string or arr）
+function TalkInfo:new (t, msg)
+  local o = {
+    t = t,
+    msg = msg,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+PlayerTalk = {}
+
+-- msg(玩家的话) t(选择: 1继续(默认)；2跳转；3终止；4任务) other(对应选项：数字表示跳转项；任务)
+function PlayerTalk:new (msg, t, other)
+  local o = {
+    msg = msg,
+    t = t,
+    other = other,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+BaseTask = {}
+
+-- name(任务名称) t(任务类型：1无；2击败生物；3交付道具) rewards(任务奖励) beats(击败生物) items(交付道具)
+function BaseTask:new (name, t, rewards, beats, items)
+  local o = {
+    name = name,
+    t = t,
+    rewards = rewards,
+    beats = beats,
+    items = items,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+TaskReward = {}
+
+-- msg(奖励描述) t(奖励类型：1道具；2经验；3其他) num(数值)
+function TaskReward:new (msg, t, num)
+  local o = {
+    msg = msg,
+    t = t,
+    num = num,
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end

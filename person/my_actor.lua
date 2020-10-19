@@ -30,6 +30,25 @@ function Chimo:new ()
         MyPosition:new(-8.5, 8.5, 49.5), -- 铁门旁
       }
     },
+    secondFloorAreaPositions = {
+      MyPosition:new(-11.5, 13.5, 41.5), -- 二楼对角
+      MyPosition:new(-4.5, 13.5, 46.5), -- 二楼对角
+    },
+    talkInfos = {
+      [1] = {
+        [0] = {
+          TalkInfo:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+          TalkInfo:new(3, '你好。'),
+          TalkInfo:new(4, '要不要借宿一宿呢？'),
+          TalkInfo:new(5, {
+            PlayerTalk:new('1要'),
+            PlayerTalk:new('2不要', 3),
+          }),
+          TalkInfo:new(3, '我想要借宿一宿。'),
+          TalkInfo:new(1, '好的。'),
+        },
+      }
+    }, -- 对话信息
   }
   setmetatable(o, self)
   self.__index = self
@@ -45,6 +64,10 @@ end
 function Chimo:wantAtHour (hour)
   if (hour == 6) then
     self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
   elseif (hour == 19) then
     self:lightCandle('free', true, self.candlePositions)
     self:nextWantFreeInArea(self.hallAreaPositions)
@@ -55,8 +78,12 @@ end
 
 function Chimo:doItNow ()
   local hour = TimeHelper:getHour()
-  if (hour >= 6 and hour < 19) then
+  if (hour >= 6 and hour < 13) then
     self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
   elseif (hour >= 19 and hour < 22) then
     self:wantAtHour(19)
   else
@@ -78,7 +105,17 @@ function Chimo:defaultPlayerClickEvent (playerid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     self.action:stopRun()
+    self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
+    -- self:reply(playerid)
+    ActorHelper:talkWith(self, playerid)
+  end
+end
+
+function Chimo:reply (playerid)
+  local mainIndex = StoryHelper:getMainStoryIndex()
+  local mainProgress = StoryHelper:getMainStoryProgress()
+  if (mainIndex == 1) then
     self:speakTo(playerid, 0, '你点我干嘛？')
   end
 end
