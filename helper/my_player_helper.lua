@@ -24,20 +24,32 @@ MyPlayerHelper = {
         TimeHelper:addHour(1)
         PlayerHelper:showToast(player.objid, '时间过去半个时辰')
         player.whichChoose = nil
+        MyPlayerHelper:storyForward(player)
       end,
       [2] = function (player)
         TimeHelper:addHour(2)
         PlayerHelper:showToast(player.objid, '时间过去一个时辰')
         player.whichChoose = nil
+        MyPlayerHelper:storyForward(player)
       end,
       [3] = function (player)
         TimeHelper:addHour(4)
         PlayerHelper:showToast(player.objid, '时间过去两个时辰')
         player.whichChoose = nil
+        MyPlayerHelper:storyForward(player)
       end
     }
   }
 }
+
+function MyPlayerHelper:storyForward (player)
+  local mainIndex = StoryHelper:getMainStoryIndex()
+  local mainProgress = StoryHelper:getMainStoryProgress()
+  if (mainProgress == 1) then
+    StoryHelper:forward2(mainIndex, mainProgress)
+    player:thinkSelf(1, '有点精神了。或许我可以找主人家问问情况。')
+  end
+end
 
 function MyPlayerHelper:diffPersonDiffPresents (objid)
   local player = PlayerHelper:getPlayer(objid)

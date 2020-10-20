@@ -7,7 +7,9 @@ function Story1:new ()
     name = '无名称',
     desc = '无描述',
     tips = {
-      '无事。',
+      '好累，先去休息一下。',
+      '我似乎应该问问主人家这里的事情。',
+      '去甄家问问看，不知道剑好不好借。',
     },
     aroundBedPos = MyPosition:new(-3.5, 8.5, 41.5), -- 床旁边
   }

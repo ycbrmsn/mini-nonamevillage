@@ -797,6 +797,9 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
     end
     ActorHelper:turnTalkIndex(actor, playerid, max)
   end
+  if (info.f) then
+    info.f(player)
+  end
 end
 
 -- 选择对话

@@ -209,11 +209,12 @@ end
 
 TalkInfo = {}
 
--- t（1npc说, 2npc想, 3player说, 4player想）；msg（string or arr）
-function TalkInfo:new (t, msg)
+-- t（1npc说, 2npc想, 3player说, 4player想） msg（string or arr） f(函数)
+function TalkInfo:new (t, msg, f)
   local o = {
     t = t,
     msg = msg,
+    f = f,
   }
   setmetatable(o, self)
   self.__index = self

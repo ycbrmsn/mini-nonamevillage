@@ -54,6 +54,24 @@ function Chimo:new ()
         [1] = {
           TalkInfo:new(3, '我想要借宿一宿。'),
           TalkInfo:new(1, '客房正好空着，你自便。'),
+        },
+        [2] = {
+          TalkInfo:new(1, '你有事吗？'),
+          TalkInfo:new(3, '我略懂观气之术，见村子上方似乎汇聚了一股邪气。'),
+          TalkInfo:new(1, '邪气！'),
+          TalkInfo:new(3, '是的。不知最近村子里可有什么事情发生。'),
+          TalkInfo:new(1, '嗯，听你这么一说，我也觉得最近有些心绪不宁。不过近期村子里很太平。'),
+          TalkInfo:new(1, '对了，我听说村子里有几把极品桃木剑，不知可否用来驱散邪气。'),
+          TalkInfo:new(3, '极品桃木剑？如果有三四把，我可以摆出剑阵，驱散邪气，并找出来源。'),
+          TalkInfo:new(1, '那太好了。请你一定要帮助我们。'),
+          TalkInfo:new(1, '我隔壁的甄家就有一把，不过那似乎是他的传家宝，想要借来可不容易。'),
+          TalkInfo:new(3, '甄家吗？那我去试试看。', function (player)
+            StoryHelper:forward2(2, 2)
+          end),
+        },
+        [3] = {
+          TalkInfo:new(1, '你借来桃木剑了吗？'),
+          TalkInfo:new(3, '还没。'),
         }
       }
     }, -- 对话信息

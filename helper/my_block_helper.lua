@@ -49,7 +49,7 @@ function MyBlockHelper:clickBed (objid, blockid, x, y, z)
       local pos = MyPosition:new(x, y, z)
       local mainIndex = StoryHelper:getMainStoryIndex()
       local mainProgress = StoryHelper:getMainStoryProgress()
-      if (mainIndex == 2 and mainProgress == 1) then
+      if (mainIndex == 2) then
         local story = StoryHelper:getStory()
         local distance = MathHelper:getDistance(story.aroundBedPos, pos)
         if (distance < 5) then
