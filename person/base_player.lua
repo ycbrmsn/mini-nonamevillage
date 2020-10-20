@@ -340,7 +340,7 @@ function BasePlayer:choose ()
       local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
       if (chooseItems) then
         local index = PlayerHelper:getCurShotcut(self.objid) + 1
-        if (index < #chooseItems) then
+        if (index <= #chooseItems) then
           chooseItems[index](self)
         end
       end

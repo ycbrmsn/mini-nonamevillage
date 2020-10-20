@@ -14,7 +14,7 @@ function Chimo:new ()
     },
     candlePositions = {
       MyPosition:new(-11.5, 9.5, 41.5), -- 客厅
-      MyPosition:new(-5.5, 9.5, 48.5), -- 卧室
+      MyPosition:new(-5.5, 9.5, 49.5), -- 卧室
     },
     hallAreaPositions = {
       MyPosition:new(-6.5, 8.5, 39.5), -- 进门旁
@@ -78,7 +78,7 @@ function Chimo:wantAtHour (hour)
     self:wantFreeInArea({ self.hallAreaPositions })
   elseif (hour == 19) then
     self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea(self.hallAreaPositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
   elseif (hour == 22) then
     self:putOutCandleAndGoToBed(self.candlePositions)
   end
