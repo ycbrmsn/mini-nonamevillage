@@ -5,7 +5,8 @@ MyActorHelper = {}
 function MyActorHelper:init ()
   chimo = Chimo:new()
   zhendao = Zhendao:new()
-  local myActors = { chimo, zhendao }
+  linshushu = Linshushu:new()
+  local myActors = { chimo, zhendao, linshushu }
   for i, v in ipairs(myActors) do
     TimeHelper:initActor(v)
   end

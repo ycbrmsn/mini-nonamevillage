@@ -79,6 +79,27 @@ function Chimo:new ()
           TalkInfo:new(1, '那这可如何是好？'),
           TalkInfo:new(3, '我再想想办法。'),
         },
+        [5] = {
+          TalkInfo:new(1, '怎么样了？'),
+          TalkInfo:new(3, '还没想到什么办法。对了，听说你们每家都有物品柜？'),
+          TalkInfo:new(1, '嗯，没错。是了，甄道一定是把剑放柜子里的。'),
+          TalkInfo:new(3, '就算是，那也没有办法。'),
+          TalkInfo:new(1, '不，如果我们拿到钥匙……'),
+          TalkInfo:new(3, '你这不是偷吗？'),
+          TalkInfo:new(1, '事急从权。如果能驱散掉邪气，这不算什么。'),
+          TalkInfo:new(1, '而且我们只是借用一下，到时候还会还过去。'),
+          TalkInfo:new(3, '这……'),
+          TalkInfo:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
+          TalkInfo:new(3, '……那好吧。用完我就把剑还回去。'),
+          TalkInfo:new(1, '太感谢了。甄道晚上打呼噜可响了。钥匙可能在他身上。'),
+          TalkInfo:new(3, '晚上我去看看吧。', function (player)
+            StoryHelper:forward2(2, 5)
+          end),
+        },
+        [6] = {
+          TalkInfo:new(1, '怎么样，“借”到剑了吗？'),
+          TalkInfo:new(3, '还没。'),
+        }
       }
     }, -- 对话信息
   }
@@ -157,7 +178,7 @@ Zhendao = BaseActor:new(MyMap.ACTOR.ZHENDAO)
 
 function Zhendao:new ()
   local o = {
-    objid = -1,
+    objid = self.actorid,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(-28.5, 9.5, 47.5), -- 床尾位置
@@ -213,7 +234,12 @@ function Zhendao:new ()
           end),
         },
         [4] = {
-          TalkInfo:new(1, '再见。不送。'),
+          TalkInfo:new(1, '再见。不送。', function (player)
+            local actor = player:getClickActor()
+            if (actor) then
+              actor.defaultTalkMsg = '我不会借你剑的。'
+            end
+          end),
         },
       }
     }, -- 对话信息
@@ -292,29 +318,35 @@ Linshushu = BaseActor:new(MyMap.ACTOR.LINSHUSHU)
 
 function Linshushu:new ()
   local o = {
-    objid = -1,
+    objid = self.actorid,
     unableBeKilled = true,
     bedData = {
-      MyPosition:new(-28.5, 9.5, 47.5), -- 床尾位置
-      ActorHelper.FACE_YAW.WEST, -- 床尾朝向
+      MyPosition:new(-2.5, 9.5, 74.5), -- 床尾位置
+      ActorHelper.FACE_YAW.SOUTH, -- 床尾朝向
     },
     candlePositions = {
-      MyPosition:new(-24.5, 9.5, 40.5), -- 客厅
-      MyPosition:new(-32.5, 9.5, 47.5), -- 卧室
+      MyPosition:new(9.5, 9.5, 67.5), -- 客厅
+      MyPosition:new(-5.5, 9.5, 71.5), -- 卧室
     },
     hallAreaPositions = {
-      MyPosition:new(-29.5, 8.5, 39.5), -- 进门旁
-      MyPosition:new(-25.5, 8.5, 45.5), -- 楼梯旁
+      MyPosition:new(8.5, 8.5, 65.5), -- 进门旁
+      MyPosition:new(2.5, 8.5, 70.5), -- 楼梯旁
     },
     bedroomAreaPositions = {
       {
-        MyPosition:new(-32.5, 8.5, 49.5), -- 柜子旁
-        MyPosition:new(-27.5, 8.5, 48.5), -- 床旁
+        MyPosition:new(-4.5, 8.5, 75.5), -- 柜子旁
+        MyPosition:new(-3.5, 8.5, 70.5), -- 门旁
       },
     },
     secondFloorAreaPositions = {
-      MyPosition:new(-25.5, 13.5, 46.5), -- 二楼对角
-      MyPosition:new(-31.5, 13.5, 39.5), -- 二楼对角
+      {
+        MyPosition:new(1.5, 13.5, 65.5), -- 二楼对角
+        MyPosition:new(9.5, 13.5, 67.5), -- 二楼对角
+      },
+      {
+        MyPosition:new(5.5, 13.5, 65.5), -- 窗户
+        MyPosition:new(6.5, 13.5, 75.5), -- 楼梯旁窗户
+      }
     },
     talkInfos = {
       [1] = {
@@ -333,22 +365,30 @@ function Linshushu:new ()
         },
       },
       [2] = {
-        [3] = {
-          TalkInfo:new(1, '你好。'),
-          TalkInfo:new(3, '你好。我见你们村上被一股邪气笼罩。'),
-          TalkInfo:new(1, '……'),
-          TalkInfo:new(1, '你有办法解决吗？'),
-          TalkInfo:new(3, '听说你有一把桃木剑。'),
-          TalkInfo:new(1, '那又如何？'),
-          TalkInfo:new(3, '可否借我一用，待我完成剑阵驱散邪气即可还你。'),
-          TalkInfo:new(1, '不可能。'),
-          TalkInfo:new(3, '邪气不除，恐生祸端。'),
-          TalkInfo:new(1, '再见。不送。', function (player)
-            StoryHelper:forward2(2, 3)
+        [4] = {
+          TalkInfo:new(1, '你好，外地人。'),
+          TalkInfo:new(3, '你好。'),
+          TalkInfo:new(1, '我是这村的村长。你遇到什么麻烦了吗？'),
+          TalkInfo:new(4, '是村长。或许我可以问问他。'),
+          TalkInfo:new(3, '村长你好。途径贵地，发现你们村子上空弥漫着一股邪气。'),
+          TalkInfo:new(1, '此事当真？'),
+          TalkInfo:new(4, '……我应该不会看错吧？'),
+          TalkInfo:new(3, '千真万确。我需要道具来驱散它。'),
+          TalkInfo:new(3, '听闻甄村友有一把桃木剑，我想借来一用。'),
+          TalkInfo:new(1, '哦……那似乎是他家祖传的，恐怕借来不易。'),
+          TalkInfo:new(3, '不错。'),
+          TalkInfo:new(1, '不知邪气可有危害？'),
+          TalkInfo:new(3, '我观邪气似乎存在已久，不过不知何故，现在依然还未成气候。'),
+          TalkInfo:new(3, '不过终究是一隐患。而若邪气成型，后果恐难以预料。'),
+          TalkInfo:new(1, '嗯……我村里人每人都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
+          TalkInfo:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
+          TalkInfo:new(4, '？？？'),
+          TalkInfo:new(3, '这样啊……', function (player)
+            StoryHelper:forward2(2, 4)
           end),
         },
-        [4] = {
-          TalkInfo:new(1, '再见。不送。'),
+        [5] = {
+          TalkInfo:new(1, '事急从权。有时候对错并不是绝对的。'),
         },
       }
     }, -- 对话信息
@@ -368,7 +408,7 @@ function Linshushu:wantAtHour (hour)
   if (hour == 6) then
     self:wantFreeInArea({ self.hallAreaPositions })
   elseif (hour == 13) then
-    self:wantFreeInArea({ self.secondFloorAreaPositions })
+    self:wantFreeInArea(self.secondFloorAreaPositions)
   elseif (hour == 15) then
     self:wantFreeInArea({ self.hallAreaPositions })
   elseif (hour == 19) then
