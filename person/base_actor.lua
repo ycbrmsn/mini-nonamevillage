@@ -447,6 +447,9 @@ function BaseActor:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
     local pos = self:getMyPosition()
     if (not(AreaHelper:isAirArea(pos))) then -- 生物不在空气中，则移动到玩家位置
       local player = PlayerHelper:getPlayer(playerid)
@@ -469,6 +472,9 @@ function BaseActor:defaultCollidePlayerEvent (playerid, isPlayerInFront)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
     self.action:stopRun()
     self:collidePlayer(playerid, isPlayerInFront)
     self:wantLookAt(nil, playerid)

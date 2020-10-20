@@ -157,6 +157,9 @@ function Chimo:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
     self.action:stopRun()
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
@@ -298,10 +301,28 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
-    self.action:stopRun()
-    self:lookAt(playerid)
-    self:wantLookAt(nil, playerid, 60)
-    ActorHelper:talkWith(self, playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
+      local player = PlayerHelper:getPlayer(playerid)
+      local mainIndex = StoryHelper:getMainStoryIndex()
+      local mainProgress = StoryHelper:getMainStoryProgress()
+      if (mainIndex == 2 and mainProgress >= 6) then
+        if (not(self.lostKey)) then -- 有钥匙
+          if (BackpackHelper:addItem(playerid, MyMap.ITEM.KEY5, 1)) then
+            self.lostKey = true
+            PlayerHelper:showToast(playerid, '获得甄道的钥匙')
+          end
+        else
+          player:thinkSelf(0, '他身上似乎没有钥匙了。')
+        end
+      else
+        player:thinkSelf(0, '我想干什么？')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      ActorHelper:talkWith(self, playerid)
+    end
   end
 end
 
@@ -447,6 +468,9 @@ function Linshushu:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+    end
     self.action:stopRun()
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)

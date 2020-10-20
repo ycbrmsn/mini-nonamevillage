@@ -393,10 +393,6 @@ function PlayerHelper:playerClickActor (objid, toobjid)
   local myActor = ActorHelper:getActor(toobjid)
   if (myActor) then
     ActorHelper:recordClickActor(objid, myActor)
-    if (myActor.wants and myActor.wants[1].style == 'sleeping') then
-      myActor.wants[1].style = 'wake'
-    end
-
     myActor:defaultPlayerClickEvent(objid)
   end
 end
