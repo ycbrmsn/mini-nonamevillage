@@ -720,10 +720,16 @@ function ActorHelper:talkWith (actor, playerid)
     if (talkInfo) then
       ActorHelper:handleTalkInfo(actor, playerid, talkInfo, #progressInfo)
     else
-      actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+      if (actor.defaultTalkMsg) then
+        actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+        ChatHelper:showSeparate(playerid)
+      end
     end
   else
-    actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+    if (actor.defaultTalkMsg) then
+      actor:speakTo(playerid, 0, actor.defaultTalkMsg)
+      ChatHelper:showSeparate(playerid)
+    end
   end
 end
 
@@ -761,7 +767,7 @@ function ActorHelper:turnTalkIndex (actor, playerid, max, index)
   if (index > max) then
     index = 1
     actor.talkIndex[playerid] = index
-    ChatHelper:sendMsg(playerid, '---------')
+    ChatHelper:showSeparate(playerid)
     return false
   else
     actor.talkIndex[playerid] = index

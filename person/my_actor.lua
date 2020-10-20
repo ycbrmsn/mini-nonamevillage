@@ -91,7 +91,7 @@ function Chimo:new ()
           TalkInfo:new(3, '这……'),
           TalkInfo:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
           TalkInfo:new(3, '……那好吧。用完我就把剑还回去。'),
-          TalkInfo:new(1, '太感谢了。甄道晚上打呼噜可响了。钥匙可能在他身上。'),
+          TalkInfo:new(1, '太感谢了。钥匙可能在他身上。你可以夜间去看看。'),
           TalkInfo:new(3, '晚上我去看看吧。', function (player)
             StoryHelper:forward2(2, 5)
           end),
@@ -237,7 +237,7 @@ function Zhendao:new ()
           TalkInfo:new(1, '再见。不送。', function (player)
             local actor = player:getClickActor()
             if (actor) then
-              actor.defaultTalkMsg = '我不会借你剑的。'
+              actor.defaultTalkMsg = '我是不会借剑给你的。'
             end
           end),
         },
@@ -388,7 +388,7 @@ function Linshushu:new ()
           end),
         },
         [5] = {
-          TalkInfo:new(1, '事急从权。有时候对错并不是绝对的。'),
+          TalkInfo:new(1, '希望你能找到别的办法。'),
         },
       }
     }, -- 对话信息

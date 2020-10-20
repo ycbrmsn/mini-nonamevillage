@@ -41,7 +41,7 @@ end
 
 -- 显示选项
 function ChatHelper:showChooseItems (objid, arr, key)
-  ChatHelper:sendMsg(objid, '---------')
+  ChatHelper:showSeparate(objid)
   for i, v in ipairs(arr) do
     if (key) then
       ChatHelper:sendMsg(objid, i .. '.' .. v[key])
@@ -49,6 +49,11 @@ function ChatHelper:showChooseItems (objid, arr, key)
       ChatHelper:sendMsg(objid, i .. '.' .. v)
     end
   end
+end
+
+-- 显示分隔
+function ChatHelper:showSeparate (objid)
+  ChatHelper:sendMsg(objid, '---------')
 end
 
 -- 封装原始接口
