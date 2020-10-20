@@ -18,6 +18,16 @@ MyMap = {
   },
   ACTOR = {
     CHIMO = 2, -- 池末
+    MEIGAO = 3, -- 梅膏
+    WANGYI = 4, -- 王毅
+    LIANGZHANG = 5, -- 梁杖
+    ZHENDAO = 6, -- 甄道
+    YAOGAO = 7, -- 姚羔
+    CHUYI = 8, -- 储依
+    MOCHI = 9, -- 莫迟
+    LUREN = 10, -- 陆仁
+    JIAYI = 11, -- 贾义
+    LINSHUSHU = 12, -- 林树树
   },
   BUFF = {
     CONTINUE = 999, -- 继续探险
