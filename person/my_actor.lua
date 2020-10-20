@@ -41,11 +41,11 @@ function Chimo:new ()
           TalkInfo:new(3, '你好。'),
           TalkInfo:new(4, '要不要借宿一宿呢？'),
           TalkInfo:new(5, {
-            PlayerTalk:new('1要', 1, nil, function (player)
+            PlayerTalk:new('要', 1, nil, function (player)
               StoryHelper:goTo(2, 1)
               StoryHelper:resetTalkIndex(player, 0)
             end),
-            PlayerTalk:new('2不要', 1),
+            PlayerTalk:new('不要', 1),
           }),
           TalkInfo:new(3, '我不小心走错门了，抱歉。'),
         },

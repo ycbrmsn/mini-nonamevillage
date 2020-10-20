@@ -36,6 +36,14 @@ function TimeHelper:addFrame ()
   self.frame = self.frame + 1
 end
 
+function TimeHelper:addHour (hour)
+  hour = hour + TimeHelper:getHour()
+  if (hour >= 24) then
+    hour = hour - 24
+  end
+  TimeHelper:setHour(hour)
+end
+
 function TimeHelper:setHour (hour)
   if (WorldHelper:setHours(hour)) then
     self.hour = hour

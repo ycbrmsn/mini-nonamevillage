@@ -17,6 +17,22 @@ MyPlayerHelper = {
       },
       msgMap = { present = '5颗续命药丸' }
     }, -- 懒懒
+  },
+  chooseMap = {
+    sleep = {
+      [1] = function (player)
+        TimeHelper:addHour(1)
+        PlayerHelper:showToast(player.objid, '时间过去半个时辰')
+      end,
+      [2] = function (player)
+        TimeHelper:addHour(2)
+        PlayerHelper:showToast(player.objid, '时间过去一个时辰')
+      end,
+      [3] = function (player)
+        TimeHelper:addHour(4)
+        PlayerHelper:showToast(player.objid, '时间过去两个时辰')
+      end
+    }
   }
 }
 

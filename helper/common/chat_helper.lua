@@ -39,6 +39,18 @@ function ChatHelper:waitThink (name, toobjid, seconds, ...)
   end, seconds)
 end
 
+-- 显示选项
+function ChatHelper:showChooseItems (objid, arr, key)
+  ChatHelper:sendMsg(objid, '---------')
+  for i, v in ipairs(arr) do
+    if (key) then
+      ChatHelper:sendMsg(objid, i .. '.' .. v[key])
+    else
+      ChatHelper:sendMsg(objid, i .. '.' .. v)
+    end
+  end
+end
+
 -- 封装原始接口
 
 -- 发送系统消息，默认发送给所有玩家

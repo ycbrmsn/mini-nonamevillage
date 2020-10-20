@@ -783,10 +783,12 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
     actor:thinkTo(playerid, 0, info.msg)
     ActorHelper:turnTalkIndex(actor, playerid, max)
   elseif (type(info.msg) == 'table') then -- 选项
-    ChatHelper:sendMsg(playerid, '---------')
-    for i, v in ipairs(info.msg) do
-      ChatHelper:sendMsg(playerid, v.msg)
-    end
+    ChatHelper:showChooseItems(playerid, info.msg, 'msg')
+    -- ChatHelper:sendMsg(playerid, '---------')
+    -- for i, v in ipairs(info.msg) do
+    --   ChatHelper:sendMsg(playerid, v.msg)
+    -- end
+    player.whichChoose = 'talk'
   else -- 对话
     if (info.t == 3) then
       player:speakSelf(0, info.msg)
@@ -798,7 +800,7 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
 end
 
 -- 选择对话
-function ActorHelper:selectTalk (playerid)
+function ActorHelper:chooseTalk (playerid)
   local player = PlayerHelper:getPlayer(playerid)
   local actor = player:getClickActor()
   if (not(actor)) then -- 没有选择过特定生物

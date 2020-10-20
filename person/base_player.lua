@@ -10,6 +10,7 @@ BasePlayer = {
   clickActor = nil, -- 最近点击的actor
   active = true, -- 是否活跃，即未离开房间
   talkWithActor = nil, -- 与生物交谈
+  whichChoose = nil, -- 在选择什么
 }
 
 function BasePlayer:new (o)
@@ -328,4 +329,21 @@ end
 
 function BasePlayer:runTo (positions, callback, param)
   self.action:runTo(positions, callback, param)
+end
+
+-- 选择选项
+function BasePlayer:choose ()
+  if (self.whichChoose) then
+    if (self.whichChoose == 'talk') then
+      ActorHelper:chooseTalk(self.objid)
+    else
+      local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
+      if (chooseItems) then
+        local index = PlayerHelper:getCurShotcut(self.objid) + 1
+        if (index < #chooseItems) then
+          chooseItems[index](self)
+        end
+      end
+    end
+  end
 end

@@ -43,7 +43,6 @@ function MyBlockHelper:clickVase (objid, blockid, x, y, z)
 end
 
 function MyBlockHelper:clickBed (objid, blockid, x, y, z)
-  LogHelper:debug(blockid)
   if (blockid == BlockHelper.bedid) then
     local player = PlayerHelper:getPlayer(objid)
     if (player:isHostPlayer()) then
@@ -53,10 +52,11 @@ function MyBlockHelper:clickBed (objid, blockid, x, y, z)
       if (mainIndex == 2 and mainProgress == 1) then
         local story = StoryHelper:getStory()
         local distance = MathHelper:getDistance(story.aroundBedPos, pos)
-        LogHelper:debug(distance)
         if (distance < 5) then
           player:runTo({ story.aroundBedPos }, function ()
-            player:thinkSelf(0, '也许晚点的时候，我可以来探查一番。')
+            player:thinkSelf(0, '我要睡多长时间呢？')
+            ChatHelper:showChooseItems(playerid, { '半个时辰', '一个时辰', '两个时辰' })
+            player.whichChoose = 'sleep'
           end)
           return true
         end
