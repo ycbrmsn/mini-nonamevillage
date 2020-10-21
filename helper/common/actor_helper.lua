@@ -207,18 +207,7 @@ function ActorHelper:handleNextWant (myActor)
     -- LogHelper:debug('wait')
   elseif (nextWant.style == 'lightCandle' or nextWant.style == 'putOutCandle') then
     nextWant.toPos = want.toPos
-    -- 2秒后看，攻击，移除想法
-    TimeHelper:callFnAfterSecond (function (p)
-      p.myActor:lookAt(p.pos)
-      p.myActor.action:playAttack()
-    end, 2, { pos = want.toPos, myActor = myActor })
-    -- 3秒后蜡烛台变化，并执行下一个动作
-    TimeHelper:callFnAfterSecond (function (p)
-      BlockHelper:handleCandle(p.pos, p.isLit)
-      if (p.myActor.wants[2]) then
-        self:handleNextWant(p.myActor)
-      end
-    end, 3, { pos = want.toPos, isLit = nextWant.style == 'lightCandle', myActor = myActor })
+    nextWant.currentRestTime = nextWant.restTime
   end
 end
 

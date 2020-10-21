@@ -160,7 +160,18 @@ function BaseActorAction:execute ()
       self.myActor:doItNow()
       -- self.myActor:putOutCandleAndGoToBed()
     elseif (want.style == 'lightCandle' or want.style == 'putOutCandle') then
+      local isLit = want.style == 'lightCandle'
+      want.style = 'handlingCandle'
       self.myActor:lookAt(want.toPos)
+      self:playAttack()
+      -- 1秒后蜡烛台变化，并执行下一个动作
+      -- TimeHelper:callFnAfterSecond (function (p)
+      BlockHelper:handleCandle(want.toPos, isLit)
+      -- end, 1)
+    elseif (want.style == 'handlingCandle') then
+      if (self.myActor.wants[2]) then
+        ActorHelper:handleNextWant(self.myActor)
+      end
     elseif (want.style == 'lookingAt') then
       if (self.myActor.wants[2]) then
         ActorHelper:handleNextWant(self.myActor)
