@@ -100,6 +100,10 @@ function BaseActorAction:playThank (afterSeconds)
   self:playAct(ActorHelper.ACT.THANK, afterSeconds)
 end
 
+function BaseActorAction:playStretch (afterSeconds)
+  self:playAct(ActorHelper.ACT.STRETCH, afterSeconds)
+end
+
 function BaseActorAction:playAct (act, afterSeconds)
   if (afterSeconds) then
     TimeHelper:callFnAfterSecond (function (p)

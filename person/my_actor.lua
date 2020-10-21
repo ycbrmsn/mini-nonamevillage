@@ -91,7 +91,7 @@ function Chimo:new ()
           TalkInfo:new(3, '这……'),
           TalkInfo:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
           TalkInfo:new(3, '……那好吧。用完我就把剑还回去。'),
-          TalkInfo:new(1, '太感谢了。钥匙可能在他身上。你可以夜间去看看。'),
+          TalkInfo:new(1, '太感谢了。钥匙可能在他身上。等到夜间，你可以去看看。'),
           TalkInfo:new(3, '晚上我去看看吧。', function (player)
             StoryHelper:forward2(2, 5)
           end),
@@ -159,6 +159,7 @@ function Chimo:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
+      self.action:playStretch()
     end
     self.action:stopRun()
     self:lookAt(playerid)
@@ -319,6 +320,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
       end
     else
       self.action:stopRun()
+      -- self.action:playStretch()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
       ActorHelper:talkWith(self, playerid)
@@ -470,6 +472,7 @@ function Linshushu:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
+      self.action:playStretch()
     end
     self.action:stopRun()
     self:lookAt(playerid)
