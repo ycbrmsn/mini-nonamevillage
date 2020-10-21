@@ -39,3 +39,7 @@ end
 function MyStory:enterArea (objid, areaid)
   return false
 end
+
+function MyStory:getProgressPrepose (name)
+  return self.prepose[name]
+end
