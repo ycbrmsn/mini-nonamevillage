@@ -31,12 +31,14 @@ MyPlayerHelper = {
         PlayerHelper:showToast(player.objid, '时间过去一个时辰')
         player.whichChoose = nil
         MyPlayerHelper:storyForward(player)
+        ActorHelper:doItNow()
       end,
       [3] = function (player)
         TimeHelper:addHour(4)
         PlayerHelper:showToast(player.objid, '时间过去两个时辰')
         player.whichChoose = nil
         MyPlayerHelper:storyForward(player)
+        ActorHelper:doItNow()
       end
     }
   }
