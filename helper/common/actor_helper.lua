@@ -722,13 +722,13 @@ function ActorHelper:talkWith (actor, playerid)
     else
       if (actor.defaultTalkMsg) then
         actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-        ChatHelper:showSeparate(playerid)
+        ChatHelper:showEndSeparate(playerid)
       end
     end
   else
     if (actor.defaultTalkMsg) then
       actor:speakTo(playerid, 0, actor.defaultTalkMsg)
-      ChatHelper:showSeparate(playerid)
+      ChatHelper:showEndSeparate(playerid)
     end
   end
 end
@@ -767,7 +767,7 @@ function ActorHelper:turnTalkIndex (actor, playerid, max, index)
   if (index > max) then
     index = 1
     actor.talkIndex[playerid] = index
-    ChatHelper:showSeparate(playerid)
+    ChatHelper:showEndSeparate(playerid)
     return false
   else
     actor.talkIndex[playerid] = index
