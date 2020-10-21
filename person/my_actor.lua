@@ -335,7 +335,14 @@ function Zhendao:defaultPlayerClickEvent (playerid)
 end
 
 function Zhendao:collidePlayer (playerid, isPlayerInFront)
-
+  -- 检测玩家手里的东西
+  local itemid = PlayerHelper:getCurToolID(playerid)
+  if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
+    local player = PlayerHelper:getPlayer(playerid)
+    if (player:isHostPlayer()) then
+      self:beat1(player)
+    end
+  end
 end
 
 function Zhendao:candleEvent (player, candle)
