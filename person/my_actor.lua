@@ -361,6 +361,7 @@ function Zhendao:beat1 (player)
   player.action:playDie(ws:use(1))
   player:thinkSelf(ws:use(), '真是没想到……')
   TimeHelper:callFnAfterSecond(function ()
+    MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
     GameHelper:doGameEnd()
   end, ws:get())
 end

@@ -25,9 +25,6 @@ function Story0:new ()
     },
     sureGoOutArea = -1, -- 确认离开村庄区域
     goOutVillageArea = -1, -- 离开村庄区域
-    winMsg = '三十六计走为上计', -- 胜利信息
-    loseMsg = '', -- 失败信息
-    name = '善身者', -- 称号
   }
   self:checkData(data)
 
@@ -55,8 +52,8 @@ function Story0:enter (objid)
       ChatHelper:sendMsg(objid, '\t\t你学艺有成，下山游历四方……\t\t')
     end, ws:use())
     PlayerHelper:everyPlayerPlayAct(ActorHelper.ACT.STRETCH, ws:get())
-    PlayerHelper:everyPlayerSpeakToSelf(ws:use(), '走了这么久，终于发现了一个小村庄。这下好了，不用再露宿野外了。')
-    PlayerHelper:everyPlayerSpeakToSelf(ws:use(), '去找个人家借宿一宿。')
+    PlayerHelper:everyPlayerSpeakToSelf(ws:use(), '走了这么久，终于发现了一个小村庄。这下可以好好休息休息了。')
+    PlayerHelper:everyPlayerSpeakToSelf(ws:get(), '先去找个人家借宿一宿。')
     -- PlayerHelper:everyPlayerThinkToSelf(second, ...)
     PlayerHelper:everyPlayerDoSomeThing(function (player)
       if (PlayerHelper:isMainPlayer(player.objid)) then
@@ -71,13 +68,13 @@ function Story0:enter (objid)
     local hostPlayer = PlayerHelper:getHostPlayer()
     player:setPosition(hostPlayer:getMyPosition())
   end
-  BackpackHelper:addItem(objid, MyMap.ITEM.SWORD, 1)
+  -- BackpackHelper:addItem(objid, MyMap.ITEM.SWORD, 1)
 end
 
 function Story0:think ()
   local ws = WaitSeconds:new()
   PlayerHelper:everyPlayerThinkToSelf(ws:use(), '嗯……这种感觉……')
-  PlayerHelper:everyPlayerThinkToSelf(ws:use(), '进去看看再说。')
+  PlayerHelper:everyPlayerThinkToSelf(ws:get(), '进去看看再说。')
   PlayerHelper:everyPlayerDoSomeThing(function (player)
     if (PlayerHelper:isMainPlayer(player.objid)) then
       player:runTo(self.inVillagePoses, function ()
@@ -86,7 +83,7 @@ function Story0:think ()
     else
       player:runTo(self.inVillagePoses)
     end
-  end, ws:use())
+  end, ws:get())
 end
 
 function Story0:enterArea (objid, areaid)
@@ -116,6 +113,7 @@ function Story0:enterArea (objid, areaid)
       ChatHelper:waitSpeak('？？？', nil, ws:use(), '嗯，这样最好了。我可不喜欢变数。')
       ChatHelper:waitSpeak('？？？', nil, ws:use(), '俺也一样。')
       TimeHelper:callFnAfterSecond(function ()
+        MyGameHelper:setNameAndDesc('善身者', '三十六计走为上计')
         PlayerHelper:setGameWin(objid)
       end, ws:get())
     end
