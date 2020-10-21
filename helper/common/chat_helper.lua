@@ -66,7 +66,7 @@ function ChatHelper:showEndSeparate (objid)
 end
 
 function ChatHelper:showBreakSeparate (objid)
-  ChatHelper:showSeparate(objid, '终止')
+  ChatHelper:showSeparate(objid, '中止')
 end
 
 -- 封装原始接口
