@@ -302,8 +302,8 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
-      local player = PlayerHelper:getPlayer(playerid)
       local mainIndex = StoryHelper:getMainStoryIndex()
       local mainProgress = StoryHelper:getMainStoryProgress()
       if (mainIndex == 2 and mainProgress >= 6) then
@@ -323,7 +323,13 @@ function Zhendao:defaultPlayerClickEvent (playerid)
       -- self.action:playStretch()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
-      ActorHelper:talkWith(self, playerid)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
+        self:beat1(player)
+      else
+        ActorHelper:talkWith(self, playerid)
+      end
     end
   end
 end
@@ -334,6 +340,22 @@ end
 
 function Zhendao:candleEvent (player, candle)
   
+end
+
+function Zhendao:beat1 (player)
+  player:enableMove(false, true)
+  self:speakTo(player.objid, 0, '！！！')
+  local ws = WaitSeconds:new(2)
+  self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
+  self.action:playAngry(ws:use())
+  player:speakSelf(ws:use(), '我没有！')
+  self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
+  self.action:playAttack(ws:use(1))
+  player.action:playDie(ws:use(1))
+  player:thinkSelf(ws:use(), '真是没想到……')
+  TimeHelper:callFnAfterSecond(function ()
+    GameHelper:doGameEnd()
+  end, ws:get())
 end
 
 -- 林树树

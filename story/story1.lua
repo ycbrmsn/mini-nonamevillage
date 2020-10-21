@@ -25,6 +25,8 @@ function Story1:new ()
       ['隐藏门内'] = 7,
     },
     aroundBedPos = MyPosition:new(-3.5, 8.5, 41.5), -- 床旁边
+    loseMsg = '你倒在了村民的怒火之下',
+    name = '烧身者',
   }
   self:checkData(data)
 
@@ -37,6 +39,6 @@ function Story1:wake (objid)
   zhendao:speak(0, '嗯……好像有什么声音……')
   zhendao.action:playStretch()
   local ws = WaitSeconds:new(2)
-  
+
 end
 
