@@ -476,8 +476,8 @@ function BaseActor:defaultCollidePlayerEvent (playerid, isPlayerInFront)
       self.wants[1].style = 'wake'
     end
     self.action:stopRun()
-    self:collidePlayer(playerid, isPlayerInFront)
     self:wantLookAt(nil, playerid)
+    self:collidePlayer(playerid, isPlayerInFront)
   end
 end
 

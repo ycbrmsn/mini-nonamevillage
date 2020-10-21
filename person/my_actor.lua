@@ -1,5 +1,4 @@
 -- 我的人物类
-MyActor = {}
 
 -- 池末
 Chimo = BaseActor:new(MyMap.ACTOR.CHIMO)
@@ -175,6 +174,154 @@ end
 
 function Chimo:candleEvent (player, candle)
   
+end
+
+-- 梅膏
+Meigao = BaseActor:new(MyMap.ACTOR.MEIGAO)
+
+function Meigao:new ()
+  local o = {
+    objid = self.actorid,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(20.5, 9.5, 47.5), -- 床尾位置
+      ActorHelper.FACE_YAW.EAST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(16.5, 9.5, 41.5), -- 客厅
+      MyPosition:new(22.5, 9.5, 49.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(21.5, 8.5, 39.5), -- 进门旁
+      MyPosition:new(17.5, 8.5, 45.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      {
+        MyPosition:new(25.5, 8.5, 47.5), -- 门旁
+        MyPosition:new(21.5, 8.5, 48.5), -- 床旁
+      },
+      {
+        MyPosition:new(21.5, 8.5, 48.5), -- 床旁
+        MyPosition:new(19.5, 8.5, 49.5), -- 铁门旁
+      }
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(16.5, 13.5, 41.5), -- 二楼对角
+      MyPosition:new(23.5, 13.5, 46.5), -- 二楼对角
+    },
+    talkInfos = {
+      [1] = {
+        [0] = {
+          TalkInfo:new(1, '我家里不欢迎陌生人。'),
+          TalkInfo:new(3, '抱歉，我这就离开。'),
+        },
+      },
+      [2] = {
+        [0] = {
+          TalkInfo:new(1, '我家里不欢迎陌生人。'),
+          TalkInfo:new(3, '抱歉，我这就离开。'),
+        },
+      },
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Meigao:defaultWant ()
+  self:wantDoNothing()
+end
+
+-- 在几点想做什么
+function Meigao:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Meigao:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Meigao:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Meigao:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      self.action:playStretch()
+    end
+    self.action:stopRun()
+    self:lookAt(playerid)
+    self:wantLookAt(nil, playerid, 60)
+    ActorHelper:talkWith(self, playerid)
+  end
+end
+
+function Meigao:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Meigao:candleEvent (player, candle)
+  
+end
+
+function Meigao:beat1 (player)
+  player:enableMove(false, true)
+  self:speakTo(player.objid, 0, '！！！')
+  local ws = WaitSeconds:new(2)
+  self:speakTo(player.objid, ws:get(), '可恶，你想干嘛！')
+  self.action:playAngry(ws:use())
+  player:speakSelf(ws:use(), '我没有干什么！')
+  self:speakTo(player.objid, ws:use(), '三更半夜潜入我房里！受死吧！')
+  self.action:playAttack(ws:use(1))
+  player.action:playDie(ws:use(1))
+  player:thinkSelf(ws:use(), '真是没想到……')
+  TimeHelper:callFnAfterSecond(function ()
+    MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+    GameHelper:doGameEnd()
+  end, ws:get())
 end
 
 -- 甄道

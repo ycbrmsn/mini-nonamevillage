@@ -964,9 +964,6 @@ function ActorHelper:actorCollide (objid, toobjid)
   -- LogHelper:info('碰撞了', actor1:getName())
   if (actor1) then -- 生物是特定生物
     if (ActorHelper:isPlayer(toobjid)) then -- 是玩家
-      if (actor1.wants and actor1.wants[1].style == 'sleeping') then
-        actor1.wants[1].style = 'wake'
-      end
       actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
     else
       local actor2 = ActorHelper:getActor(toobjid)

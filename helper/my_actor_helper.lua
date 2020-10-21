@@ -4,9 +4,10 @@ MyActorHelper = {}
 -- 初始化actors
 function MyActorHelper:init ()
   chimo = Chimo:new()
+  meigao = Meigao:new()
   zhendao = Zhendao:new()
   linshushu = Linshushu:new()
-  local myActors = { chimo, zhendao, linshushu }
+  local myActors = { chimo, meigao, zhendao, linshushu }
   for i, v in ipairs(myActors) do
     TimeHelper:initActor(v)
   end
