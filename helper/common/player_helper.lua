@@ -386,6 +386,8 @@ function PlayerHelper:playerClickBlock (objid, blockid, x, y, z)
   if (BlockHelper:checkCandle(objid, blockid, pos)) then
   end
   ItemHelper:clickBlock(objid, blockid, x, y, z)
+  local player = PlayerHelper:getPlayer(objid)
+  player:breakTalk()
 end
 
 -- 玩家点击生物

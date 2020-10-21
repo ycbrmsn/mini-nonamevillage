@@ -347,3 +347,16 @@ function BasePlayer:choose ()
     end
   end
 end
+
+-- 终止对话
+function BasePlayer:breakTalk ()
+  local actor = self:getClickActor()
+  if (not(actor)) then -- 没有点击特殊生物
+    return
+  end
+  local index = ActorHelper:getTalkIndex(actor, self.objid)
+  if (index ~= 1) then -- 表示对话在进行中
+    ActorHelper:resetTalkIndex(actor, self.objid)
+    ChatHelper:showBreakSeparate(self.objid)
+  end
+end

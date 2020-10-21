@@ -232,10 +232,14 @@ function ActorHelper:recordClickActor (objid, myActor)
   end
   self.clickActors[objid] = myActor
   local player = PlayerHelper:getPlayer(objid)
+  local prevActor = player:getClickActor()
+  if (not(prevActor) or prevActor ~= myActor) then -- 点击生物不同
+    player:breakTalk()
+  end
   player:setClickActor(myActor)
 end
 
--- 准备恢复被点击的生物之前的行为
+-- 准备恢复被点击的生物之前的行为，并终止对话
 function ActorHelper:resumeClickActor (objid)
   local myActor = self.clickActors[objid]
   if (myActor) then
@@ -247,6 +251,9 @@ function ActorHelper:resumeClickActor (objid)
         self.clickActors[objid] = nil
       end
     end
+    -- 终止对话
+    local player = PlayerHelper:getPlayer(objid)
+    player:breakTalk()
   end
 end
 
