@@ -43,7 +43,7 @@ function Story0:enter (objid)
   -- local mainProgress = StoryHelper:getMainStoryProgress()
   local player = PlayerHelper:getPlayer(objid)
   -- test begin ---
-  StoryHelper:goTo(2, 6)
+  StoryHelper:goTo(2, 7)
   TimeHelper:setHour(23)
   player:setPosition(-28, 7, 31)
   if (1 == 1) then

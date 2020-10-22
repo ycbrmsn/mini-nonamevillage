@@ -64,7 +64,7 @@ function Chimo:new ()
           TalkInfo:new(3, '极品桃木剑？如果有三四把，我可以摆出剑阵，驱散邪气，并找出来源。'),
           TalkInfo:new(1, '那太好了。请你一定要帮助我们。'),
           TalkInfo:new(1, '我隔壁的甄家就有一把，不过那似乎是他的传家宝，想要借来可不容易。'),
-          TalkInfo:new(3, '甄家吗？那我去试试看。', function (player)
+          TalkInfo:new(3, '甄家吗？那我去试试看。', nil, function (player)
             StoryHelper:forward2(2, 2)
           end),
         },
@@ -91,14 +91,32 @@ function Chimo:new ()
           TalkInfo:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
           TalkInfo:new(3, '……那好吧。用完我就把剑还回去。'),
           TalkInfo:new(1, '太感谢了。钥匙可能在他身上。等到夜间，你可以去看看。'),
-          TalkInfo:new(3, '晚上我去看看吧。', function (player)
+          TalkInfo:new(3, '晚上我去看看吧。', nil, function (player)
             StoryHelper:forward2(2, 5)
           end),
         },
         [6] = {
           TalkInfo:new(1, '怎么样，“借”到剑了吗？'),
           TalkInfo:new(3, '还没。'),
-        }
+        },
+        [7] = {
+          TalkInfo:new(1, '怎么样，“借”到剑了吗？'),
+          TalkInfo:new(3, '总算是“借”到了。'),
+          TalkInfo:new(3, '不过我感觉邪气似乎重了一些。'),
+          TalkInfo:new(1, '啊，那得赶紧拿到另外几把剑了。'),
+          TalkInfo:new(1, '储依家里也有一把。她家在村子的东北方向。'),
+          TalkInfo:new(3, '我去看看。', nil, function (player)
+            StoryHelper:forward2(2, 7)
+          end),
+        },
+        [8] = {
+          TalkInfo:new(1, '怎么样，借到剑了吗？'),
+          TalkInfo:new(3, '还没。'),
+        },
+        [9] = {
+          TalkInfo:new(1, '怎么样，借到剑了吗？'),
+          TalkInfo:new(3, '还没。'),
+        },
       }
     }, -- 对话信息
   }
@@ -212,6 +230,7 @@ function Meigao:new ()
     talkInfos = {
       [1] = {
         [0] = {
+          TalkInfo:new(3, '你好，我可以借宿一宿吗？'),
           TalkInfo:new(1, '我家里不欢迎陌生人。'),
           TalkInfo:new(3, '抱歉，我这就离开。'),
         },
@@ -221,6 +240,32 @@ function Meigao:new ()
           TalkInfo:new(1, '我家里不欢迎陌生人。'),
           TalkInfo:new(3, '抱歉，我这就离开。'),
         },
+        [9] = {
+          TalkInfo:new(3, '你好，在下有一事相求。'),
+          TalkInfo:new(1, '嗯……'),
+          TalkInfo:new(3, '听闻小姐有一个好看的包包，可否借在下几天？小姐若有要求，也可提出来。'),
+          TalkInfo:new(2, '……'),
+          TalkInfo:new(2, '……'),
+          TalkInfo:new(1, '好。问你一个问题，如果你答对，我就借给你。'),
+          TalkInfo:new(3, '一言为定。你说吧。'),
+          TalkInfo:new(1, '我们村子里有几扇铁门？'),
+          TalkInfo:new(5, {
+            PlayerTalk:new('九扇', 1),
+            PlayerTalk:new('十扇', 2, 11),
+            PlayerTalk:new('十一扇', 2, 12),
+            PlayerTalk:new('十二扇', 2, 13),
+          }),
+          TalkInfo:new(3, '有九扇门。', 14),
+          TalkInfo:new(3, '有十扇门。', 14),
+          TalkInfo:new(3, '有十一扇门。', 15),
+          TalkInfo:new(3, '有十二扇门。', 14),
+          TalkInfo:new(1, '很遗憾，你答错了。包不能借给你了。', nil, function (player)
+            StoryHelper:forward2(2, 9)
+          end),
+          TalkInfo:new(1, '没错。包就借给你几天。', nil, function (player)
+            StoryHelper:forward2(2, 9)
+          end),
+        }
       },
     }, -- 对话信息
   }
@@ -381,17 +426,16 @@ function Zhendao:new ()
           TalkInfo:new(3, '可否借我一用，待我完成剑阵驱散邪气即可还你。'),
           TalkInfo:new(1, '不可能。'),
           TalkInfo:new(3, '邪气不除，恐生祸端。'),
-          TalkInfo:new(1, '再见。不送。', function (player)
+          TalkInfo:new(1, '再见。不送。', nil, function (player)
             StoryHelper:forward2(2, 3)
-          end),
-        },
-        [4] = {
-          TalkInfo:new(1, '再见。不送。', function (player)
             local actor = player:getClickActor()
             if (actor) then
               actor.defaultTalkMsg = '我是不会借剑给你的。'
             end
           end),
+        },
+        [4] = {
+          TalkInfo:new(1, '再见。不送。'),
         },
       }
     }, -- 对话信息
@@ -532,6 +576,165 @@ function Zhendao:beat2 (player)
   end, ws:get())
 end
 
+-- 储依
+Chuyi = BaseActor:new(MyMap.ACTOR.CHUYI)
+
+function Chuyi:new ()
+  local o = {
+    objid = self.actorid,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(39.5, 9.5, 99.5), -- 床尾位置
+      ActorHelper.FACE_YAW.WEST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(44.5, 9.5, 93.5), -- 客厅
+      MyPosition:new(35.5, 9.5, 99.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(38.5, 8.5, 91.5), -- 进门旁
+      MyPosition:new(42.5, 8.5, 97.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      MyPosition:new(36.5, 8.5, 99.5), -- 门旁
+      MyPosition:new(41.5, 9.5, 101.5), -- 铁门上方
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(36.5, 13.5, 91.5), -- 二楼对角
+      MyPosition:new(42.5, 13.5, 98.5), -- 二楼对角
+    },
+    defaultTalkMsg = '我家的床还没修好。',
+    talkInfos = {
+      [1] = {
+        [0] = {
+          TalkInfo:new(3, '你好。我想借宿一宿，不知方不方便？'),
+          TalkInfo:new(1, '真不巧，我家的床坏了。'),
+          TalkInfo:new(3, '这样啊，那打扰了。'),
+        },
+      },
+      [2] = {
+        [8] = {
+          TalkInfo:new(1, '我家的床还没修好。'),
+          TalkInfo:new(3, '今天不是为了借宿的事情。我发现你们村子被一股邪气笼罩。'),
+          TalkInfo:new(1, '啊，有吗？'),
+          TalkInfo:new(3, '不错，我正是为此而来。你可发现今天天空的阴云更浓了。'),
+          TalkInfo:new(1, '啊，好像是的。'),
+          TalkInfo:new(3, '那便是受邪气聚集的影响。我需要几把桃木剑，摆出剑阵驱散邪气。'),
+          TalkInfo:new(3, '听闻祖上有一把桃木剑，特来借剑一用。'),
+          TalkInfo:new(1, '啊，我家的桃木剑不能随便借的。'),
+          TalkInfo:new(3, '我只是借用两天，完成剑阵驱散邪气后即可还你。'),
+          TalkInfo:new(2, '两天应该关系不大吧……'),
+          TalkInfo:new(1, '要借你也不是不行。我好喜欢梅姐姐的包包，如果你能借来让我背几天，我就借给你。'),
+          TalkInfo:new(3, '你的梅姐姐？'),
+          TalkInfo:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
+          TalkInfo:new(3, '好的，一言为定。', nil, function (player)
+            chuyi.defaultTalkMsg = '梅姐姐的包包，我该怎么背呢？'
+            StoryHelper:forward2(2, 8)
+          end),
+        },
+      },
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Chuyi:defaultWant ()
+  self:wantDoNothing()
+end
+
+-- 在几点想做什么
+function Chuyi:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Chuyi:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Chuyi:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Chuyi:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      self.action:playStretch()
+    end
+    self.action:stopRun()
+    self:lookAt(playerid)
+    self:wantLookAt(nil, playerid, 60)
+    ActorHelper:talkWith(self, playerid)
+  end
+end
+
+function Chuyi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Chuyi:candleEvent (player, candle)
+  
+end
+
+function Chuyi:beat1 (player)
+  player:enableMove(false, true)
+  self:speakTo(player.objid, 0, '！！！')
+  local ws = WaitSeconds:new(2)
+  self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
+  self.action:playAngry(ws:use())
+  player:speakSelf(ws:use(), '误会误会！')
+  self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
+  self.action:playAttack(ws:use(1))
+  player.action:playDie(ws:use(1))
+  player:thinkSelf(ws:use(), '真是没想到……')
+  TimeHelper:callFnAfterSecond(function ()
+    MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+    GameHelper:doGameEnd()
+  end, ws:get())
+end
+
 -- 林树树
 Linshushu = BaseActor:new(MyMap.ACTOR.LINSHUSHU)
 
@@ -602,7 +805,7 @@ function Linshushu:new ()
           TalkInfo:new(1, '嗯……我村里人每人都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
           TalkInfo:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
           TalkInfo:new(4, '？？？'),
-          TalkInfo:new(3, '这样啊……', function (player)
+          TalkInfo:new(3, '这样啊……', nil, function (player)
             StoryHelper:forward2(2, 4)
           end),
         },

@@ -780,10 +780,10 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
   local player = PlayerHelper:getPlayer(playerid)
   if (info.t == 1) then
     actor:speakTo(playerid, 0, info.msg)
-    ActorHelper:turnTalkIndex(actor, playerid, max)
+    ActorHelper:turnTalkIndex(actor, playerid, max, info.turnTo)
   elseif (info.t == 2) then
     actor:thinkTo(playerid, 0, info.msg)
-    ActorHelper:turnTalkIndex(actor, playerid, max)
+    ActorHelper:turnTalkIndex(actor, playerid, max, info.turnTo)
   elseif (type(info.msg) == 'table') then -- 选项
     ChatHelper:showChooseItems(playerid, info.msg, 'msg')
     -- ChatHelper:sendMsg(playerid, '---------')
@@ -797,7 +797,7 @@ function ActorHelper:handleTalkInfo (actor, playerid, info, max)
     elseif (info.t == 4) then
       player:thinkSelf(0, info.msg)
     end
-    ActorHelper:turnTalkIndex(actor, playerid, max)
+    ActorHelper:turnTalkIndex(actor, playerid, max, info.turnTo)
   end
   if (info.f) then
     info.f(player)
