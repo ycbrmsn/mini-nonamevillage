@@ -42,6 +42,15 @@ function Story0:enter (objid)
   -- local mainIndex = StoryHelper:getMainStoryIndex()
   -- local mainProgress = StoryHelper:getMainStoryProgress()
   local player = PlayerHelper:getPlayer(objid)
+  -- test begin ---
+  StoryHelper:goTo(2, 6)
+  TimeHelper:setHour(23)
+  player:setPosition(-28, 7, 31)
+  if (1 == 1) then
+    return
+  end
+  --- test end ---
+
   if (PlayerHelper:isMainPlayer(objid)) then -- 房主
     PlayerHelper:changeVMode(nil)
     player:setPosition(self.initPos)

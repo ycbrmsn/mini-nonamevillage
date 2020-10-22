@@ -34,9 +34,40 @@ function Story1:new ()
 end
 
 function Story1:wake (objid)
+  zhendao:setPosition(zhendao.bedData[1])
   zhendao:speak(0, '嗯……好像有什么声音……')
   zhendao.action:playStretch()
-  local ws = WaitSeconds:new(2)
-
+  local player = PlayerHelper:getPlayer(objid)
+  -- 判断玩家是否在卧室区域
+  local areaid = AreaHelper:createAreaRectByRange(zhendao.bedroomAreaPositions[1][1],
+    Key5.doorPos)
+  if (AreaHelper:objInArea(areaid, objid)) then -- 在卧室
+    zhendao:beat2(player)
+  else -- 没在卧室
+    local ws = WaitSeconds:new(2)
+    TimeHelper:callFnAfterSecond(function ()
+      if (AreaHelper:objInArea(areaid, objid)) then -- 在卧室
+        zhendao:beat2(player)
+      else -- 不在卧室
+        zhendao:wantMove('hear', { zhendao.frontIronDoorPos })
+        zhendao:nextWantLookAt(nil, Key5.doorPos, 1)
+      end
+    end, ws:use())
+    TimeHelper:callFnAfterSecond(function ()
+      if (AreaHelper:objInArea(areaid, objid)) then -- 在卧室
+        zhendao:beat2(player)
+      else
+        if (BlockHelper:isDoorOpen(Key5.doorPos.x, Key5.doorPos.y, Key5.doorPos.z)) then -- 门开着
+          zhendao:wantApproach('angry', { player:getMyPosition() })
+          zhendao:beat2(player)
+        else -- 门关着
+          zhendao:speak(0, '莫非是我听错了？')
+          TimeHelper:callFnAfterSecond(function ()
+            zhendao:doItNow()
+          end, 1)
+        end
+      end
+    end, ws:use())
+  end
 end
 

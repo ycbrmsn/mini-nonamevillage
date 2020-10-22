@@ -353,6 +353,7 @@ function Zhendao:new ()
       MyPosition:new(-25.5, 13.5, 46.5), -- 二楼对角
       MyPosition:new(-31.5, 13.5, 39.5), -- 二楼对角
     },
+    frontIronDoorPos = MyPosition:new(-27.5, 8.5, 49.5), -- 铁门前
     talkInfos = {
       [1] = {
         [0] = {
@@ -509,6 +510,24 @@ function Zhendao:beat1 (player)
   player:thinkSelf(ws:use(), '真是没想到……')
   TimeHelper:callFnAfterSecond(function ()
     MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
+    GameHelper:doGameEnd()
+  end, ws:get())
+end
+
+function Zhendao:beat2 (player)
+  player:enableMove(false, true)
+  self:speakTo(player.objid, 0, '！！！')
+  self:lookAt(player)
+  local ws = WaitSeconds:new(2)
+  self:speakTo(player.objid, ws:get(), '可恶，你竟敢来偷东西！')
+  self.action:playAngry(ws:use())
+  player:speakSelf(ws:use(), '你听我解释……')
+  self:speakTo(player.objid, ws:use(), '不需要解释了！受死吧！')
+  self.action:playAttack(ws:use(1))
+  player.action:playDie(ws:use(1))
+  player:thinkSelf(ws:use(), '真是没想到……')
+  TimeHelper:callFnAfterSecond(function ()
+    MyGameHelper:setNameAndDesc('梁上者', '你倒在了村民的怒火之下')
     GameHelper:doGameEnd()
   end, ws:get())
 end
