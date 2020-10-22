@@ -735,11 +735,11 @@ function ActorHelper:getProgressInfo (actor, playerid)
   if (not(mainInfo)) then
     return nil
   end
-  local progressInfo = mainInfo[0] -- 任意进度均此对话
-  if (not(progressInfo)) then -- 没找到
-    local mainProgress = StoryHelper:getMainStoryProgress()
-    progressInfo = mainInfo[mainProgress]
-    if (not(progressInfo)) then -- 没有对话
+  local mainProgress = StoryHelper:getMainStoryProgress()
+  local progressInfo = mainInfo[mainProgress]
+  if (not(progressInfo)) then -- 没找到对应进度对话
+    progressInfo = mainInfo[0] -- 任意进度均此对话
+    if (not(progressInfo)) then -- 任意进度对话也没有
       return nil
     end
   end
