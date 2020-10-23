@@ -760,7 +760,7 @@ function ActorHelper:turnTalkIndex (actor, playerid, max, index)
   if (not(index)) then
     index = ActorHelper:getTalkIndex(actor, playerid) + 1
   end
-  if (index > max) then
+  if (index > max or index == -1) then
     index = 1
     actor.talkIndex[playerid] = index
     ChatHelper:showEndSeparate(playerid)

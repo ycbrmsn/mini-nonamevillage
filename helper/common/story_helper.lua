@@ -78,6 +78,11 @@ function StoryHelper:setMainStoryProgress (mainProgress)
   self.mainProgress = mainProgress
 end
 
+-- 获得主线剧情序号与进度号
+function StoryHelper:getIndexAndProgress ()
+  return StoryHelper:getMainStoryIndex(), StoryHelper:getMainStoryProgress()
+end
+
 -- 获得剧情标题和内容
 function StoryHelper:getMainStoryTitleAndTip ()
   local story = self:getStory()

@@ -107,15 +107,31 @@ function Chimo:new ()
           TalkInfo:new(1, '储依家里也有一把。她家在村子的东北方向。'),
           TalkInfo:new(3, '我去看看。', nil, function (player)
             StoryHelper:forward2(2, 7)
+            chimo.talkInfos[2][0] = {
+              TalkInfo:new(1, '怎么样，借到剑了吗？'),
+              TalkInfo:new(3, '还没。'),
+            }
           end),
         },
-        [8] = {
+        [10] = {
           TalkInfo:new(1, '怎么样，借到剑了吗？'),
-          TalkInfo:new(3, '还没。'),
+          TalkInfo:new(3, '储依答应借剑，不过需要借来梅膏的包作为交换条件。'),
+          TalkInfo:new(3, '而要借来梅膏的包，需要答对她的问题。可惜我答错了。'),
+          TalkInfo:new(1, '梅膏吗？我跟她关系还不错。这样，我休书一封，她看后会借给你的。'),
+          TalkInfo:new(3, '那真是太好了。'),
+          TalkInfo:new(1, '你稍等一下。', nil, function (player)
+            StoryHelper:forward2(2, 10)
+          end),
         },
-        [9] = {
-          TalkInfo:new(1, '怎么样，借到剑了吗？'),
-          TalkInfo:new(3, '还没。'),
+        [11] = {
+          TalkInfo:new(1, '好了，你拿去吧。', nil, function (player)
+            local itemid = MyMap.ITEM.LETTER
+            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              StoryHelper:forward2(2, 11)
+              chimo.lostLetter = true
+              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+            end
+          end),
         },
       }
     }, -- 对话信息
@@ -245,25 +261,37 @@ function Meigao:new ()
           TalkInfo:new(1, '嗯……'),
           TalkInfo:new(3, '听闻小姐有一个好看的包包，可否借在下几天？小姐若有要求，也可提出来。'),
           TalkInfo:new(2, '……'),
-          TalkInfo:new(2, '……'),
           TalkInfo:new(1, '好。问你一个问题，如果你答对，我就借给你。'),
           TalkInfo:new(3, '一言为定。你说吧。'),
           TalkInfo:new(1, '我们村子里有几扇铁门？'),
           TalkInfo:new(5, {
             PlayerTalk:new('九扇', 1),
-            PlayerTalk:new('十扇', 2, 11),
-            PlayerTalk:new('十一扇', 2, 12),
-            PlayerTalk:new('十二扇', 2, 13),
+            PlayerTalk:new('十扇', 2, 10),
+            PlayerTalk:new('十一扇', 2, 11),
+            PlayerTalk:new('十二扇', 2, 12),
           }),
-          TalkInfo:new(3, '有九扇门。', 14),
-          TalkInfo:new(3, '有十扇门。', 14),
-          TalkInfo:new(3, '有十一扇门。', 15),
-          TalkInfo:new(3, '有十二扇门。', 14),
-          TalkInfo:new(1, '很遗憾，你答错了。包不能借给你了。', nil, function (player)
+          TalkInfo:new(3, '有九扇门。', 13),
+          TalkInfo:new(3, '有十扇门。', 13),
+          TalkInfo:new(3, '有十一扇门。', 14),
+          TalkInfo:new(3, '有十二扇门。', 13),
+          TalkInfo:new(1, '很遗憾，你答错了。包不能借给你了。', -1, function (player)
             StoryHelper:forward2(2, 9)
+            meigao.talkInfos[2][0] = {
+              TalkInfo:new(1, '你没答对，包不能借给你。'),
+              TalkInfo:new(4, '看来只能想其他办法了。'),
+            }
           end),
           TalkInfo:new(1, '没错。包就借给你几天。', nil, function (player)
-            StoryHelper:forward2(2, 9)
+            StoryHelper:goTo(2, 12)
+            meigao.lostBag = true
+            local itemid = MyMap.ITEM.BAG
+            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+            end
+            meigao.talkInfos[2][0] = {
+              TalkInfo:new(1, '没想到这么难的问题你都能答上来。'),
+              TalkInfo:new(3, '侥幸而已。'),
+            }
           end),
         }
       },
@@ -323,14 +351,29 @@ function Meigao:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      self.wants[1].style = 'wake'
-      self.action:playStretch()
+      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
+      if (mainIndex == 2 and mainProgress > 9) then
+        if (not(self.lostBag)) then -- 有包包
+          local itemid = MyMap.ITEM.BAG
+          if (BackpackHelper:addItem(playerid, itemid, 1)) then
+            self.lostBag = true
+            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+            player:thinkSelf(0, '我为什么会这么做？')
+          end
+        else
+          player:thinkSelf(0, '不能再这么做了。')
+        end
+      else
+        player:thinkSelf(0, '我想干什么？')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      ActorHelper:talkWith(self, playerid)
     end
-    self.action:stopRun()
-    self:lookAt(playerid)
-    self:wantLookAt(nil, playerid, 60)
-    ActorHelper:talkWith(self, playerid)
   end
 end
 
@@ -496,13 +539,13 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
-      local mainIndex = StoryHelper:getMainStoryIndex()
-      local mainProgress = StoryHelper:getMainStoryProgress()
+      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
       if (mainIndex == 2 and mainProgress >= 6) then
         if (not(self.lostKey)) then -- 有钥匙
-          if (BackpackHelper:addItem(playerid, MyMap.ITEM.KEY5, 1)) then
+          local itemid = MyMap.ITEM.KEY5
+          if (BackpackHelper:addItem(playerid, itemid, 1)) then
             self.lostKey = true
-            PlayerHelper:showToast(playerid, '获得甄道的钥匙')
+            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
           end
         else
           player:thinkSelf(0, '他身上似乎没有钥匙了。')
@@ -628,8 +671,10 @@ function Chuyi:new ()
           TalkInfo:new(3, '你的梅姐姐？'),
           TalkInfo:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
           TalkInfo:new(3, '好的，一言为定。', nil, function (player)
-            chuyi.defaultTalkMsg = '梅姐姐的包包，我该怎么背呢？'
             StoryHelper:forward2(2, 8)
+            chuyi.talkInfos[2][0] = {
+              TalkInfo:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
+            }
           end),
         },
       },
@@ -689,14 +734,29 @@ function Chuyi:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      self.wants[1].style = 'wake'
-      self.action:playStretch()
+      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
+      if (mainIndex == 2 and mainProgress > 8) then
+        if (not(self.lostKey)) then -- 有钥匙
+          local itemid = MyMap.ITEM.KEY7
+          if (BackpackHelper:addItem(playerid, itemid, 1)) then
+            self.lostKey = true
+            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+            player:thinkSelf(0, '我为什么会这么做？')
+          end
+        else
+          player:thinkSelf(0, '她身上似乎没有钥匙了。')
+        end
+      else
+        player:thinkSelf(0, '我想干什么？')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      ActorHelper:talkWith(self, playerid)
     end
-    self.action:stopRun()
-    self:lookAt(playerid)
-    self:wantLookAt(nil, playerid, 60)
-    ActorHelper:talkWith(self, playerid)
   end
 end
 

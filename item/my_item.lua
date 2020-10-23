@@ -72,3 +72,12 @@ Key9 = Key:new({
   id = MyMap.ITEM.KEY9,
   doorPos = MyPosition:new(7.5, 8.5, 75.5),
 })
+
+-- 池末写的信
+Letter = BaseItem:new({ id = MyMap.ITEM.LETTER })
+
+function Letter:useItem (objid)
+  ChatHelper:sendMsg(objid, '你偷偷拆开了信，发现上面没有文字，画着一幅画：一只鸡划着小船向岸边驶去。天空中没有云朵，只有一个大太阳。')
+  local player = PlayerHelper:getPlayer(objid)
+  player:thinkSelf(4, '……完全搞不懂。')
+end

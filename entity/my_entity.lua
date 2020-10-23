@@ -211,6 +211,10 @@ TalkInfo = {}
 
 -- t（1npc说, 2npc想, 3player说, 4player想） msg（string or arr） turnTo(跳到第几句对话，默认nil下一句) f(函数)
 function TalkInfo:new (t, msg, turnTo, f)
+  if (type(turnTo) == 'function') then
+    f = turnTo
+    turnTo = nil
+  end
   local o = {
     t = t,
     msg = msg,
