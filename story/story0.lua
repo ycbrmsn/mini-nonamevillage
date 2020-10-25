@@ -50,11 +50,11 @@ function Story0:enter (objid)
   -- StoryHelper:goTo(2, 8)
   -- player:setPosition(40, 7, 84)
 
-  StoryHelper:goTo(2, 9)
-  player:setPosition(20, 7, 33)
-  if (1 == 1) then
-    return
-  end
+  -- StoryHelper:goTo(2, 9)
+  -- player:setPosition(20, 7, 33)
+  -- if (1 == 1) then
+  --   return
+  -- end
   --- test end ---
 
   if (PlayerHelper:isMainPlayer(objid)) then -- 房主

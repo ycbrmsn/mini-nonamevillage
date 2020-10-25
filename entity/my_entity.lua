@@ -207,10 +207,46 @@ function WaitSeconds:use (seconds)
   return time
 end
 
+-- 会话信息
 TalkInfo = {}
 
--- t（1npc说, 2npc想, 3player说, 4player想） msg（string or arr） turnTo(跳到第几句对话，默认nil下一句) f(函数)
-function TalkInfo:new (t, msg, turnTo, f)
+--[[
+  id(唯一标识)
+  ants(前置条件)
+  progress(进度{ num -> sessions }，从1开始，0为默认对话)
+]]--
+function TalkInfo:new (o)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 对话前置条件
+TalkAnt = {}
+
+--[[
+  t(类型：1前置必需任务2前置互斥任务3世界时间4拥有道具)
+  taskid(任务id)
+  beginHour(开始时间)
+  endHour(结束时间)
+  itemid(道具id)
+]]-- 
+function TalkAnt:new (o)
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 会话
+TalkSession = {}
+
+--[[
+  t(类型：1npc说, 2npc想, 3player说, 4player想)
+  msg(string or arr)
+  turnTo(跳到第几句对话，默认nil下一句)
+  f(函数)
+]]-- 
+function TalkSession:new (t, msg, turnTo, f)
   if (type(turnTo) == 'function') then
     f = turnTo
     turnTo = nil
@@ -235,36 +271,6 @@ function PlayerTalk:new (msg, t, other, f)
     t = t,
     other = other,
     f = f,
-  }
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
-
-BaseTask = {}
-
--- name(任务名称) t(任务类型：1无；2击败生物；3交付道具) rewards(任务奖励) beats(击败生物) items(交付道具)
-function BaseTask:new (name, t, rewards, beats, items)
-  local o = {
-    name = name,
-    t = t,
-    rewards = rewards,
-    beats = beats,
-    items = items,
-  }
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
-
-TaskReward = {}
-
--- msg(奖励描述) t(奖励类型：1道具；2经验；3其他) num(数值)
-function TaskReward:new (msg, t, num)
-  local o = {
-    msg = msg,
-    t = t,
-    num = num,
   }
   setmetatable(o, self)
   self.__index = self

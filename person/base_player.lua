@@ -335,7 +335,7 @@ end
 function BasePlayer:choose ()
   if (self.whichChoose) then
     if (self.whichChoose == 'talk') then
-      ActorHelper:chooseTalk(self.objid)
+      TalkHelper:chooseTalk(self.objid)
     else
       local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
       if (chooseItems) then
@@ -348,15 +348,23 @@ function BasePlayer:choose ()
   end
 end
 
--- 终止对话
+-- 中止对话
 function BasePlayer:breakTalk ()
   local actor = self:getClickActor()
   if (not(actor)) then -- 没有点击特殊生物
     return
   end
-  local index = ActorHelper:getTalkIndex(actor, self.objid)
+  local index = TalkHelper:getTalkIndex(self.objid, actor)
   if (index ~= 1) then -- 表示对话在进行中
-    ActorHelper:resetTalkIndex(actor, self.objid)
+    TalkHelper:resetTalkIndex(self.objid, actor)
     ChatHelper:showBreakSeparate(self.objid)
+  end
+end
+
+-- 重置对话序数
+function BasePlayer:resetTalkIndex (index)
+  local actor = self:getClickActor()
+  if (actor) then
+    TalkHelper:resetTalkIndex(self.objid, actor, index)
   end
 end

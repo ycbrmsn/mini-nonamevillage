@@ -162,14 +162,6 @@ function StoryHelper:loadTip (objid, seconds)
   end
 end
 
--- 重置对话序数
-function StoryHelper:resetTalkIndex (player, index)
-  local actor = player:getClickActor()
-  if (actor) then
-    ActorHelper:resetTalkIndex(actor, player.objid, index)
-  end
-end
-
 -- 事件
 
 -- 世界时间到[n]点

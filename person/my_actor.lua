@@ -34,106 +34,120 @@ function Chimo:new ()
       MyPosition:new(-4.5, 13.5, 46.5), -- 二楼对角
     },
     talkInfos = {
-      [1] = {
-        [0] = {
-          TalkInfo:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
-          TalkInfo:new(3, '你好。'),
-          TalkInfo:new(4, '要不要借宿一宿呢？'),
-          TalkInfo:new(5, {
-            PlayerTalk:new('要', 1, nil, function (player)
-              StoryHelper:goTo(2, 1)
-              StoryHelper:resetTalkIndex(player, 0)
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+            TalkSession:new(3, '你好。'),
+            TalkSession:new(4, '要不要借宿一宿呢？'),
+            TalkSession:new(5, {
+              PlayerTalk:new('要', 1, nil, function (player)
+                TalkHelper:addTask(player.objid, 2)
+                player:resetTalkIndex(player, 0)
+              end),
+              PlayerTalk:new('不要', 1),
+            }),
+            TalkSession:new(3, '我不小心走错门了，抱歉。'),
+          }
+        }
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 })
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(3, '我想要借宿一宿。'),
+            TalkSession:new(1, '客房正好空着，你自便。'),
+          },
+          [2] = {
+            TalkSession:new(1, '你有事吗？'),
+            TalkSession:new(3, '我略懂观气之术，见村子上方似乎汇聚了一股邪气。'),
+            TalkSession:new(1, '邪气！'),
+            TalkSession:new(3, '是的。不知最近村子里可有什么事情发生。'),
+            TalkSession:new(1, '嗯，听你这么一说，我也觉得最近有些心绪不宁。不过近期村子里很太平。'),
+            TalkSession:new(1, '对了，我听说村子里有几把极品桃木剑，不知可否用来驱散邪气。'),
+            TalkSession:new(3, '极品桃木剑？如果有三四把，我可以摆出剑阵，驱散邪气，并找出来源。'),
+            TalkSession:new(1, '那太好了。请你一定要帮助我们。'),
+            TalkSession:new(1, '我隔壁的甄家就有一把，不过那似乎是他的传家宝，想要借来可不容易。'),
+            TalkSession:new(3, '甄家吗？那我去试试看。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 3)
             end),
-            PlayerTalk:new('不要', 1),
-          }),
-          TalkInfo:new(3, '我不小心走错门了，抱歉。'),
+          },
+          [3] = {
+            TalkSession:new(1, '你借来桃木剑了吗？'),
+            TalkSession:new(3, '还没。'),
+          },
+          [4] = {
+            TalkSession:new(1, '你借来桃木剑了吗？'),
+            TalkSession:new(3, '没有。我刚表露出借的意思他就回绝了。'),
+            TalkSession:new(1, '那这可如何是好？'),
+            TalkSession:new(3, '我再想想办法。'),
+          },
+          [5] = {
+            TalkSession:new(1, '怎么样了？'),
+            TalkSession:new(3, '还没想到什么办法。对了，听说你们每家都有物品柜？'),
+            TalkSession:new(1, '嗯，没错。是了，甄道一定是把剑放柜子里的。'),
+            TalkSession:new(3, '就算是，那也没有办法。'),
+            TalkSession:new(1, '不，如果我们拿到钥匙……'),
+            TalkSession:new(3, '你这不是偷吗？'),
+            TalkSession:new(1, '事急从权。如果能驱散掉邪气，这不算什么。'),
+            TalkSession:new(1, '而且我们只是借用一下，到时候还会还过去。'),
+            TalkSession:new(3, '这……'),
+            TalkSession:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
+            TalkSession:new(3, '……那好吧。用完我就把剑还回去。'),
+            TalkSession:new(1, '太感谢了。钥匙可能在他身上。等到夜间，你可以去看看。'),
+            TalkSession:new(3, '晚上我去看看吧。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 6)
+            end),
+          },
+          [6] = {
+            TalkSession:new(1, '怎么样，“借”到剑了吗？'),
+            TalkSession:new(3, '还没。'),
+          },
+          [7] = {
+            TalkSession:new(1, '怎么样，“借”到剑了吗？'),
+            TalkSession:new(3, '总算是“借”到了。'),
+            TalkSession:new(3, '不过我感觉邪气似乎重了一些。'),
+            TalkSession:new(1, '啊，那得赶紧拿到另外几把剑了。'),
+            TalkSession:new(1, '储依家里也有一把。她家在村子的东北方向。'),
+            TalkSession:new(3, '我去看看。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 8)
+              chimo.talkInfos[2][0] = {
+                TalkSession:new(1, '怎么样，借到剑了吗？'),
+                TalkSession:new(3, '还没。'),
+              }
+            end),
+          },
+          [10] = {
+            TalkSession:new(1, '怎么样，借到剑了吗？'),
+            TalkSession:new(3, '储依答应借剑，不过需要借来梅膏的包作为交换条件。'),
+            TalkSession:new(3, '而要借来梅膏的包，需要答对她的问题。可惜我答错了。'),
+            TalkSession:new(1, '梅膏吗？我跟她关系还不错。这样，我休书一封，她看后会借给你的。'),
+            TalkSession:new(3, '那真是太好了。'),
+            TalkSession:new(1, '你稍等一下。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 11)
+            end),
+          },
+          [11] = {
+            TalkSession:new(1, '好了，你拿去吧。', function (player)
+              local itemid = MyMap.ITEM.LETTER
+              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                TalkHelper:setProgress(player.objid, 2, 12)
+                chimo.lostLetter = true
+                PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+              end
+            end),
+          },
         },
-      },
-      [2] = {
-        [1] = {
-          TalkInfo:new(3, '我想要借宿一宿。'),
-          TalkInfo:new(1, '客房正好空着，你自便。'),
-        },
-        [2] = {
-          TalkInfo:new(1, '你有事吗？'),
-          TalkInfo:new(3, '我略懂观气之术，见村子上方似乎汇聚了一股邪气。'),
-          TalkInfo:new(1, '邪气！'),
-          TalkInfo:new(3, '是的。不知最近村子里可有什么事情发生。'),
-          TalkInfo:new(1, '嗯，听你这么一说，我也觉得最近有些心绪不宁。不过近期村子里很太平。'),
-          TalkInfo:new(1, '对了，我听说村子里有几把极品桃木剑，不知可否用来驱散邪气。'),
-          TalkInfo:new(3, '极品桃木剑？如果有三四把，我可以摆出剑阵，驱散邪气，并找出来源。'),
-          TalkInfo:new(1, '那太好了。请你一定要帮助我们。'),
-          TalkInfo:new(1, '我隔壁的甄家就有一把，不过那似乎是他的传家宝，想要借来可不容易。'),
-          TalkInfo:new(3, '甄家吗？那我去试试看。', nil, function (player)
-            StoryHelper:forward2(2, 2)
-          end),
-        },
-        [3] = {
-          TalkInfo:new(1, '你借来桃木剑了吗？'),
-          TalkInfo:new(3, '还没。'),
-        },
-        [4] = {
-          TalkInfo:new(1, '你借来桃木剑了吗？'),
-          TalkInfo:new(3, '没有。我刚表露出借的意思他就回绝了。'),
-          TalkInfo:new(1, '那这可如何是好？'),
-          TalkInfo:new(3, '我再想想办法。'),
-        },
-        [5] = {
-          TalkInfo:new(1, '怎么样了？'),
-          TalkInfo:new(3, '还没想到什么办法。对了，听说你们每家都有物品柜？'),
-          TalkInfo:new(1, '嗯，没错。是了，甄道一定是把剑放柜子里的。'),
-          TalkInfo:new(3, '就算是，那也没有办法。'),
-          TalkInfo:new(1, '不，如果我们拿到钥匙……'),
-          TalkInfo:new(3, '你这不是偷吗？'),
-          TalkInfo:new(1, '事急从权。如果能驱散掉邪气，这不算什么。'),
-          TalkInfo:new(1, '而且我们只是借用一下，到时候还会还过去。'),
-          TalkInfo:new(3, '这……'),
-          TalkInfo:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
-          TalkInfo:new(3, '……那好吧。用完我就把剑还回去。'),
-          TalkInfo:new(1, '太感谢了。钥匙可能在他身上。等到夜间，你可以去看看。'),
-          TalkInfo:new(3, '晚上我去看看吧。', nil, function (player)
-            StoryHelper:forward2(2, 5)
-          end),
-        },
-        [6] = {
-          TalkInfo:new(1, '怎么样，“借”到剑了吗？'),
-          TalkInfo:new(3, '还没。'),
-        },
-        [7] = {
-          TalkInfo:new(1, '怎么样，“借”到剑了吗？'),
-          TalkInfo:new(3, '总算是“借”到了。'),
-          TalkInfo:new(3, '不过我感觉邪气似乎重了一些。'),
-          TalkInfo:new(1, '啊，那得赶紧拿到另外几把剑了。'),
-          TalkInfo:new(1, '储依家里也有一把。她家在村子的东北方向。'),
-          TalkInfo:new(3, '我去看看。', nil, function (player)
-            StoryHelper:forward2(2, 7)
-            chimo.talkInfos[2][0] = {
-              TalkInfo:new(1, '怎么样，借到剑了吗？'),
-              TalkInfo:new(3, '还没。'),
-            }
-          end),
-        },
-        [10] = {
-          TalkInfo:new(1, '怎么样，借到剑了吗？'),
-          TalkInfo:new(3, '储依答应借剑，不过需要借来梅膏的包作为交换条件。'),
-          TalkInfo:new(3, '而要借来梅膏的包，需要答对她的问题。可惜我答错了。'),
-          TalkInfo:new(1, '梅膏吗？我跟她关系还不错。这样，我休书一封，她看后会借给你的。'),
-          TalkInfo:new(3, '那真是太好了。'),
-          TalkInfo:new(1, '你稍等一下。', nil, function (player)
-            StoryHelper:forward2(2, 10)
-          end),
-        },
-        [11] = {
-          TalkInfo:new(1, '好了，你拿去吧。', nil, function (player)
-            local itemid = MyMap.ITEM.LETTER
-            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-              StoryHelper:forward2(2, 11)
-              chimo.lostLetter = true
-              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-            end
-          end),
-        },
-      }
+      }),
     }, -- 对话信息
   }
   setmetatable(o, self)
@@ -197,7 +211,7 @@ function Chimo:defaultPlayerClickEvent (playerid)
     self.action:stopRun()
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    ActorHelper:talkWith(self, playerid)
+    TalkHelper:talkWith(playerid, self)
   end
 end
 
@@ -244,58 +258,77 @@ function Meigao:new ()
       MyPosition:new(23.5, 13.5, 46.5), -- 二楼对角
     },
     talkInfos = {
-      [1] = {
-        [0] = {
-          TalkInfo:new(3, '你好，我可以借宿一宿吗？'),
-          TalkInfo:new(1, '我家里不欢迎陌生人。'),
-          TalkInfo:new(3, '抱歉，我这就离开。'),
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
         },
-      },
-      [2] = {
-        [0] = {
-          TalkInfo:new(1, '我家里不欢迎陌生人。'),
-          TalkInfo:new(3, '抱歉，我这就离开。'),
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好，我可以借宿一宿吗？'),
+            TalkSession:new(1, '我家里不欢迎陌生人。'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
+          },
         },
-        [9] = {
-          TalkInfo:new(3, '你好，在下有一事相求。'),
-          TalkInfo:new(1, '嗯……'),
-          TalkInfo:new(3, '听闻小姐有一个好看的包包，可否借在下几天？小姐若有要求，也可提出来。'),
-          TalkInfo:new(2, '……'),
-          TalkInfo:new(1, '好。问你一个问题，如果你答对，我就借给你。'),
-          TalkInfo:new(3, '一言为定。你说吧。'),
-          TalkInfo:new(1, '我们村子里有几扇铁门？'),
-          TalkInfo:new(5, {
-            PlayerTalk:new('九扇', 1),
-            PlayerTalk:new('十扇', 2, 10),
-            PlayerTalk:new('十一扇', 2, 11),
-            PlayerTalk:new('十二扇', 2, 12),
-          }),
-          TalkInfo:new(3, '有九扇门。', 13),
-          TalkInfo:new(3, '有十扇门。', 13),
-          TalkInfo:new(3, '有十一扇门。', 14),
-          TalkInfo:new(3, '有十二扇门。', 13),
-          TalkInfo:new(1, '很遗憾，你答错了。包不能借给你了。', -1, function (player)
-            StoryHelper:forward2(2, 9)
-            meigao.talkInfos[2][0] = {
-              TalkInfo:new(1, '你没答对，包不能借给你。'),
-              TalkInfo:new(4, '看来只能想其他办法了。'),
-            }
-          end),
-          TalkInfo:new(1, '没错。包就借给你几天。', nil, function (player)
-            StoryHelper:goTo(2, 12)
-            meigao.lostBag = true
-            local itemid = MyMap.ITEM.BAG
-            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-            end
-            meigao.talkInfos[2][0] = {
-              TalkInfo:new(1, '没想到这么难的问题你都能答上来。'),
-              TalkInfo:new(3, '侥幸而已。'),
-            }
-          end),
-        }
-      },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 })
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '我家里不欢迎陌生人。'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
+          },
+          [9] = {
+            TalkSession:new(3, '你好，在下有一事相求。'),
+            TalkSession:new(1, '嗯……'),
+            TalkSession:new(3, '听闻小姐有一个好看的包包，可否借在下几天？小姐若有要求，也可提出来。'),
+            TalkSession:new(1, '……'),
+            TalkSession:new(1, '好。问你一个问题，如果你能答对，我就借给你。'),
+            TalkSession:new(3, '一言为定。你说吧。'),
+            TalkSession:new(1, '我们村子里有几扇铁门？'),
+            TalkSession:new(5, {
+              PlayerTalk:new('九扇', 1),
+              PlayerTalk:new('十扇', 2, 10),
+              PlayerTalk:new('十一扇', 2, 11),
+              PlayerTalk:new('十二扇', 2, 12),
+            }),
+            TalkSession:new(3, '有九扇门。', 13),
+            TalkSession:new(3, '有十扇门。', 13),
+            TalkSession:new(3, '有十一扇门。', 14),
+            TalkSession:new(3, '有十二扇门。', 13),
+            TalkSession:new(1, '很遗憾，你答错了。包不能借给你了。', -1, function (player)
+              TalkHelper:setProgress(player.objid, 2, 10)
+              meigao.talkInfos[2][0] = {
+                TalkSession:new(1, '你没答对，包不能借给你。'),
+                TalkSession:new(4, '看来只能想其他办法了。'),
+              }
+            end),
+            TalkSession:new(1, '没错。包就借给你几天。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 12)
+              meigao.lostBag = true
+              local itemid = MyMap.ITEM.BAG
+              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+              end
+              meigao.talkInfos[2][0] = {
+                TalkSession:new(1, '没想到这么难的问题你都能答上来。'),
+                TalkSession:new(3, '侥幸而已。'),
+              }
+            end),
+          },
+        },
+      }),
     }, -- 对话信息
+    TaskInfos = {
+      [2] = {
+        
+      }
+    }, -- 任务对话信息
   }
   setmetatable(o, self)
   self.__index = self
@@ -372,7 +405,7 @@ function Meigao:defaultPlayerClickEvent (playerid)
       self.action:stopRun()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
-      ActorHelper:talkWith(self, playerid)
+      TalkHelper:talkWith(playerid, self)
     end
   end
 end
@@ -443,44 +476,58 @@ function Zhendao:new ()
     },
     frontIronDoorPos = MyPosition:new(-27.5, 8.5, 49.5), -- 铁门前
     talkInfos = {
-      [1] = {
-        [0] = {
-          TalkInfo:new(1, '你好，外地人。'),
-          TalkInfo:new(3, '你好。'),
-          TalkInfo:new(4, '要不要借宿一宿呢？'),
-          TalkInfo:new(5, {
-            PlayerTalk:new('要', 1, nil, function (player)
-              StoryHelper:goTo(3, 1)
-              StoryHelper:resetTalkIndex(player, 0)
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+            TalkSession:new(3, '你好。'),
+            -- TalkSession:new(4, '要不要借宿一宿呢？'),
+            -- TalkSession:new(5, {
+            --   PlayerTalk:new('要', 1, nil, function (player)
+            --     TalkHelper:addTask(player.objid, 3)
+            --     player:resetTalkIndex(player, 0)
+            --   end),
+            --   PlayerTalk:new('不要', 1),
+            -- }),
+            TalkSession:new(3, '我不小心走错门了，抱歉。'),
+          }
+        }
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 })
+        },
+        progress = {
+          [3] = {
+            TalkSession:new(1, '你好。'),
+            TalkSession:new(3, '你好。我见你们村上被一股邪气笼罩。'),
+            TalkSession:new(1, '……'),
+            TalkSession:new(1, '你有办法解决吗？'),
+            TalkSession:new(3, '听说你有一把桃木剑。'),
+            TalkSession:new(1, '那又如何？'),
+            TalkSession:new(3, '可否借我一用，待我完成剑阵驱散邪气即可还你。'),
+            TalkSession:new(1, '不可能。'),
+            TalkSession:new(3, '邪气不除，恐生祸端。'),
+            TalkSession:new(1, '再见。不送。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 4)
+              local actor = player:getClickActor()
+              if (actor) then
+                actor.defaultTalkMsg = '我是不会借剑给你的。'
+              end
             end),
-            PlayerTalk:new('不要', 1),
-          }),
-          TalkInfo:new(3, '我不小心走错门了，抱歉。'),
+          },
+          [4] = {
+            TalkSession:new(1, '再见。不送。'),
+          },
         },
-      },
-      [2] = {
-        [3] = {
-          TalkInfo:new(1, '你好。'),
-          TalkInfo:new(3, '你好。我见你们村上被一股邪气笼罩。'),
-          TalkInfo:new(1, '……'),
-          TalkInfo:new(1, '你有办法解决吗？'),
-          TalkInfo:new(3, '听说你有一把桃木剑。'),
-          TalkInfo:new(1, '那又如何？'),
-          TalkInfo:new(3, '可否借我一用，待我完成剑阵驱散邪气即可还你。'),
-          TalkInfo:new(1, '不可能。'),
-          TalkInfo:new(3, '邪气不除，恐生祸端。'),
-          TalkInfo:new(1, '再见。不送。', nil, function (player)
-            StoryHelper:forward2(2, 3)
-            local actor = player:getClickActor()
-            if (actor) then
-              actor.defaultTalkMsg = '我是不会借剑给你的。'
-            end
-          end),
-        },
-        [4] = {
-          TalkInfo:new(1, '再见。不送。'),
-        },
-      }
+      }),
     }, -- 对话信息
   }
   setmetatable(o, self)
@@ -563,7 +610,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
       if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
         self:beat1(player)
       else
-        ActorHelper:talkWith(self, playerid)
+        TalkHelper:talkWith(playerid, self)
       end
     end
   end
@@ -648,36 +695,50 @@ function Chuyi:new ()
     },
     defaultTalkMsg = '我家的床还没修好。',
     talkInfos = {
-      [1] = {
-        [0] = {
-          TalkInfo:new(3, '你好。我想借宿一宿，不知方不方便？'),
-          TalkInfo:new(1, '真不巧，我家的床坏了。'),
-          TalkInfo:new(3, '这样啊，那打扰了。'),
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
         },
-      },
-      [2] = {
-        [8] = {
-          TalkInfo:new(1, '我家的床还没修好。'),
-          TalkInfo:new(3, '今天不是为了借宿的事情。我发现你们村子被一股邪气笼罩。'),
-          TalkInfo:new(1, '啊，有吗？'),
-          TalkInfo:new(3, '不错，我正是为此而来。你可发现今天天空的阴云更浓了。'),
-          TalkInfo:new(1, '啊，好像是的。'),
-          TalkInfo:new(3, '那便是受邪气聚集的影响。我需要几把桃木剑，摆出剑阵驱散邪气。'),
-          TalkInfo:new(3, '听闻祖上有一把桃木剑，特来借剑一用。'),
-          TalkInfo:new(1, '啊，我家的桃木剑不能随便借的。'),
-          TalkInfo:new(3, '我只是借用两天，完成剑阵驱散邪气后即可还你。'),
-          TalkInfo:new(2, '两天应该关系不大吧……'),
-          TalkInfo:new(1, '要借你也不是不行。我好喜欢梅姐姐的包包，如果你能借来让我背几天，我就借给你。'),
-          TalkInfo:new(3, '你的梅姐姐？'),
-          TalkInfo:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
-          TalkInfo:new(3, '好的，一言为定。', nil, function (player)
-            StoryHelper:forward2(2, 8)
-            chuyi.talkInfos[2][0] = {
-              TalkInfo:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
-            }
-          end),
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
+            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(3, '这样啊，那打扰了。'),
+          },
         },
-      },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 })
+        },
+        progress = {
+          [8] = {
+            TalkSession:new(1, '我家的床还没修好。'),
+            TalkSession:new(3, '今天不是为了借宿的事情。我发现你们村子被一股邪气笼罩。'),
+            TalkSession:new(1, '啊，有吗？'),
+            TalkSession:new(3, '不错，我正是为此而来。你可发现今天天空的阴云更浓了。'),
+            TalkSession:new(1, '啊，好像是的。'),
+            TalkSession:new(3, '那便是受邪气聚集的影响。我需要几把桃木剑，摆出剑阵驱散邪气。'),
+            TalkSession:new(3, '听闻祖上有一把桃木剑，特来借剑一用。'),
+            TalkSession:new(1, '啊，我家的桃木剑不能随便借的。'),
+            TalkSession:new(3, '我只是借用两天，完成剑阵驱散邪气后即可还你。'),
+            TalkSession:new(2, '两天应该关系不大吧……'),
+            TalkSession:new(1, '要借你也不是不行。我好喜欢梅姐姐的包包，如果你能借来让我背几天，我就借给你。'),
+            TalkSession:new(3, '你的梅姐姐？'),
+            TalkSession:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
+            TalkSession:new(3, '好的，一言为定。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 9)
+              chuyi.talkInfos[2][0] = {
+                TalkSession:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
+              }
+            end),
+          },
+        },
+      }),
     }, -- 对话信息
   }
   setmetatable(o, self)
@@ -755,7 +816,7 @@ function Chuyi:defaultPlayerClickEvent (playerid)
       self.action:stopRun()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
-      ActorHelper:talkWith(self, playerid)
+      TalkHelper:talkWith(playerid, self)
     end
   end
 end
@@ -831,48 +892,62 @@ function Linshushu:new ()
       }
     },
     talkInfos = {
-      [1] = {
-        [0] = {
-          TalkInfo:new(1, '你好，外地人。'),
-          TalkInfo:new(3, '你好。'),
-          TalkInfo:new(4, '要不要借宿一宿呢？'),
-          TalkInfo:new(5, {
-            PlayerTalk:new('要', 1, nil, function (player)
-              StoryHelper:goTo(3, 1)
-              StoryHelper:resetTalkIndex(player, 0)
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+            TalkSession:new(3, '你好。'),
+            -- TalkSession:new(4, '要不要借宿一宿呢？'),
+            -- TalkSession:new(5, {
+            --   PlayerTalk:new('要', 1, nil, function (player)
+            --     TalkHelper:addTask(player.objid, 4)
+            --     player:resetTalkIndex(player, 0)
+            --   end),
+            --   PlayerTalk:new('不要', 1),
+            -- }),
+            TalkSession:new(3, '我不小心走错门了，抱歉。'),
+          }
+        }
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 })
+        },
+        progress = {
+          [4] = {
+            TalkSession:new(1, '你好，外地人。'),
+            TalkSession:new(3, '你好。'),
+            TalkSession:new(1, '我是这村的村长。你遇到什么麻烦了吗？'),
+            TalkSession:new(4, '是村长。或许我可以问问他。'),
+            TalkSession:new(3, '村长你好。途径贵地，发现你们村子上空弥漫着一股邪气。'),
+            TalkSession:new(1, '此事当真？'),
+            TalkSession:new(4, '……我应该不会看错吧？'),
+            TalkSession:new(3, '千真万确。我需要道具来驱散它。'),
+            TalkSession:new(3, '听闻甄村友有一把桃木剑，我想借来一用。'),
+            TalkSession:new(1, '哦……那似乎是他家祖传的，恐怕借来不易。'),
+            TalkSession:new(3, '不错。'),
+            TalkSession:new(1, '不知邪气可有危害？'),
+            TalkSession:new(3, '我观邪气似乎存在已久，不过不知何故，现在依然还未成气候。'),
+            TalkSession:new(3, '不过终究是一隐患。而若邪气成型，后果恐难以预料。'),
+            TalkSession:new(1, '嗯……我村里人每人都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
+            TalkSession:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
+            TalkSession:new(4, '？？？'),
+            TalkSession:new(3, '这样啊……', function (player)
+              TalkHelper:setProgress(player.objid, 2, 5)
             end),
-            PlayerTalk:new('不要', 1),
-          }),
-          TalkInfo:new(3, '我不小心走错门了，抱歉。'),
+          },
+          [5] = {
+            TalkSession:new(1, '希望你能找到别的办法。'),
+          },
         },
-      },
-      [2] = {
-        [4] = {
-          TalkInfo:new(1, '你好，外地人。'),
-          TalkInfo:new(3, '你好。'),
-          TalkInfo:new(1, '我是这村的村长。你遇到什么麻烦了吗？'),
-          TalkInfo:new(4, '是村长。或许我可以问问他。'),
-          TalkInfo:new(3, '村长你好。途径贵地，发现你们村子上空弥漫着一股邪气。'),
-          TalkInfo:new(1, '此事当真？'),
-          TalkInfo:new(4, '……我应该不会看错吧？'),
-          TalkInfo:new(3, '千真万确。我需要道具来驱散它。'),
-          TalkInfo:new(3, '听闻甄村友有一把桃木剑，我想借来一用。'),
-          TalkInfo:new(1, '哦……那似乎是他家祖传的，恐怕借来不易。'),
-          TalkInfo:new(3, '不错。'),
-          TalkInfo:new(1, '不知邪气可有危害？'),
-          TalkInfo:new(3, '我观邪气似乎存在已久，不过不知何故，现在依然还未成气候。'),
-          TalkInfo:new(3, '不过终究是一隐患。而若邪气成型，后果恐难以预料。'),
-          TalkInfo:new(1, '嗯……我村里人每人都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
-          TalkInfo:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
-          TalkInfo:new(4, '？？？'),
-          TalkInfo:new(3, '这样啊……', nil, function (player)
-            StoryHelper:forward2(2, 4)
-          end),
-        },
-        [5] = {
-          TalkInfo:new(1, '希望你能找到别的办法。'),
-        },
-      }
+      }),
     }, -- 对话信息
   }
   setmetatable(o, self)
@@ -936,7 +1011,7 @@ function Linshushu:defaultPlayerClickEvent (playerid)
     self.action:stopRun()
     self:lookAt(playerid)
     self:wantLookAt(nil, playerid, 60)
-    ActorHelper:talkWith(self, playerid)
+    TalkHelper:talkWith(playerid, self)
   end
 end
 
