@@ -49,7 +49,7 @@ function Chimo:new ()
             TalkSession:new(5, {
               PlayerTalk:new('要', 1, nil, function (player)
                 TalkHelper:addTask(player.objid, 2)
-                player:resetTalkIndex(player, 0)
+                player:resetTalkIndex(0)
               end),
               PlayerTalk:new('不要', 1),
             }),
@@ -60,7 +60,7 @@ function Chimo:new ()
       TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 2, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
           [1] = {
@@ -276,7 +276,7 @@ function Meigao:new ()
       TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 2, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
           [0] = {
@@ -491,7 +491,7 @@ function Zhendao:new ()
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
             --     TalkHelper:addTask(player.objid, 3)
-            --     player:resetTalkIndex(player, 0)
+            --     player:resetTalkIndex(0)
             --   end),
             --   PlayerTalk:new('不要', 1),
             -- }),
@@ -502,7 +502,7 @@ function Zhendao:new ()
       TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 2, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
           [3] = {
@@ -713,7 +713,7 @@ function Chuyi:new ()
       TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 2, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
           [8] = {
@@ -907,7 +907,7 @@ function Linshushu:new ()
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
             --     TalkHelper:addTask(player.objid, 4)
-            --     player:resetTalkIndex(player, 0)
+            --     player:resetTalkIndex(0)
             --   end),
             --   PlayerTalk:new('不要', 1),
             -- }),
@@ -918,7 +918,7 @@ function Linshushu:new ()
       TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 2, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
           [4] = {

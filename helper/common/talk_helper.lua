@@ -36,12 +36,14 @@ end
 
 -- 玩家是否有该任务
 function TalkHelper:hasTask (playerid, taskid)
-  local taskids = self.tasks[playerid] or {}
+  local taskids = TalkHelper:getTaskids(playerid)
   for i, v in ipairs(taskids) do
     if (v == taskid) then
+      -- LogHelper:debug('hasTask')
       return true
     end
   end
+  -- LogHelper:debug('noTask', playerid)
   return false
 end
 
@@ -65,14 +67,13 @@ function TalkHelper:isMeet (playerid, talkInfo)
   if (not(ants)) then
     return true
   end
-  local talkids = TalkHelper:getTaskids(playerid)
   for i, ant in ipairs(ants) do
     if (ant.t == 1) then -- 前置必需任务
-      if (not(TalkHelper:hasTask(playerid, taskid))) then
+      if (not(TalkHelper:hasTask(playerid, ant.taskid))) then
         return false
       end
     elseif (ant.t == 2) then -- 前置互斥任务
-      if (TalkHelper:hasTask(playerid, taskid)) then
+      if (TalkHelper:hasTask(playerid, ant.taskid)) then
         return false
       end
     elseif (ant.t == 3) then -- 世界时间
