@@ -47,10 +47,8 @@ function MyBlockHelper:clickBed (objid, blockid, x, y, z)
     local player = PlayerHelper:getPlayer(objid)
     if (player:isHostPlayer()) then
       local pos = MyPosition:new(x, y, z)
-      local mainIndex = StoryHelper:getMainStoryIndex()
-      local mainProgress = StoryHelper:getMainStoryProgress()
-      if (mainIndex == 2) then
-        local story = StoryHelper:getStory()
+      if (TalkHelper:hasTask(objid, 2)) then
+        local story = StoryHelper:getStory(2)
         local distance = MathHelper:getDistance(story.aroundBedPos, pos)
         if (distance < 5) then
           player:runTo({ story.aroundBedPos }, function ()

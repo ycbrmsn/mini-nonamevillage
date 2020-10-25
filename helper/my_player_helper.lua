@@ -45,11 +45,16 @@ MyPlayerHelper = {
 }
 
 function MyPlayerHelper:storyForward (player)
-  local mainIndex = StoryHelper:getMainStoryIndex()
-  local mainProgress = StoryHelper:getMainStoryProgress()
-  if (mainProgress == 1) then
-    StoryHelper:forward2(mainIndex, mainProgress)
-    player:thinkSelf(1, '有点精神了。或许我可以找主人家问问情况。')
+  local taskids = { 2, 3, 4 }
+  for i, taskid in ipairs(taskids) do
+    if (TalkHelper:hasTask(player.objid, taskid)) then
+      local progress = TalkHelper:getProgress(player.objid, taskid)
+      if (progress == 1) then
+        TalkHelper:setProgress(player.objid, taskid, 2)
+        player:thinkSelf(1, '有点精神了。或许我可以找主人家问问情况。')
+      end
+      break
+    end
   end
 end
 
