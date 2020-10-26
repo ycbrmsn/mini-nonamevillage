@@ -40,6 +40,33 @@ MyPlayerHelper = {
         MyPlayerHelper:storyForward(player)
         ActorHelper:doItNow()
       end
+    },
+    leave = {
+      [1] = function (player) -- 不离开
+        local story = StoryHelper:getStory(1)
+        player:thinks(0, '既然让我遇上了，不解决怎可轻易离开。')
+        local ws = WaitSeconds:new(2)
+        TimeHelper:callFnAfterSecond(function ()
+          player:enableMove(true, true)
+          player:runTo(story.inVillagePoses)
+        end, ws:get())
+      end,
+      [2] = function (player) -- 离开
+        local story = StoryHelper:getStory(1)
+        player:thinks(0, '君子不立于危墙之下。我还是暂且离开。')
+        local ws = WaitSeconds:new(2)
+        TimeHelper:callFnAfterSecond(function ()
+          player:enableMove(true, true)
+          player:runTo({ story.initPos })
+        end, ws:use())
+        ChatHelper:waitSpeak('？？？', nil, ws:use(), '他离开了。')
+        ChatHelper:waitSpeak('？？？', nil, ws:use(), '嗯，这样最好了。我可不喜欢变数。')
+        ChatHelper:waitSpeak('？？？', nil, ws:use(), '俺也一样。')
+        TimeHelper:callFnAfterSecond(function ()
+          MyGameHelper:setNameAndDesc('善身者', '三十六计走为上计')
+          PlayerHelper:setGameWin(player.objid)
+        end, ws:get())
+      end
     }
   }
 }

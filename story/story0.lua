@@ -109,28 +109,9 @@ function Story0:enterArea (objid, areaid)
       if (player:isHostPlayer()) then -- 房主
         player:enableMove(false, true)
         player:thinks(0, '此处不详，我要不要离开呢？')
-        TimeHelper:callFnAfterSecond(function ()
-          player:enableMove(true, true)
-        end, 2)
+        ChatHelper:showChooseItems(playerid, { '不离开', '离开' })
+        player.whichChoose = 'leave'
       end
-    end
-    return true
-  elseif (areaid == self.goOutVillageArea) then -- 离开村庄
-    if (mainProgress > 1) then
-      player:enableMove(false, true)
-      player:thinks(0, '君子不立于危墙之下。我还是暂且离开。')
-      local ws = WaitSeconds:new(2)
-      TimeHelper:callFnAfterSecond(function ()
-        player:enableMove(true, true)
-        player:runTo({ self.initPos })
-      end, ws:use())
-      ChatHelper:waitSpeak('？？？', nil, ws:use(), '他离开了。')
-      ChatHelper:waitSpeak('？？？', nil, ws:use(), '嗯，这样最好了。我可不喜欢变数。')
-      ChatHelper:waitSpeak('？？？', nil, ws:use(), '俺也一样。')
-      TimeHelper:callFnAfterSecond(function ()
-        MyGameHelper:setNameAndDesc('善身者', '三十六计走为上计')
-        PlayerHelper:setGameWin(objid)
-      end, ws:get())
     end
     return true
   end

@@ -102,7 +102,7 @@ function Chimo:new ()
             TalkSession:new(1, '而且我们只是借用一下，到时候还会还过去。'),
             TalkSession:new(3, '这……'),
             TalkSession:new(1, '这邪气不除，我心难安。请你务必帮助我们消灭邪气。'),
-            TalkSession:new(3, '……那好吧。用完我就把剑还回去。'),
+            TalkSession:new(3, '……那好吧。仅此一次，下不为例。用完我就把剑还回去。'),
             TalkSession:new(1, '太感谢了。钥匙可能在他身上。等到夜间，你可以去看看。'),
             TalkSession:new(3, '晚上我去看看吧。', function (player)
               TalkHelper:setProgress(player.objid, 2, 6)
@@ -386,20 +386,24 @@ function Meigao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
-      if (mainIndex == 2 and mainProgress > 9) then
-        if (not(self.lostBag)) then -- 有包包
-          local itemid = MyMap.ITEM.BAG
-          if (BackpackHelper:addItem(playerid, itemid, 1)) then
-            self.lostBag = true
-            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
-            player:thinkSelf(0, '我为什么会这么做？')
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 9) then
+          if (not(self.lostBag)) then -- 有包包
+            local itemid = MyMap.ITEM.BAG
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostBag = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '不能再这么做了。')
           end
         else
-          player:thinkSelf(0, '不能再这么做了。')
+          player:thinkSelf(0, '还是不要惊动她比较好。')
         end
       else
-        player:thinkSelf(0, '我想干什么？')
+        player:thinkSelf(0, '还是不要惊动她比较好。')
       end
     else
       self.action:stopRun()
@@ -429,20 +433,23 @@ function Meigao:candleEvent (player, candle)
 end
 
 function Meigao:beat1 (player)
-  player:enableMove(false, true)
-  self:speakTo(player.objid, 0, '！！！')
-  local ws = WaitSeconds:new(2)
-  self:speakTo(player.objid, ws:get(), '可恶，你想干嘛！')
-  self.action:playAngry(ws:use())
-  player:speakSelf(ws:use(), '我没有干什么！')
-  self:speakTo(player.objid, ws:use(), '三更半夜潜入我房里！受死吧！')
-  self.action:playAttack(ws:use(1))
-  player.action:playDie(ws:use(1))
-  player:thinkSelf(ws:use(), '真是没想到……')
-  TimeHelper:callFnAfterSecond(function ()
-    MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
-    GameHelper:doGameEnd()
-  end, ws:get())
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你想干嘛！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有干什么！')
+    self:speakTo(player.objid, ws:use(), '三更半夜潜入我房里！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 -- 甄道
@@ -586,19 +593,23 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
-      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
-      if (mainIndex == 2 and mainProgress >= 6) then
-        if (not(self.lostKey)) then -- 有钥匙
-          local itemid = MyMap.ITEM.KEY5
-          if (BackpackHelper:addItem(playerid, itemid, 1)) then
-            self.lostKey = true
-            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 6) then
+          if (not(self.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY5
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostKey = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+            end
+          else
+            player:thinkSelf(0, '他身上似乎没有钥匙了。')
           end
         else
-          player:thinkSelf(0, '他身上似乎没有钥匙了。')
+          player:thinkSelf(0, '还是不要惊动他比较好。')
         end
       else
-        player:thinkSelf(0, '我想干什么？')
+        player:thinkSelf(0, '还是不要惊动他比较好。')
       end
     else
       self.action:stopRun()
@@ -632,38 +643,44 @@ function Zhendao:candleEvent (player, candle)
 end
 
 function Zhendao:beat1 (player)
-  player:enableMove(false, true)
-  self:speakTo(player.objid, 0, '！！！')
-  local ws = WaitSeconds:new(2)
-  self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
-  self.action:playAngry(ws:use())
-  player:speakSelf(ws:use(), '我没有！')
-  self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
-  self.action:playAttack(ws:use(1))
-  player.action:playDie(ws:use(1))
-  player:thinkSelf(ws:use(), '真是没想到……')
-  TimeHelper:callFnAfterSecond(function ()
-    MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
-    GameHelper:doGameEnd()
-  end, ws:get())
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有！')
+    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 function Zhendao:beat2 (player)
-  player:enableMove(false, true)
-  self:speakTo(player.objid, 0, '！！！')
-  self:lookAt(player)
-  local ws = WaitSeconds:new(2)
-  self:speakTo(player.objid, ws:get(), '可恶，你竟敢来偷东西！')
-  self.action:playAngry(ws:use())
-  player:speakSelf(ws:use(), '你听我解释……')
-  self:speakTo(player.objid, ws:use(), '不需要解释了！受死吧！')
-  self.action:playAttack(ws:use(1))
-  player.action:playDie(ws:use(1))
-  player:thinkSelf(ws:use(), '真是没想到……')
-  TimeHelper:callFnAfterSecond(function ()
-    MyGameHelper:setNameAndDesc('梁上者', '你倒在了村民的怒火之下')
-    GameHelper:doGameEnd()
-  end, ws:get())
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    self:lookAt(player)
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢来偷东西！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '你听我解释……')
+    self:speakTo(player.objid, ws:use(), '不需要解释了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('梁上者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 -- 储依
@@ -797,20 +814,24 @@ function Chuyi:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      local mainIndex, mainProgress = StoryHelper:getIndexAndProgress()
-      if (mainIndex == 2 and mainProgress > 8) then
-        if (not(self.lostKey)) then -- 有钥匙
-          local itemid = MyMap.ITEM.KEY7
-          if (BackpackHelper:addItem(playerid, itemid, 1)) then
-            self.lostKey = true
-            PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
-            player:thinkSelf(0, '我为什么会这么做？')
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 8) then
+          if (not(self.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY7
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostKey = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '她身上似乎没有钥匙了。')
           end
         else
-          player:thinkSelf(0, '她身上似乎没有钥匙了。')
+          player:thinkSelf(0, '还是不要惊动她比较好。')
         end
       else
-        player:thinkSelf(0, '我想干什么？')
+        player:thinkSelf(0, '还是不要惊动她比较好。')
       end
     else
       self.action:stopRun()
@@ -840,20 +861,23 @@ function Chuyi:candleEvent (player, candle)
 end
 
 function Chuyi:beat1 (player)
-  player:enableMove(false, true)
-  self:speakTo(player.objid, 0, '！！！')
-  local ws = WaitSeconds:new(2)
-  self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
-  self.action:playAngry(ws:use())
-  player:speakSelf(ws:use(), '误会误会！')
-  self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
-  self.action:playAttack(ws:use(1))
-  player.action:playDie(ws:use(1))
-  player:thinkSelf(ws:use(), '真是没想到……')
-  TimeHelper:callFnAfterSecond(function ()
-    MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
-    GameHelper:doGameEnd()
-  end, ws:get())
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '误会误会！')
+    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 -- 林树树
@@ -936,7 +960,7 @@ function Linshushu:new ()
             TalkSession:new(1, '不知邪气可有危害？'),
             TalkSession:new(3, '我观邪气似乎存在已久，不过不知何故，现在依然还未成气候。'),
             TalkSession:new(3, '不过终究是一隐患。而若邪气成型，后果恐难以预料。'),
-            TalkSession:new(1, '嗯……我村里人每人都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
+            TalkSession:new(1, '嗯……我村里人每家都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
             TalkSession:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
             TalkSession:new(4, '？？？'),
             TalkSession:new(3, '这样啊……', function (player)
