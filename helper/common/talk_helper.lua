@@ -256,3 +256,17 @@ function TalkHelper:chooseTalk (playerid)
 
   end
 end
+
+-- 重置进度对话
+function TalkHelper:resetProgressContent (actor, talkid, progressid, sessions)
+  local talkInfos = actor.talkInfos
+  if (talkInfos and #talkInfos > 0) then
+    for i, talkInfo in ipairs(talkInfos) do
+      if (talkInfo.id == talkid) then
+        talkInfo.progress[progressid] = sessions
+        return true
+      end
+    end
+  end
+  return false
+end

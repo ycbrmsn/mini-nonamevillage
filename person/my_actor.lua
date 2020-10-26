@@ -120,10 +120,10 @@ function Chimo:new ()
             TalkSession:new(1, '储依家里也有一把。她家在村子的东北方向。'),
             TalkSession:new(3, '我去看看。', function (player)
               TalkHelper:setProgress(player.objid, 2, 8)
-              chimo.talkInfos[2][0] = {
+              TalkHelper:resetProgressContent(chimo, 2, 0, {
                 TalkSession:new(1, '怎么样，借到剑了吗？'),
                 TalkSession:new(3, '还没。'),
-              }
+              })
             end),
           },
           [10] = {
@@ -324,10 +324,10 @@ function Meigao:new ()
             TalkSession:new(3, '有十二扇门。', 13),
             TalkSession:new(1, '很遗憾，你答错了。包不能借给你了。', -1, function (player)
               TalkHelper:setProgress(player.objid, 2, 10)
-              meigao.talkInfos[2][0] = {
+              TalkHelper:resetProgressContent(meigao, 2, 0, {
                 TalkSession:new(1, '你没答对，包不能借给你。'),
                 TalkSession:new(4, '看来只能想其他办法了。'),
-              }
+              })
             end),
             TalkSession:new(1, '没错。包就借给你几天。', function (player)
               TalkHelper:setProgress(player.objid, 2, 20)
@@ -336,10 +336,10 @@ function Meigao:new ()
               if (BackpackHelper:addItem(player.objid, itemid, 1)) then
                 PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               end
-              meigao.talkInfos[3].progress[0] = {
+              TalkHelper:resetProgressContent(meigao, 2, 0, {
                 TalkSession:new(1, '没想到这么难的问题你都能答上来。'),
                 TalkSession:new(3, '侥幸而已。'),
-              }
+              })
             end),
           },
           [13] = {
@@ -353,10 +353,10 @@ function Meigao:new ()
                   PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                   TalkHelper:setProgress(player.objid, 2, 16)
                   player:resetTalkIndex(0)
-                  meigao.talkInfos[3].progress[0] = {
+                  TalkHelper:resetProgressContent(meigao, 2, 0, {
                     TalkSession:new(1, '包就借给你几天。'),
                     TalkSession:new(3, '万分感谢。'),
-                  }
+                  })
                 end
               end
             end),
@@ -806,9 +806,9 @@ function Chuyi:new ()
             TalkSession:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
             TalkSession:new(3, '好的，一言为定。', function (player)
               TalkHelper:setProgress(player.objid, 2, 9)
-              chuyi.talkInfos[2][0] = {
+              TalkHelper:resetProgressContent(chuyi, 2, 0, {
                 TalkSession:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
-              }
+              })
             end),
           },
         },
