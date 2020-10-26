@@ -21,28 +21,37 @@ MyPlayerHelper = {
   chooseMap = {
     sleep = {
       [1] = function (player)
-        TimeHelper:addHour(1)
-        PlayerHelper:showToast(player.objid, '时间过去半个时辰')
         player.whichChoose = nil
-        MyPlayerHelper:storyForward(player)
+        player:enableMove(true)
+        player:thinks(0, '现在还不想休息。')
       end,
       [2] = function (player)
+        player.whichChoose = nil
+        player:enableMove(true)
+        TimeHelper:addHour(1)
+        PlayerHelper:showToast(player.objid, '时间过去半个时辰')
+        MyPlayerHelper:storyForward(player)
+      end,
+      [3] = function (player)
+        player.whichChoose = nil
+        player:enableMove(true)
         TimeHelper:addHour(2)
         PlayerHelper:showToast(player.objid, '时间过去一个时辰')
-        player.whichChoose = nil
         MyPlayerHelper:storyForward(player)
         ActorHelper:doItNow()
       end,
-      [3] = function (player)
+      [4] = function (player)
+        player.whichChoose = nil
+        player:enableMove(true)
         TimeHelper:addHour(4)
         PlayerHelper:showToast(player.objid, '时间过去两个时辰')
-        player.whichChoose = nil
         MyPlayerHelper:storyForward(player)
         ActorHelper:doItNow()
       end
     },
     leave = {
       [1] = function (player) -- 不离开
+        player.whichChoose = nil
         local story = StoryHelper:getStory(1)
         player:thinks(0, '既然让我遇上了，不解决怎可轻易离开。')
         local ws = WaitSeconds:new(2)
@@ -52,6 +61,7 @@ MyPlayerHelper = {
         end, ws:get())
       end,
       [2] = function (player) -- 离开
+        player.whichChoose = nil
         local story = StoryHelper:getStory(1)
         player:thinks(0, '君子不立于危墙之下。我还是暂且离开。')
         local ws = WaitSeconds:new(2)

@@ -52,8 +52,9 @@ function MyBlockHelper:clickBed (objid, blockid, x, y, z)
         local distance = MathHelper:getDistance(story.aroundBedPos, pos)
         if (distance < 5) then
           player:runTo({ story.aroundBedPos }, function ()
+            player:enableMove(false, true)
             player:thinkSelf(0, '我要睡多长时间呢？')
-            ChatHelper:showChooseItems(playerid, { '半个时辰', '一个时辰', '两个时辰' })
+            ChatHelper:showChooseItems(playerid, { '不睡觉', '半个时辰', '一个时辰', '两个时辰' })
             player.whichChoose = 'sleep'
           end)
           return true
