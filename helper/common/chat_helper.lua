@@ -62,11 +62,11 @@ function ChatHelper:showSelectSeparate (objid)
 end
 
 function ChatHelper:showEndSeparate (objid)
-  ChatHelper:showSeparate(objid, '结束')
+  ChatHelper:showSeparate(objid, '对话结束')
 end
 
 function ChatHelper:showBreakSeparate (objid)
-  ChatHelper:showSeparate(objid, '中止')
+  ChatHelper:showSeparate(objid, '对话中止')
 end
 
 -- 封装原始接口
