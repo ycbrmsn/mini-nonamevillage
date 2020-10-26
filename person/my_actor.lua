@@ -274,9 +274,30 @@ function Meigao:new ()
         },
       }),
       TalkInfo:new({
+        id = 11,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.LETTER }),
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(1, '你没答对，包不能借给你。'),
+            TalkSession:new(3, '我这里有池末给你的一封信。'),
+            TalkSession:new(1, '池末那小子……'),
+            TalkSession:new(1, '给我看看。', function (player)
+              local itemid = MyMap.ITEM.LETTER
+              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then
+                TalkHelper:setProgress(player.objid, 2, 13)
+                PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
+              end
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
         id = 2,
         ants = {
-          TalkAnt:new({ t = 1, taskid = 2 })
+          TalkAnt:new({ t = 1, taskid = 2 }),
         },
         progress = {
           [0] = {
@@ -309,16 +330,52 @@ function Meigao:new ()
               }
             end),
             TalkSession:new(1, '没错。包就借给你几天。', function (player)
-              TalkHelper:setProgress(player.objid, 2, 12)
+              TalkHelper:setProgress(player.objid, 2, 20)
               meigao.lostBag = true
               local itemid = MyMap.ITEM.BAG
               if (BackpackHelper:addItem(player.objid, itemid, 1)) then
                 PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               end
-              meigao.talkInfos[2][0] = {
+              meigao.talkInfos[3].progress[0] = {
                 TalkSession:new(1, '没想到这么难的问题你都能答上来。'),
                 TalkSession:new(3, '侥幸而已。'),
               }
+            end),
+          },
+          [13] = {
+            TalkSession:new(1, '嗯，看在池末的份上，包包就借给你几天。', function (player)
+              if (meigao.lostBag) then -- 包包不在
+                TalkHelper:setProgress(player.objid, 2, 14)
+                player:resetTalkIndex(0)
+              else
+                local itemid = MyMap.ITEM.BAG
+                if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                  PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                  TalkHelper:setProgress(player.objid, 2, 16)
+                  player:resetTalkIndex(0)
+                  meigao.talkInfos[3].progress[0] = {
+                    TalkSession:new(1, '包就借给你几天。'),
+                    TalkSession:new(3, '万分感谢。'),
+                  }
+                end
+              end
+            end),
+          },
+          [14] = {
+            TalkSession:new(1, '！！！'),
+            TalkSession:new(1, '我包包不见了……'),
+            TalkSession:new(3, '……', function (player)
+              TalkHelper:setProgress(player.objid, 2, 15)
+              player:resetTalkIndex(0)
+            end),
+          },
+          [15] = {
+            TalkSession:new(1, '抱歉，我包包不见了，没办法借给你了。'),
+            TalkSession:new(3, '……'),
+          },
+          [16] = {
+            TalkSession:new(3, '万分感谢。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 17)
             end),
           },
         },

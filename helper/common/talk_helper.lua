@@ -82,7 +82,9 @@ function TalkHelper:isMeet (playerid, talkInfo)
         return false
       end
     elseif (ant.t == 4) then -- 拥有道具
+      -- LogHelper:debug('道具')
       if (not(BackpackHelper:hasItem(playerid, ant.itemid, true))) then
+        -- LogHelper:debug('没道具')
         return false
       end
     end
@@ -181,9 +183,15 @@ function TalkHelper:handleTalkSession (playerid, actor, session, max)
   local player = PlayerHelper:getPlayer(playerid)
   if (session.t == 1) then
     actor:speakTo(playerid, 0, session.msg)
+    if (session.f) then
+      session.f(player)
+    end
     TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
   elseif (session.t == 2) then
     actor:thinkTo(playerid, 0, session.msg)
+    if (session.f) then
+      session.f(player)
+    end
     TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
   elseif (type(session.msg) == 'table') then -- 选项
     ChatHelper:showChooseItems(playerid, session.msg, 'msg')
@@ -192,16 +200,19 @@ function TalkHelper:handleTalkSession (playerid, actor, session, max)
     --   ChatHelper:sendMsg(playerid, v.msg)
     -- end
     player.whichChoose = 'talk'
+    if (session.f) then
+      session.f(player)
+    end
   else -- 对话
     if (session.t == 3) then
       player:speakSelf(0, session.msg)
     elseif (session.t == 4) then
       player:thinkSelf(0, session.msg)
     end
+    if (session.f) then
+      session.f(player)
+    end
     TalkHelper:turnTalkIndex(playerid, actor, max, session.turnTo)
-  end
-  if (session.f) then
-    session.f(player)
   end
 end
 
