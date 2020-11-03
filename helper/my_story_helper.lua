@@ -167,13 +167,23 @@ function MyStoryHelper:playerInputKeyUp (objid, vkey)
   -- body
 end
 
--- 等级发生变化
+-- 玩家等级发生变化
 function MyStoryHelper:playerLevelModelUpgrade (objid, toobjid)
   -- body
 end
 
--- 属性变化
+-- 玩家属性变化
 function MyStoryHelper:playerChangeAttr (objid, playerattr)
+  -- body
+end
+
+-- 玩家获得状态效果
+function MyStoryHelper:playerAddBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 玩家失去状态效果
+function MyStoryHelper:playerRemoveBuff (objid, buffid, bufflvl)
   -- body
 end
 
@@ -207,8 +217,23 @@ function MyStoryHelper:actorChangeMotion (objid, actormotion)
   -- body
 end
 
+-- 生物受到伤害
+function MyStoryHelper:actorBeHurt (objid, toobjid, hurtlv)
+  -- body
+end
+
 -- 生物死亡
 function MyStoryHelper:actorDie (objid, toobjid)
+  -- body
+end
+
+-- 生物获得状态效果
+function MyStoryHelper:actorAddBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 生物失去状态效果
+function MyStoryHelper:actorRemoveBuff (objid, buffid, bufflvl)
   -- body
 end
 

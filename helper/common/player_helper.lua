@@ -256,6 +256,11 @@ function PlayerHelper:setPlayerEnableBeAttacked (objid, enable)
   return self:setActionAttrState(objid, PLAYERATTR.ENABLE_BEATTACKED, enable)
 end
 
+-- 设置玩家是否可破坏方块
+function PlayerHelper:setPlayerEnableDestroyBlock (objid, enable)
+  return self:setActionAttrState(objid, PLAYERATTR.ENABLE_DESTROYBLOCK, enable)
+end
+
 function PlayerHelper:getHp (objid)
   return self:getAttr(objid, PLAYERATTR.CUR_HP)
 end
@@ -555,6 +560,16 @@ end
 
 -- 属性变化
 function PlayerHelper:playerChangeAttr (objid, playerattr)
+  -- body
+end
+
+-- 玩家获得状态效果
+function PlayerHelper:playerAddBuff (objid, buffid, bufflvl)
+  -- body
+end
+
+-- 玩家失去状态效果
+function PlayerHelper:playerRemoveBuff (objid, buffid, bufflvl)
   -- body
 end
 

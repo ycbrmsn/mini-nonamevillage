@@ -651,6 +651,7 @@ end
 
 -- 角色看向 执行者、目标、是否需要旋转镜头（三维视角需要旋转），toobjid可以是objid、位置、玩家、生物
 function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
+  -- LogHelper:debug('lookat')
   if (type(objid) == 'table') then -- 如果执行者是多个（数组）
     for i, v in ipairs(objid) do
       ActorHelper:lookAt(v, toobjid, needRotateCamera)
@@ -715,6 +716,23 @@ function ActorHelper:lookAt (objid, toobjid, needRotateCamera)
       end
     end
   end
+end
+
+-- 是否在水中
+function ActorHelper:isInWater (objid)
+  local pos = ActorHelper:getMyPosition(objid)
+  return AreaHelper:isWaterArea(pos)
+end
+
+-- 播放并停止特效
+function ActorHelper:playAndStopBodyEffectById (objid, particleId, scale, time)
+  scale = scale or 1
+  time = time or 3
+  ActorHelper:playBodyEffectById(objid, particleId, scale)
+  local t = 'stopBodyEffect'
+  TimeHelper:callFnLastRun(objid, t, function ()
+    ActorHelper:stopBodyEffectById(objid, particleId)
+  end, time)
 end
 
 -- 设置生物可移动状态
@@ -878,9 +896,36 @@ function ActorHelper:actorChangeMotion (objid, actormotion)
   end
 end
 
+-- 生物受到伤害
+function ActorHelper:actorBeHurt (objid, toobjid, hurtlv)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:beHurt(toobjid, hurtlv)
+  end
+  -- body
+end
+
 -- 生物死亡
 function ActorHelper:actorDie (objid, toobjid)
   MonsterHelper:actorDie(objid, toobjid)
+end
+
+-- 生物获得状态效果
+function ActorHelper:actorAddBuff (objid, buffid, bufflvl)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:addBuff(buffid, bufflvl)
+  end
+  -- body
+end
+
+-- 生物失去状态效果
+function ActorHelper:actorRemoveBuff (objid, buffid, bufflvl)
+  local actor = ActorHelper:getActor(objid)
+  if (actor) then
+    actor:removeBuff(buffid, bufflvl)
+  end
+  -- body
 end
 
 -- 封装原始接口
@@ -914,7 +959,7 @@ function ActorHelper:getActionAttrState (objid, actionattr)
   end, '获取生物行为状态', 'objid=', objid, ',actionattr=', actionattr)
 end
 
--- 获取生物位置
+-- 获取生物位置，返回x, y, z
 function ActorHelper:getPosition (objid)
   return CommonHelper:callThreeResultMethod(function (p)
     return Actor:getPosition(objid)

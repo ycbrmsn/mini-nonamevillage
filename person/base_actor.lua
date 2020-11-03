@@ -17,6 +17,7 @@ BaseActor = {
   talkIndex = {}, -- 对话进度 { playerid -> index }
   talkInfos = {}, -- 对话信息
   defaultTalkMsg = '你好。', -- 默认对话
+  speakDim = { x = 30, y = 30, z = 30 }, -- 默认说话声音传播范围
 }
 
 function BaseActor:new (actorid, objid)
@@ -64,16 +65,25 @@ function BaseActor:isActive ()
         ActorHelper:setEnableBeKilledState(self.objid, false)
       end
     end
-    return true
-  else
-    local blockid = BlockHelper:getBlockID(self.x, self.y, self.z)
-    if (blockid and blockid ~= BaseConstant.UNKNOWN_BLOCK) then -- 表示生物不见了（多半是因bug被销毁）
-      local objids = WorldHelper:spawnCreature(self.x, self.y, self.z, self.actorid, 1)
-      if (objids and #objids > 0) then -- 创建生物成功
-        self.objid = objids[1]
-        return true
+    if (self.immuneFall) then -- 不会摔伤
+      ActorHelper:setImmuneFall(self.objid, true)
+    end
+    if (self.recoverNow) then -- 恢复生命
+      if (CreatureHelper:resetHp(self.objid)) then
+        self.recoverNow = false
       end
     end
+    return true
+  else
+    -- 以下方法有误，容易同时出现两个NPC，因此不再使用
+    -- local blockid = BlockHelper:getBlockID(self.x, self.y, self.z)
+    -- if (blockid and blockid ~= BaseConstant.UNKNOWN_BLOCK) then -- 表示生物不见了（多半是因bug被销毁）
+    --   local objids = WorldHelper:spawnCreature(self.x, self.y, self.z, self.actorid, 1)
+    --   if (objids and #objids > 0) then -- 创建生物成功
+    --     self.objid = objids[1]
+    --     return true
+    --   end
+    -- end
     return false
   end
 end
@@ -186,8 +196,17 @@ function BaseActor:speakTo (playerids, afterSeconds, ...)
     end
   elseif (type(playerids) == 'table') then
     for i, v in ipairs(playerids) do
-      self:speakTo(v)
+      self:speakTo(v, afterSeconds, ...)
     end
+  end
+end
+
+function BaseActor:speakAround (dim, afterSeconds, ...)
+  dim = dim or self.speakDim
+  local pos = self:getMyPosition()
+  local objids = ActorHelper:getAllPlayersArroundPos(pos, dim)
+  if (objids and #objids > 0) then
+    self:speakTo(objids, afterSeconds, ...)
   end
 end
 
@@ -404,6 +423,11 @@ function BaseActor:initActor ()
     if (self.unableBeKilled) then
       ActorHelper:setEnableBeKilledState(self.objid, false)
     end
+    -- 如果生物不会摔伤，则设置不会摔伤
+    if (self.immuneFall) then
+      ActorHelper:setImmuneFall(self.objid, true)
+    end
+    self:keepSingleIfNeed()
     self:wantAtHour()
     self.isInit = true
     LogHelper:debug('初始化', self:getName(), '完成')
@@ -426,6 +450,19 @@ function BaseActor:isFind ()
     end
   end
   return false
+end
+
+-- 保持只有一个，移除其他
+function BaseActor:keepSingleIfNeed ()
+  if (self.isSingleton) then
+    local objids = ActorHelper:getInitActorObjids()
+    for i, objid in ipairs(objids) do
+      local actorid = CreatureHelper:getActorID(objid)
+      if (actorid and actorid == self.actorid and objid ~= self.objid) then
+        WorldHelper:despawnActor(objid)
+      end
+    end
+  end
 end
 
 -- 是否完成初始化
@@ -451,11 +488,11 @@ function BaseActor:defaultPlayerClickEvent (playerid)
       self.wants[1].style = 'wake'
     end
     local pos = self:getMyPosition()
-    if (not(AreaHelper:isAirArea(pos))) then -- 生物不在空气中，则移动到玩家位置
+    if (ActorHelper:isInWater(self.objid)) then -- 生物在水中，则移动到玩家位置
       local player = PlayerHelper:getPlayer(playerid)
       local newPos = player:getDistancePosition(1)
       self:setPosition(newPos)
-      ChatHelper:sendMsg(playerid, '你把', self:getName(), '拉了过来')
+      ChatHelper:sendMsg(playerid, '你把', self:getName(), '从水里捞了过来')
     else
       self.action:stopRun()
     end
@@ -488,6 +525,21 @@ end
 
 -- 行为改变
 function BaseActor:changeMotion (actormotion)
+  -- body
+end
+
+-- 受到伤害
+function BaseActor:beHurt (toobjid, hurtlv)
+  -- body
+end
+
+-- 获得状态
+function BaseActor:addBuff (buffid, bufflvl)
+  -- body
+end
+
+-- 移除状态
+function BaseActor:removeBuff (buffid, bufflvl)
   -- body
 end
 
