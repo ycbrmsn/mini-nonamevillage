@@ -66,3 +66,8 @@ function WorldContainerHelper:addStorageItem (x, y, z, itemid, num)
     return WorldContainer:addStorageItem(x, y, z, itemid, num)
   end, '给储物箱添加道具', 'x=', x, ',y=', y, ',z=', z, ',itemid=', itemid, ',num=', num)
 end
+
+-- 检测储物箱是否有空余格子，传入道具ID则检测有无该道具
+function WorldContainerHelper:checkStorageEmptyGrid (x, y, z, itemid)
+  return WorldContainer:checkStorageEmptyGrid(x, y, z, itemid) == ErrorCode.OK
+end

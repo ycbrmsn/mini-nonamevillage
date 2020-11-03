@@ -330,7 +330,7 @@ function Meigao:new ()
               })
             end),
             TalkSession:new(1, '没错。包就借给你几天。', function (player)
-              TalkHelper:setProgress(player.objid, 2, 20)
+              TalkHelper:setProgress(player.objid, 2, 16)
               meigao.lostBag = true
               local itemid = MyMap.ITEM.BAG
               if (BackpackHelper:addItem(player.objid, itemid, 1)) then
@@ -767,6 +767,7 @@ function Chuyi:new ()
       MyPosition:new(36.5, 13.5, 91.5), -- 二楼对角
       MyPosition:new(42.5, 13.5, 98.5), -- 二楼对角
     },
+    boxPos = MyPosition:new(43, 8, 100), -- 箱子的位置
     defaultTalkMsg = '我家的床还没修好。',
     talkInfos = {
       TalkInfo:new({
@@ -781,6 +782,30 @@ function Chuyi:new ()
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
             TalkSession:new(1, '真不巧，我家的床坏了。'),
             TalkSession:new(3, '这样啊，那打扰了。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 12,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.BAG }),
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(3, '你看看是这个包吗？', function (player)
+              player:takeOutItem(MyMap.ITEM.BAG)
+            end),
+            TalkSession:new(1, '没错，就是这个呢。', function (player)
+              player:takeOutItem(MyMap.ITEM.BAG)
+            end),
+            TalkSession:new(3, '那给你。', function (player)
+              local itemid = MyMap.ITEM.BAG
+              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then
+                TalkHelper:setProgress(player.objid, 2, 17)
+                PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
+              end
+            end),
           },
         },
       }),
@@ -809,6 +834,29 @@ function Chuyi:new ()
               TalkHelper:resetProgressContent(chuyi, 2, 0, {
                 TalkSession:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
               })
+            end),
+          },
+          [17] = {
+            TalkSession:new(1, '太好了。你等等，我这就去取剑。', function (player)
+              player:enableMove(false, true)
+              local want = chuyi:wantApproach('takeSword', { chuyi.boxPos })
+              ActorActionHelper:callback(want, function ()
+                local want2 = chuyi:wantApproach('takeSword', { player:getMyPosition() })
+                ActorActionHelper:callback(want2, function ()
+                  local itemid = MyMap.ITEM.SWORD3
+                  if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                    PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                    TalkHelper:setProgress(player.objid, 2, 18)
+                    player:resetTalkIndex(0)
+                    TalkHelper:resetProgressContent(chuyi, 2, 0, {
+                      TalkSession:new(1, '用完记得还给我。'),
+                      TalkSession:new(3, '一定归还。'),
+                    })
+                  end
+                  chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
+                  player:enableMove(true, true)
+                end)
+              end)
             end),
           },
         },
