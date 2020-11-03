@@ -800,10 +800,30 @@ function Chuyi:new ()
               player:takeOutItem(MyMap.ITEM.BAG)
             end),
             TalkSession:new(3, '那给你。', function (player)
+              player:takeOutItem(MyMap.ITEM.BAG)
+            end),
+            TalkSession:new(1, '太好了。你等等，我这就去取剑。', function (player)
               local itemid = MyMap.ITEM.BAG
-              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then
+              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去包
                 TalkHelper:setProgress(player.objid, 2, 17)
                 PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
+                local want = chuyi:wantApproach('takeSword', { chuyi.boxPos })
+                ActorActionHelper:callback(want, function ()
+                  local want2 = chuyi:wantApproach('takeSword', { player:getMyPosition() })
+                  ActorActionHelper:callback(want2, function ()
+                    local itemid = MyMap.ITEM.SWORD3
+                    if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                      PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                      TalkHelper:setProgress(player.objid, 2, 18)
+                      player:resetTalkIndex(0)
+                      TalkHelper:resetProgressContent(chuyi, 2, 0, {
+                        TalkSession:new(1, '用完记得还给我。'),
+                        TalkSession:new(3, '一定归还。'),
+                      })
+                    end
+                    chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
+                  end)
+                end)
               end
             end),
           },
@@ -837,26 +857,8 @@ function Chuyi:new ()
             end),
           },
           [17] = {
-            TalkSession:new(1, '太好了。你等等，我这就去取剑。', function (player)
-              player:enableMove(false, true)
-              local want = chuyi:wantApproach('takeSword', { chuyi.boxPos })
-              ActorActionHelper:callback(want, function ()
-                local want2 = chuyi:wantApproach('takeSword', { player:getMyPosition() })
-                ActorActionHelper:callback(want2, function ()
-                  local itemid = MyMap.ITEM.SWORD3
-                  if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-                    PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-                    TalkHelper:setProgress(player.objid, 2, 18)
-                    player:resetTalkIndex(0)
-                    TalkHelper:resetProgressContent(chuyi, 2, 0, {
-                      TalkSession:new(1, '用完记得还给我。'),
-                      TalkSession:new(3, '一定归还。'),
-                    })
-                  end
-                  chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
-                  player:enableMove(true, true)
-                end)
-              end)
+            TalkSession:new(1, '我先去取剑。', function (player)
+              chuyi:actionRightNow()
             end),
           },
         },
@@ -870,7 +872,7 @@ end
 
 -- 默认想法
 function Chuyi:defaultWant ()
-  self:wantDoNothing()
+  self:doItNow()
 end
 
 -- 在几点想做什么

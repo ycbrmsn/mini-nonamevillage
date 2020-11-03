@@ -433,6 +433,7 @@ function BaseActor:initActor ()
     LogHelper:debug('初始化', self:getName(), '完成')
     return true
   else
+    LogHelper:debug('未找到', self.actorid)
     return false
   end
 end
@@ -573,4 +574,12 @@ function BaseActor:setSealed (active)
     self.sealTimes = self.sealTimes - 1
     return self.sealTimes <= 0
   end
+end
+
+-- 立刻行动
+function BaseActor:actionRightNow ()
+  if (self.wants and #self.wants > 0) then
+    self.wants[1].currentRestTime = 1
+  end
+  self.action:execute()
 end

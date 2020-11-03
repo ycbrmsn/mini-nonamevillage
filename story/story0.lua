@@ -55,7 +55,7 @@ function Story0:enter (objid)
   end, 2)
   TalkHelper:addTask(objid, 2)
   TalkHelper:setProgress(objid, 2, 12)
-  player:setPosition(20, 7, 33)
+  player:setPosition(40, 7, 85)
   if (1 == 1) then
     return
   end

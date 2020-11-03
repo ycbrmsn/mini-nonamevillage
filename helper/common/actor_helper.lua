@@ -805,8 +805,10 @@ function ActorHelper:actorEnterArea (objid, areaid)
           if (want.callback) then
             want.callback()
           end
-          -- myActor:defaultWant()
-          -- myActor:wantStayForAWhile()
+          if (not(myActor:isWantsExist()) or myActor.wants[1] == want) then
+            myActor:defaultWant()
+            myActor:wantStayForAWhile()
+          end
         end
       elseif (want.style == 'patrol') then -- 如果是巡逻，则停下来并设定前往目的地
         AreaHelper:removeToArea(myActor) -- 清除终点区域
