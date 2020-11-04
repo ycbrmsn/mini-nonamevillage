@@ -113,8 +113,9 @@ function Story0:enterArea (objid, areaid)
       if (player:isHostPlayer()) then -- 房主
         player:enableMove(false, true)
         player:thinks(0, '此处不详，我要不要离开呢？')
-        ChatHelper:showChooseItems(playerid, { '不离开', '离开' })
-        player.whichChoose = 'leave'
+        MyOptionHelper:showOptions(player, 'leave')
+        -- ChatHelper:showChooseItems(playerid, { '不离开', '离开' })
+        -- player.whichChoose = 'leave'
       end
     end
     return true

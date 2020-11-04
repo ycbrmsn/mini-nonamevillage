@@ -337,11 +337,11 @@ function BasePlayer:choose ()
     if (self.whichChoose == 'talk') then
       TalkHelper:chooseTalk(self.objid)
     else
-      local chooseItems = MyPlayerHelper.chooseMap[self.whichChoose]
+      local chooseItems = MyOptionHelper.optionMap[self.whichChoose]
       if (chooseItems) then
         local index = PlayerHelper:getCurShotcut(self.objid) + 1
         if (index <= #chooseItems) then
-          chooseItems[index](self)
+          chooseItems[index][2](self)
         end
       end
     end

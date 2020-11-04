@@ -54,8 +54,9 @@ function MyBlockHelper:clickBed (objid, blockid, x, y, z)
           player:runTo({ story.aroundBedPos }, function ()
             player:enableMove(false, true)
             player:thinkSelf(0, '我要睡多长时间呢？')
-            ChatHelper:showChooseItems(playerid, { '不睡觉', '半个时辰', '一个时辰', '两个时辰' })
-            player.whichChoose = 'sleep'
+            MyOptionHelper:showOptions(player, 'sleep')
+            -- ChatHelper:showChooseItems(playerid, { '不睡觉', '半个时辰', '一个时辰', '两个时辰' })
+            -- player.whichChoose = 'sleep'
           end)
           return true
         end
