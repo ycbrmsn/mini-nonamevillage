@@ -337,11 +337,15 @@ function BasePlayer:choose ()
     if (self.whichChoose == 'talk') then
       TalkHelper:chooseTalk(self.objid)
     else
-      local chooseItems = MyOptionHelper.optionMap[self.whichChoose]
+      local whichChoose = self.whichChoose
+      local chooseItems = MyOptionHelper.optionMap[whichChoose]
       if (chooseItems) then
         local index = PlayerHelper:getCurShotcut(self.objid) + 1
         if (index <= #chooseItems) then
           chooseItems[index][2](self)
+          if (whichChoose == self.whichChoose) then -- 选项未变则自动置空
+            self.whichChoose = nil
+          end
         end
       end
     end

@@ -1095,7 +1095,7 @@ function Mochi:new ()
             TalkSession:new(1, '请回吧。'),
             TalkSession:new(4, '看来只能另想办法了。', function (player)
               TalkHelper:setProgress(player.objid, 2, 21)
-              TalkHelper:resetProgressContent(chuyi, 2, 0, {
+              TalkHelper:resetProgressContent(mochi, 2, 0, {
                 TalkSession:new(1, '请回吧。'),
                 TalkSession:new(4, '看来只能另想办法了。'),
               })
@@ -1166,21 +1166,12 @@ function Mochi:defaultPlayerClickEvent (playerid)
       if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
         if (progress >= 21) then
-          if (not(self.lostKey)) then -- 有钥匙
-            local itemid = MyMap.ITEM.KEY7
-            if (BackpackHelper:addItem(playerid, itemid, 1)) then
-              self.lostKey = true
-              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
-              player:thinkSelf(1, '我为什么会这么做？')
-            end
-          else
-            player:thinkSelf(0, '她身上似乎没有钥匙了。')
-          end
-        else
-          player:thinkSelf(0, '还是不要惊动她比较好。')
+          player:enableMove(false, true)
+          player:thinkSelf(0, '我要做什么？')
+          MyOptionHelper:showOptions(player, 'stealMochi')
         end
       else
-        player:thinkSelf(0, '还是不要惊动她比较好。')
+        player:thinkSelf(0, '还是不要惊动他比较好。')
       end
     else
       self.action:stopRun()

@@ -3,13 +3,11 @@ MyOptionHelper = {
   optionMap = {
     sleep = { -- 睡觉选项
       { '不睡觉', function (player)
-          player.whichChoose = nil
           player:enableMove(true)
           player:thinks(0, '现在还不想休息。')
         end
       },
       { '睡半个时辰', function (player)
-          player.whichChoose = nil
           player:enableMove(true)
           TimeHelper:addHour(1)
           PlayerHelper:showToast(player.objid, '时间过去半个时辰')
@@ -17,7 +15,6 @@ MyOptionHelper = {
         end
       },
       { '睡一个时辰', function (player)
-          player.whichChoose = nil
           player:enableMove(true)
           TimeHelper:addHour(2)
           PlayerHelper:showToast(player.objid, '时间过去一个时辰')
@@ -26,7 +23,6 @@ MyOptionHelper = {
         end
       },
       { '睡两个时辰', function (player)
-          player.whichChoose = nil
           player:enableMove(true)
           TimeHelper:addHour(4)
           PlayerHelper:showToast(player.objid, '时间过去两个时辰')
@@ -37,7 +33,6 @@ MyOptionHelper = {
     },
     leave = { -- 离开选项
       { '不离开', function (player) -- 不离开
-          player.whichChoose = nil
           local story = StoryHelper:getStory(1)
           player:thinks(0, '既然让我遇上了，不解决怎可轻易离开。')
           local ws = WaitSeconds:new(2)
@@ -48,7 +43,6 @@ MyOptionHelper = {
         end
       },
       { '离开', function (player) -- 离开
-          player.whichChoose = nil
           local story = StoryHelper:getStory(1)
           player:thinks(0, '君子不立于危墙之下。我还是暂且离开。')
           local ws = WaitSeconds:new(2)
@@ -67,12 +61,23 @@ MyOptionHelper = {
       },
     },
     stealMochi = {
-      { '看看身上有什么', function (player)
-          -- body
+      { '看看他身上有什么', function (player)
+          player:enableMove(true, true)
+          if (not(mochi.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY8
+            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              mochi.lostKey = true
+              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '他身上似乎没有什么特别的东西了。')
+          end
         end
       },
       { '不做什么', function (player)
-        -- body
+          player:enableMove(true, true)
+          player:thinkSelf(0, '还是不要做什么比较好。')
         end
       },
     }
