@@ -7,8 +7,9 @@ function MyActorHelper:init ()
   meigao = Meigao:new()
   zhendao = Zhendao:new()
   chuyi = Chuyi:new()
+  mochi = Mochi:new()
   linshushu = Linshushu:new()
-  local myActors = { chimo, meigao, zhendao, chuyi, linshushu }
+  local myActors = { chimo, meigao, zhendao, chuyi, mochi, linshushu }
   for i, v in ipairs(myActors) do
     TimeHelper:initActor(v)
   end

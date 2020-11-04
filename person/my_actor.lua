@@ -6,6 +6,7 @@ Chimo = BaseActor:new(MyMap.ACTOR.CHIMO)
 function Chimo:new ()
   local o = {
     objid = 4300067952,
+    isSingleton = true,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(-8.5, 9.5, 47.5), -- 床尾位置
@@ -255,6 +256,7 @@ Meigao = BaseActor:new(MyMap.ACTOR.MEIGAO)
 function Meigao:new ()
   local o = {
     objid = self.actorid,
+    isSingleton = true,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(20.5, 9.5, 47.5), -- 床尾位置
@@ -540,6 +542,7 @@ Zhendao = BaseActor:new(MyMap.ACTOR.ZHENDAO)
 function Zhendao:new ()
   local o = {
     objid = self.actorid,
+    isSingleton = true,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(-28.5, 9.5, 47.5), -- 床尾位置
@@ -771,6 +774,7 @@ Chuyi = BaseActor:new(MyMap.ACTOR.CHUYI)
 function Chuyi:new ()
   local o = {
     objid = self.actorid,
+    isSingleton = true,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(39.5, 9.5, 99.5), -- 床尾位置
@@ -1016,12 +1020,222 @@ function Chuyi:beat1 (player)
   end
 end
 
+-- 莫迟
+Mochi = BaseActor:new(MyMap.ACTOR.MOCHI)
+
+function Mochi:new ()
+  local o = {
+    objid = self.actorid,
+    isSingleton = true,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(39.5, 9.5, 47.5), -- 床尾位置
+      ActorHelper.FACE_YAW.WEST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(44.5, 9.5, 41.5), -- 客厅
+      MyPosition:new(35.5, 9.5, 47.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(38.5, 8.5, 39.5), -- 进门旁
+      MyPosition:new(42.5, 8.5, 45.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      MyPosition:new(36.5, 8.5, 47.5), -- 门旁
+      MyPosition:new(41.5, 9.5, 49.5), -- 铁门上方
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(36.5, 13.5, 39.5), -- 二楼对角
+      MyPosition:new(42.5, 13.5, 46.5), -- 二楼对角
+    },
+    boxPos = MyPosition:new(43, 8, 48), -- 箱子的位置
+    defaultTalkMsg = '我家的床还没修好。',
+    talkInfos = {
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
+            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(3, '这样啊，那打扰了。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 })
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
+            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(3, '这样啊，那打扰了。'),
+          },
+          [20] = {
+            TalkSession:new(1, '我家的床还没修好。'),
+            TalkSession:new(3, '今天不是为借宿而来。你可知你们村长被邪气笼罩着。'),
+            TalkSession:new(1, '略知一二。'),
+            TalkSession:new(3, '你知道就最好不过了。我想借你的桃木剑一用，摆出三义剑阵驱散邪气。'),
+            TalkSession:new(1, '正是因为知道，所以才不能借给你。'),
+            TalkSession:new(3, '？？？'),
+            TalkSession:new(1, '我们村本有四把桃木剑，各镇一方，可破诸邪。'),
+            TalkSession:new(4, '原来剑有四把。'),
+            TalkSession:new(1, '不过因为某些原因，有一把剑遗失了。于是才有了随后的邪气。'),
+            TalkSession:new(3, '既然如此，那更应该驱散邪气，并找出根源。请相信我。'),
+            TalkSession:new(1, '我们村的人都不怎么相信外地人。'),
+            TalkSession:new(3, '？？？'),
+            TalkSession:new(1, '总之，我不会借的。'),
+            TalkSession:new(3, '可是……'),
+            TalkSession:new(1, '请回吧。'),
+            TalkSession:new(4, '看来只能另想办法了。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 21)
+              TalkHelper:resetProgressContent(chuyi, 2, 0, {
+                TalkSession:new(1, '请回吧。'),
+                TalkSession:new(4, '看来只能另想办法了。'),
+              })
+            end),
+          },
+        },
+      }),
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Mochi:defaultWant ()
+  self:doItNow()
+end
+
+-- 在几点想做什么
+function Mochi:wantAtHour (hour)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'takeSword') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea({ self.secondFloorAreaPositions })
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
+  end
+end
+
+function Mochi:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Mochi:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Mochi:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 21) then
+          if (not(self.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY7
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostKey = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '她身上似乎没有钥匙了。')
+          end
+        else
+          player:thinkSelf(0, '还是不要惊动她比较好。')
+        end
+      else
+        player:thinkSelf(0, '还是不要惊动她比较好。')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      TalkHelper:talkWith(playerid, self)
+    end
+  end
+end
+
+function Mochi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Mochi:candleEvent (player, candle)
+  
+end
+
+function Mochi:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '误会误会！')
+    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
 -- 林树树
 Linshushu = BaseActor:new(MyMap.ACTOR.LINSHUSHU)
 
 function Linshushu:new ()
   local o = {
     objid = self.actorid,
+    isSingleton = true,
     unableBeKilled = true,
     bedData = {
       MyPosition:new(-2.5, 9.5, 74.5), -- 床尾位置
