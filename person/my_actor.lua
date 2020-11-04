@@ -58,6 +58,31 @@ function Chimo:new ()
         }
       }),
       TalkInfo:new({
+        id = 14,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 5 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.SWORD1 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.SWORD3 }),
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(3, '终于又借来一把。'),
+            TalkSession:new(1, '真是太好了。'),
+            TalkSession:new(3, '我感觉邪气又浓了一些。'),
+            TalkSession:new(1, '啊，是吗？还有一把也摆脱你了。在东南方的莫家。'),
+            TalkSession:new(3, '事不宜迟，我这就前往。', function (player)
+              TalkHelper:addTask(player.objid, 5)
+              TalkHelper:setProgress(player.objid, 2, 20)
+              TalkHelper:resetProgressContent(chimo, 2, 0, {
+                TalkSession:new(1, '怎么样，借到剑了吗？'),
+                TalkSession:new(3, '还没。'),
+              })
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
         id = 2,
         ants = {
           TalkAnt:new({ t = 1, taskid = 2 })
@@ -274,7 +299,7 @@ function Meigao:new ()
         },
       }),
       TalkInfo:new({
-        id = 11,
+        id = 12,
         ants = {
           TalkAnt:new({ t = 1, taskid = 2 }),
           TalkAnt:new({ t = 4, itemid = MyMap.ITEM.LETTER }),
@@ -786,7 +811,7 @@ function Chuyi:new ()
         },
       }),
       TalkInfo:new({
-        id = 12,
+        id = 13,
         ants = {
           TalkAnt:new({ t = 1, taskid = 2 }),
           TalkAnt:new({ t = 4, itemid = MyMap.ITEM.BAG }),
@@ -815,13 +840,15 @@ function Chuyi:new ()
                     if (BackpackHelper:addItem(player.objid, itemid, 1)) then
                       PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                       TalkHelper:setProgress(player.objid, 2, 18)
-                      player:resetTalkIndex(0)
                       TalkHelper:resetProgressContent(chuyi, 2, 0, {
                         TalkSession:new(1, '用完记得还给我。'),
                         TalkSession:new(3, '一定归还。'),
                       })
+                      chuyi.wants = nil
                     end
                     chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
+                    ChatHelper:showEndSeparate(player.objid)
+                    player:resetTalkIndex(1)
                   end)
                 end)
               end
@@ -877,17 +904,19 @@ end
 
 -- 在几点想做什么
 function Chuyi:wantAtHour (hour)
-  if (hour == 6) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 13) then
-    self:wantFreeInArea({ self.secondFloorAreaPositions })
-  elseif (hour == 15) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 19) then
-    self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 22) then
-    self:putOutCandleAndGoToBed(self.candlePositions)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'takeSword') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea({ self.secondFloorAreaPositions })
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
   end
 end
 
