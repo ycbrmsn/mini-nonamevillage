@@ -285,7 +285,7 @@ function BaseActorWant:forceDoNothing (think)
     if (want.style == 'forceDoNothing') then -- 如果已经存在，则次数叠加
       want.times = want.times + 1
     else
-      think = think or self.myActor.think
+      think = think or 'forceDoNothing'
       want = ActorActionHelper:getForceDoNothing(think)
       table.insert(self.myActor.wants, 1, want)
     end

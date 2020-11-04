@@ -172,6 +172,33 @@ function Chimo:new ()
               end
             end),
           },
+          [21] = {
+            TalkSession:new(1, '怎么样了？'),
+            TalkSession:new(3, '莫迟不肯借剑。对了，听说村里有四把剑？'),
+            TalkSession:new(1, '是的，不过一次搬房子的时候，姚家的剑遗失了。'),
+            TalkSession:new(3, '那有可能找到吗？'),
+            TalkSession:new(1, '这么多年来都没听说过，要找到不太可能。'),
+            TalkSession:new(3, '至少还要一把剑……'),
+            TalkSession:new(1, '这样吧。我跟你一起去，我晓之以理，动之以情，逼……必定可以让他借的。'),
+            TalkSession:new(3, '？？？'),
+            TalkSession:new(1, '眼看就快要驱散邪气了，我也不能不出点力。'),
+            TalkSession:new(4, '那你开始干嘛去了？'),
+            TalkSession:new(3, '好，如果能行，那就太好了。'),
+            TalkSession:new(1, '我们出发吧。', function (player)
+              mochi:forceDoNothing()
+              mochi:setPosition(mochi.standPos)
+              TimeHelper:callFnAfterSecond(function ()
+                mochi:lookAt(mochi.standLookAtPos)
+              end, 2)
+              local want = chimo:wantMove('forceDoNothing', { mochi.standPos2 })
+              ActorActionHelper:callback(want, function ()
+                Story1:meetMochi(player)
+              end)
+              player:runTo({ mochi.standPos3 }, function ()
+                player:thinkSelf(0, '我先等等吧。')
+              end)
+            end),
+          }
         },
       }),
     }, -- 对话信息
@@ -188,17 +215,19 @@ end
 
 -- 在几点想做什么
 function Chimo:wantAtHour (hour)
-  if (hour == 6) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 13) then
-    self:wantFreeInArea({ self.secondFloorAreaPositions })
-  elseif (hour == 15) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 19) then
-    self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 22) then
-    self:putOutCandleAndGoToBed(self.candlePositions)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea({ self.secondFloorAreaPositions })
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
   end
 end
 
@@ -426,17 +455,19 @@ end
 
 -- 在几点想做什么
 function Meigao:wantAtHour (hour)
-  if (hour == 6) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 13) then
-    self:wantFreeInArea({ self.secondFloorAreaPositions })
-  elseif (hour == 15) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 19) then
-    self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 22) then
-    self:putOutCandleAndGoToBed(self.candlePositions)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea({ self.secondFloorAreaPositions })
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
   end
 end
 
@@ -634,17 +665,19 @@ end
 
 -- 在几点想做什么
 function Zhendao:wantAtHour (hour)
-  if (hour == 6) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 13) then
-    self:wantFreeInArea({ self.secondFloorAreaPositions })
-  elseif (hour == 15) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 19) then
-    self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 22) then
-    self:putOutCandleAndGoToBed(self.candlePositions)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea({ self.secondFloorAreaPositions })
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
   end
 end
 
@@ -836,9 +869,9 @@ function Chuyi:new ()
               if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去包
                 TalkHelper:setProgress(player.objid, 2, 17)
                 PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
-                local want = chuyi:wantApproach('takeSword', { chuyi.boxPos })
+                local want = chuyi:wantApproach('nothing', { chuyi.boxPos })
                 ActorActionHelper:callback(want, function ()
-                  local want2 = chuyi:wantApproach('takeSword', { player:getMyPosition() })
+                  local want2 = chuyi:wantApproach('nothing', { player:getMyPosition() })
                   ActorActionHelper:callback(want2, function ()
                     local itemid = MyMap.ITEM.SWORD3
                     if (BackpackHelper:addItem(player.objid, itemid, 1)) then
@@ -908,7 +941,7 @@ end
 
 -- 在几点想做什么
 function Chuyi:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'takeSword') then
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
     if (hour == 6) then
       self:wantFreeInArea({ self.hallAreaPositions })
     elseif (hour == 13) then
@@ -1049,6 +1082,10 @@ function Mochi:new ()
       MyPosition:new(42.5, 13.5, 46.5), -- 二楼对角
     },
     boxPos = MyPosition:new(43, 8, 48), -- 箱子的位置
+    standPos = MyPosition:new(40, 8.5, 43), -- 莫迟站门口的位置
+    standLookAtPos = MyPosition:new(40, 8, 37.5), -- 莫迟看着的位置
+    standPos2 = MyPosition:new(39, 8.5, 40.5), -- 池末站的位置
+    standPos3 = MyPosition:new(41, 8.5, 40.5), -- 房主站的位置
     defaultTalkMsg = '我家的床还没修好。',
     talkInfos = {
       TalkInfo:new({
@@ -1117,7 +1154,7 @@ end
 
 -- 在几点想做什么
 function Mochi:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'takeSword') then
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
     if (hour == 6) then
       self:wantFreeInArea({ self.hallAreaPositions })
     elseif (hour == 13) then
@@ -1327,17 +1364,19 @@ end
 
 -- 在几点想做什么
 function Linshushu:wantAtHour (hour)
-  if (hour == 6) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 13) then
-    self:wantFreeInArea(self.secondFloorAreaPositions)
-  elseif (hour == 15) then
-    self:wantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 19) then
-    self:lightCandle('free', true, self.candlePositions)
-    self:nextWantFreeInArea({ self.hallAreaPositions })
-  elseif (hour == 22) then
-    self:putOutCandleAndGoToBed(self.candlePositions)
+  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
+    if (hour == 6) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 13) then
+      self:wantFreeInArea(self.secondFloorAreaPositions)
+    elseif (hour == 15) then
+      self:wantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 19) then
+      self:lightCandle('free', true, self.candlePositions)
+      self:nextWantFreeInArea({ self.hallAreaPositions })
+    elseif (hour == 22) then
+      self:putOutCandleAndGoToBed(self.candlePositions)
+    end
   end
 end
 

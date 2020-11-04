@@ -81,3 +81,12 @@ function Story1:wake (objid)
   end
 end
 
+function Story1:meetMochi (player)
+  chimo:forceDoNothing()
+  local ws = WaitSeconds:new(2)
+  mochi:speakAround(nil, 0, '池末，你怎么也来了？')
+  TimeHelper:callFnAfterSecond(function ()
+    chimo:lookAt(mochi)
+    mochi:lookAt(chimo)
+  end, ws:use())
+end
