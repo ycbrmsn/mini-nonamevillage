@@ -270,15 +270,19 @@ end
 -- 时间到了
 function ActorHelper:atHour (hour)
   hour = hour or TimeHelper:getHour()
-  for k, v in pairs(self.actors) do
-    v:wantAtHour(hour)
+  for k, actor in pairs(self.actors) do
+    if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
+      actor:wantAtHour(hour)
+    end
   end
 end
 
 -- 所有特定生物重新开始干现在应该干的事情
 function ActorHelper:doItNow ()
-  for k, v in pairs(self.actors) do
-    v:doItNow()
+  for k, actor in pairs(self.actors) do
+    if (not(actor:isWantsExist()) or actor.wants[1].think ~= 'forceDoNothing') then
+      actor:doItNow()
+    end
   end
 end
 
@@ -851,7 +855,9 @@ function ActorHelper:actorCollide (objid, toobjid)
   -- LogHelper:info('碰撞了', actor1:getName())
   if (actor1) then -- 生物是特定生物
     if (ActorHelper:isPlayer(toobjid)) then -- 是玩家
-      actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
+      if (not(actor1:isWantsExist()) or actor1.wants[1].think ~= 'forceDoNothing') then
+        actor1:defaultCollidePlayerEvent(toobjid, ActorHelper:isTwoInFrontOfOne(objid, toobjid))
+      end
     else
       local actor2 = ActorHelper:getActor(toobjid)
       if (actor2) then

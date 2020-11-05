@@ -400,7 +400,9 @@ function PlayerHelper:playerClickActor (objid, toobjid)
   local myActor = ActorHelper:getActor(toobjid)
   if (myActor) then
     ActorHelper:recordClickActor(objid, myActor)
-    myActor:defaultPlayerClickEvent(objid)
+    if (not(myActor:isWantsExist()) or myActor.wants[1].think ~= 'forceDoNothing') then
+      myActor:defaultPlayerClickEvent(objid)
+    end
   end
 end
 
