@@ -244,9 +244,10 @@ function ActorHelper:resumeClickActor (objid)
   if (myActor) then
     if (myActor.wants and #myActor.wants > 0) then
       local want = myActor.wants[1]
-      if (want.style == 'lookingAt') then -- 已经开始看了，就停止
-        want.currentRestTime = 5
-        TimeHelper:delFnContinueRuns(myActor.objid .. 'lookat')
+      local t = myActor.objid .. 'lookat'
+      if (TimeHelper:isFnContinueRuns(t)) then -- 正在看，就停止
+        TimeHelper:delFnContinueRuns(t)
+        want.currentRestTime = 3
         self.clickActors[objid] = nil
       end
     end
