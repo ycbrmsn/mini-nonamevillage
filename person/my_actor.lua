@@ -1257,10 +1257,10 @@ function Mochi:beat1 (player)
   end
 end
 
--- 林树树
-Linshushu = BaseActor:new(MyMap.ACTOR.LINSHUSHU)
+-- 林隐
+Linyin = BaseActor:new(MyMap.ACTOR.LINYIN)
 
-function Linshushu:new ()
+function Linyin:new ()
   local o = {
     objid = self.actorid,
     isSingleton = true,
@@ -1358,12 +1358,12 @@ function Linshushu:new ()
 end
 
 -- 默认想法
-function Linshushu:defaultWant ()
+function Linyin:defaultWant ()
   self:wantDoNothing()
 end
 
 -- 在几点想做什么
-function Linshushu:wantAtHour (hour)
+function Linyin:wantAtHour (hour)
   if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
     if (hour == 6) then
       self:wantFreeInArea({ self.hallAreaPositions })
@@ -1380,7 +1380,7 @@ function Linshushu:wantAtHour (hour)
   end
 end
 
-function Linshushu:doItNow ()
+function Linyin:doItNow ()
   local hour = TimeHelper:getHour()
   if (hour >= 6 and hour < 13) then
     self:wantAtHour(6)
@@ -1396,7 +1396,7 @@ function Linshushu:doItNow ()
 end
 
 -- 初始化
-function Linshushu:init ()
+function Linyin:init ()
   local initSuc = self:initActor()
   if (initSuc) then
     self:doItNow()
@@ -1404,7 +1404,7 @@ function Linshushu:init ()
   return initSuc
 end
 
-function Linshushu:defaultPlayerClickEvent (playerid)
+function Linyin:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
@@ -1419,10 +1419,10 @@ function Linshushu:defaultPlayerClickEvent (playerid)
   end
 end
 
-function Linshushu:collidePlayer (playerid, isPlayerInFront)
+function Linyin:collidePlayer (playerid, isPlayerInFront)
   
 end
 
-function Linshushu:candleEvent (player, candle)
+function Linyin:candleEvent (player, candle)
   
 end

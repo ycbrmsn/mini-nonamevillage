@@ -14,7 +14,7 @@ MyMap = {
     KEY6 = 4104, -- 姚羔
     KEY7 = 4105, -- 储依
     KEY8 = 4106, -- 莫迟
-    KEY9 = 4107, -- 林树树
+    KEY9 = 4107, -- 林隐
     SWORD1 = 4121, -- 甄道的桃木剑
     SWORD2 = 4122, -- 姚羔的桃木剑
     SWORD3 = 4123, -- 储依的桃木剑
@@ -33,11 +33,10 @@ MyMap = {
     MOCHI = 9, -- 莫迟
     LUREN = 10, -- 陆仁
     JIAYI = 11, -- 贾义
-    LINSHUSHU = 12, -- 林树树
+    LINYIN = 12, -- 林隐
   },
   BUFF = {
-    CONTINUE = 999, -- 继续探险
-    PROTECT = 50000001, -- 缩小保护
+    
   },
   CUSTOM = {
     
