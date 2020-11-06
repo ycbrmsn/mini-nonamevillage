@@ -21,6 +21,7 @@ MyMap = {
     SWORD4 = 4124, -- 莫迟的桃木剑
     BAG = 4125, -- 梅膏的背包
     LETTER = 4126, -- 池末写的信
+    MIRROR = 4127, -- 八卦镜
   },
   ACTOR = {
     CHIMO = 2, -- 池末

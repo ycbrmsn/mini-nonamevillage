@@ -173,30 +173,22 @@ function Chimo:new ()
             end),
           },
           [21] = {
-            TalkSession:new(1, '怎么样了？'),
-            TalkSession:new(3, '莫迟不肯借剑。对了，听说村里有四把剑？'),
+            TalkSession:new(3, '听说村里有四把剑？'),
             TalkSession:new(1, '是的，不过一次搬房子的时候，姚家的剑遗失了。'),
             TalkSession:new(3, '那有可能找到吗？'),
-            TalkSession:new(1, '这么多年来都没听说过，要找到不太可能。'),
-            TalkSession:new(3, '至少还要一把剑……'),
-            TalkSession:new(1, '这样吧。我跟你一起去，我晓之以理，动之以情，逼……必定可以让他借的。'),
-            TalkSession:new(3, '？？？'),
-            TalkSession:new(1, '眼看就快要驱散邪气了，我也不能不出点力。'),
-            TalkSession:new(4, '那你开始干嘛去了？'),
-            TalkSession:new(3, '好，如果能行，那就太好了。'),
-            TalkSession:new(1, '我们出发吧。', function (player)
-              mochi:forceDoNothing()
-              mochi:setPosition(mochi.standPos)
-              TimeHelper:callFnAfterSecond(function ()
-                mochi:lookAt(mochi.standLookAtPos)
-              end, 2)
-              local want = chimo:wantMove('forceDoNothing', { mochi.standPos2 })
-              ActorActionHelper:callback(want, function ()
-                Story1:meetMochi(player)
-              end)
-              player:runTo({ mochi.standPos3 }, function ()
-                player:thinkSelf(0, '我先等等吧。')
-              end)
+            TalkSession:new(1, '这么多年来都没听说过，要找到不太可能。莫家那里如何？'),
+            TalkSession:new(3, '他说需要一件有类似功能的道具作为交换，才能借给我。'),
+            TalkSession:new(1, '类似功能的道具？'),
+            TalkSession:new(1, '对了，前段时间，我去梁家玩的时候，他说他在房子里找到了一件可以辟邪的道具。'),
+            TalkSession:new(3, '真的吗？'),
+            TalkSession:new(1, '当时我也没在意，刚刚听你一提，突然想起来了。'),
+            TalkSession:new(1, '你可以向他借来。我跟他关系还行，你提我说的应该没问题。'),
+            TalkSession:new(3, '如果真是这样，那就太好了。我这就去看看。', function (player)
+              TalkHelper:setProgress(player.objid, 2, 22)
+              TalkHelper:resetProgressContent(chimo, 2, 0, {
+                TalkSession:new(1, '你提我说的，应该没问题。'),
+                TalkSession:new(3, '我知道了。'),
+              })
             end),
           }
         },
@@ -1121,20 +1113,21 @@ function Mochi:new ()
             TalkSession:new(3, '你知道就最好不过了。我想借你的桃木剑一用，摆出三义剑阵驱散邪气。'),
             TalkSession:new(1, '正是因为知道，所以才不能借给你。'),
             TalkSession:new(3, '？？？'),
-            TalkSession:new(1, '我们村本有四把桃木剑，各镇一方，可破诸邪。'),
+            TalkSession:new(1, '我们村因处于特殊的位置，很容易招来四方邪气。'),
+            TalkSession:new(1, '为此，村里的先辈们打造出了四把桃木剑，各镇一方，可破诸邪。'),
             TalkSession:new(4, '原来剑有四把。'),
             TalkSession:new(1, '不过因为某些原因，有一把剑遗失了。于是才有了随后的邪气。'),
             TalkSession:new(3, '既然如此，那更应该驱散邪气，并找出根源。请相信我。'),
-            TalkSession:new(1, '我们村的人都不怎么相信外地人。'),
-            TalkSession:new(3, '？？？'),
-            TalkSession:new(1, '总之，我不会借的。'),
-            TalkSession:new(3, '可是……'),
-            TalkSession:new(1, '请回吧。'),
-            TalkSession:new(4, '看来只能另想办法了。', function (player)
+            TalkSession:new(1, '我说了这么多，你就应该知道，剑不能随便移位。除非你能找到替代品。'),
+            TalkSession:new(3, '替代品？'),
+            TalkSession:new(1, '不错。就是有类似功能的道具。'),
+            TalkSession:new(3, '那我试试吧。'),
+            TalkSession:new(1, '在你没有拿来其他替代品之前，我是不会借的。'),
+            TalkSession:new(4, '看来只能找到替代品了。', function (player)
               TalkHelper:setProgress(player.objid, 2, 21)
               TalkHelper:resetProgressContent(mochi, 2, 0, {
-                TalkSession:new(1, '请回吧。'),
-                TalkSession:new(4, '看来只能另想办法了。'),
+                TalkSession:new(1, '我是不会随便借的。'),
+                TalkSession:new(4, '看来只能找到替代品了。'),
               })
             end),
           },
