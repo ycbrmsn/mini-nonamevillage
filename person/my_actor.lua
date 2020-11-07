@@ -34,6 +34,8 @@ function Chimo:new ()
       MyPosition:new(-11.5, 13.5, 41.5), -- 二楼对角
       MyPosition:new(-4.5, 13.5, 46.5), -- 二楼对角
     },
+    cakePos = MyPosition:new(-13, 9, 41), -- 蛋糕的位置
+    aroundCakePos = MyPosition:new(-11.5, 8.5, 42.5), -- 蛋糕旁边
     talkInfos = {
       TalkInfo:new({
         id = 1,
@@ -57,6 +59,40 @@ function Chimo:new ()
             TalkSession:new(3, '我不小心走错门了，抱歉。'),
           }
         }
+      }),
+      TalkInfo:new({
+        id = 24,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.SWORD1 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.SWORD3 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.SWORD4 }),
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(1, '怎么样了。'),
+            TalkSession:new(3, '我终于拿到三把剑了。我这就去布置剑阵。'),
+            TalkSession:new(1, '太好了……不过不必急于一时。'),
+            TalkSession:new(1, '你奔波忙碌了这么久，也饿了吧。吃点东西，有力气了再去做事。'),
+            TalkSession:new(3, '听你这么一说，确实有点饿了。也对，磨刀不误砍柴工。'),
+            TalkSession:new(1, '嗯，你稍等。', function (player)
+              local want = chimo:wantApproach('forceDoNothing', { chimo.cakePos })
+              ActorActionHelper:callback(want, function ()
+                BlockHelper:placeBlock(830, chimo.cakePos.x, chimo.cakePos.y, chimo.cakePos.z) -- 放置蛋糕
+                local want2 = chimo:wantApproach('forceDoNothing', { player:getMyPosition() })
+                ActorActionHelper:callback(want2, function ()
+                  TalkHelper:setProgress(player.objid, 2, 25)
+                  chimo:forceDoNothing()
+                  chimo:wantLookAt('forceDoNothing', player, 100)
+                  chimo:speakTo(player.objid, 0, '你看看味道怎样。')
+                  ChatHelper:showEndSeparate(player.objid)
+                  player:resetTalkIndex(1)
+                  Story1:comeToEatCake(player)
+                end)
+              end)
+            end),
+          },
+        },
       }),
       TalkInfo:new({
         id = 14,
@@ -1343,7 +1379,7 @@ function Mochi:new ()
             TalkSession:new(1, '你稍等。', function (player)
               local itemid = MyMap.ITEM.MIRROR
               if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去八卦镜
-                TalkHelper:setProgress(player.objid, 2, 23)
+                TalkHelper:setProgress(player.objid, 2, 24)
                 PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
                 local want = mochi:wantApproach('forceDoNothing', { mochi.boxPos })
                 ActorActionHelper:callback(want, function ()

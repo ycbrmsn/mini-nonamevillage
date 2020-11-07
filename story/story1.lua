@@ -81,18 +81,56 @@ function Story1:wake (objid)
   end
 end
 
-function Story1:meetMochi (player)
-  chimo:forceDoNothing()
+function Story1:comeToEatCake (player)
+  local pos = chimo.cakePos
   local ws = WaitSeconds:new(2)
-  mochi:speakAround(nil, ws:get(), '池末，你怎么也来了？')
+  PlayerHelper:changeVMode(nil)
+  player:speakSelf(ws:use(1), '我来尝尝看。')
   TimeHelper:callFnAfterSecond(function ()
-    chimo:lookAt(mochi)
-    mochi:lookAt(chimo)
+    player:runTo({ chimo.aroundCakePos }, function ()
+      player:enableMove(false, true)
+      TimeHelper:repeatUtilSuccess(player.objid, 'eatCake', function ()
+        return Story1:eatCake(player, pos.x, pos.y, pos.z)
+      end, 1)
+      chimo:wantApproach('forceDoNothing', { chimo.aroundCakePos })
+      chimo:nextWantLookAt('forceDoNothing', player, 100)
+    end)
   end, ws:use())
-  chimo:speakAround(nil, ws:use(), '听说我们村子被邪气笼罩了，不知道你是否知道。')
-  mochi:speakAround(nil, ws:use(), '不错，不过……')
-  mochi:speakAround(nil, ws:use(), '既然是的话，那你也应该为村子出一份力。')
-  mochi:speakAround(nil, ws:use(), '只要你借来剑，这位少侠有办法驱散邪气。')
-  chimo:speakAround(nil, ws:use(), '出力是没错，不过这剑另有用处……')
-  mochi:speakAround(nil, ws:use(), '只要你借来剑，这位少侠有办法驱散邪气。')
+end
+
+function Story1:eatCake (player, x, y, z)
+  local blockid = BlockHelper:getBlockID(x, y, z)
+  if (blockid == 830) then
+    local data = BlockHelper:getBlockData(x, y, z)
+    if (data < 6) then
+      BlockHelper:setBlockAll(x, y, z, blockid, data + 1)
+      return false
+    else
+      Story1:afterEat(player)
+      return true
+    end
+  else
+    Story1:afterEat(player)
+    return true
+  end
+end
+
+-- 吃掉蛋糕后
+function Story1:afterEat (player)
+  local ws = WaitSeconds:new()
+  player:speakSelf(ws:use(), '味道真不错。')
+  chimo:speakAround(nil, ws:use(), '那是，我特意加了料的。')
+  player:speakSelf(ws:use(), '什么料？')
+  chimo:speakAround(nil, ws:use(), '等等你就知道了……')
+  player.action:playDown(ws:get())
+  player:speakSelf(ws:use(), '啊！你做了什么！')
+  chimo:speakAround(nil, ws:use(), '谢谢你帮我拿来这些剑。这最后的蛋糕就是谢礼了。')
+  chimo:speakAround(nil, ws:use(), '其他的你就不需要知道了……')
+  ChatHelper:waitSendMsg(nil, ws:use(), '\t\t你闭上了眼睛，再也没有再睁开过了')
+  ChatHelper:waitSendMsg(nil, ws:use(), '。而这个小山村里后来发生的事情，也')
+  ChatHelper:waitSendMsg(nil, ws:use(), '不得而知了……')
+  TimeHelper:callFnAfterSecond(function ()
+    MyGameHelper:setNameAndDesc('受骗者', '为山九仞功亏一篑')
+    PlayerHelper:setGameWin(player.objid)
+  end, ws:get())
 end
