@@ -464,11 +464,6 @@ function Meigao:new ()
         },
       }),
     }, -- 对话信息
-    TaskInfos = {
-      [2] = {
-        
-      }
-    }, -- 任务对话信息
   }
   setmetatable(o, self)
   self.__index = self
@@ -573,6 +568,192 @@ function Meigao:candleEvent (player, candle)
 end
 
 function Meigao:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你想干嘛！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有干什么！')
+    self:speakTo(player.objid, ws:use(), '三更半夜潜入我房里！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+-- 王毅
+Wangyi = BaseActor:new(MyMap.ACTOR.WANGYI)
+
+function Wangyi:new ()
+  local o = {
+    objid = self.actorid,
+    isSingleton = true,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(20.5, 9.5, 99.5), -- 床尾位置
+      ActorHelper.FACE_YAW.EAST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(16.5, 9.5, 93.5), -- 客厅
+      MyPosition:new(22.5, 9.5, 101.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(21.5, 8.5, 91.5), -- 进门旁
+      MyPosition:new(17.5, 8.5, 97.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      {
+        MyPosition:new(25.5, 8.5, 99.5), -- 门旁
+        MyPosition:new(21.5, 8.5, 100.5), -- 床旁
+      },
+      {
+        MyPosition:new(21.5, 8.5, 100.5), -- 床旁
+        MyPosition:new(19.5, 8.5, 101.5), -- 铁门旁
+      }
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(16.5, 13.5, 93.5), -- 二楼对角
+      MyPosition:new(23.5, 13.5, 98.5), -- 二楼对角
+    },
+    talkInfos = {
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好，我可以借宿一宿吗？'),
+            TalkSession:new(1, '我家里不欢迎陌生人。'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '我家里不欢迎陌生人。'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
+          },
+        },
+      }),
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Wangyi:defaultWant ()
+  self:doItNow()
+end
+
+-- 在几点想做什么
+function Wangyi:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Wangyi:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Wangyi:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Wangyi:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 9) then
+          if (not(self.lostBag)) then -- 有包包
+            local itemid = MyMap.ITEM.BAG
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostBag = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '不能再这么做了。')
+          end
+        else
+          player:thinkSelf(0, '还是不要惊动她比较好。')
+        end
+      else
+        player:thinkSelf(0, '还是不要惊动她比较好。')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      TalkHelper:talkWith(playerid, self)
+    end
+  end
+end
+
+function Wangyi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Wangyi:candleEvent (player, candle)
+  
+end
+
+function Wangyi:beat1 (player)
   if (not(self.isHappened1)) then
     self.isHappened1 = true
     player:enableMove(false, true)
