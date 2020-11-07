@@ -182,11 +182,11 @@ function Chimo:new ()
             TalkSession:new(1, '对了，前段时间，我去梁家玩的时候，他说他在房子里找到了一件可以辟邪的道具。'),
             TalkSession:new(3, '真的吗？'),
             TalkSession:new(1, '当时我也没在意，刚刚听你一提，突然想起来了。'),
-            TalkSession:new(1, '你可以向他借来。我跟他关系还行，你提我说的应该没问题。'),
+            TalkSession:new(1, '你可以向他借来。我跟他关系还行，你就说我向他借，应该没问题。'),
             TalkSession:new(3, '如果真是这样，那就太好了。我这就去看看。', function (player)
               TalkHelper:setProgress(player.objid, 2, 22)
               TalkHelper:resetProgressContent(chimo, 2, 0, {
-                TalkSession:new(1, '你提我说的，应该没问题。'),
+                TalkSession:new(1, '你就说我向他借，应该没问题。'),
                 TalkSession:new(3, '我知道了。'),
               })
             end),
@@ -202,24 +202,22 @@ end
 
 -- 默认想法
 function Chimo:defaultWant ()
-  self:wantDoNothing()
+  self:doItNow()
 end
 
 -- 在几点想做什么
 function Chimo:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea({ self.secondFloorAreaPositions })
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 
@@ -442,24 +440,22 @@ end
 
 -- 默认想法
 function Meigao:defaultWant ()
-  self:wantDoNothing()
+  self:doItNow()
 end
 
 -- 在几点想做什么
 function Meigao:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea({ self.secondFloorAreaPositions })
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 
@@ -559,6 +555,244 @@ function Meigao:beat1 (player)
   end
 end
 
+-- 梁杖
+Liangzhang = BaseActor:new(MyMap.ACTOR.LIANGZHANG)
+
+function Liangzhang:new ()
+  local o = {
+    objid = self.actorid,
+    isSingleton = true,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(-28.5, 9.5, 99.5), -- 床尾位置
+      ActorHelper.FACE_YAW.WEST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(-24.5, 9.5, 92.5), -- 客厅
+      MyPosition:new(-32.5, 9.5, 99.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(-29.5, 8.5, 91.5), -- 进门旁
+      MyPosition:new(-25.5, 8.5, 97.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      {
+        MyPosition:new(-32.5, 8.5, 101.5), -- 柜子旁
+        MyPosition:new(-27.5, 8.5, 100.5), -- 床旁
+      },
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(-25.5, 13.5, 98.5), -- 二楼对角
+      MyPosition:new(-31.5, 13.5, 91.5), -- 二楼对角
+    },
+    -- frontIronDoorPos = MyPosition:new(-27.5, 8.5, 101.5), -- 铁门前
+    mirrorPos = MyPosition:new(-33.5, 9.5, 92.5), -- 八卦镜位置
+    talkInfos = {
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好，我可以借宿一宿吗？'),
+            TalkSession:new(1, '这你得问村长。'),
+            TalkSession:new(4, '？？？'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
+          },
+        }
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 })
+        },
+        progress = {
+          [22] = {
+            TalkSession:new(3, '你好。冒昧来访，确实是有要事。'),
+            TalkSession:new(1, '……'),
+            TalkSession:new(1, '是要借宿吗？'),
+            TalkSession:new(3, '不是这事。听闻你有一件辟邪的道具。可否……'),
+            TalkSession:new(1, '没有。'),
+            TalkSession:new(3, '呃……'),
+            TalkSession:new(3, '池末说想向你借一件辟邪的道具。'),
+            TalkSession:new(1, '哦，那是什么。'),
+            TalkSession:new(3, '他说是你在屋子里找到的。'),
+            TalkSession:new(1, '……'),
+            TalkSession:new(1, '你等等。', function (player)
+              local want = liangzhang:wantApproach('forceDoNothing', { liangzhang.mirrorPos })
+              ActorActionHelper:callback(want, function ()
+                local want2 = liangzhang:wantApproach('forceDoNothing', { player:getMyPosition() })
+                ActorActionHelper:callback(want2, function ()
+                  local itemid = MyMap.ITEM.MIRROR
+                  if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                    PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                    TalkHelper:setProgress(player.objid, 2, 23)
+                    TalkHelper:resetProgressContent(liangzhang, 2, 0, {
+                      TalkSession:new(1, '记得还我。'),
+                      TalkSession:new(3, '一定。'),
+                    })
+                    liangzhang.wants = nil
+                  liangzhang:speakTo(player.objid, 0, '拿给你了，让他记得还我。')
+                  ChatHelper:showEndSeparate(player.objid)
+                  player:resetTalkIndex(1)
+                  end
+                end)
+              end)
+            end),
+          },
+        },
+      }),
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Liangzhang:defaultWant ()
+  self:doItNow()
+end
+
+-- 在几点想做什么
+function Liangzhang:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Liangzhang:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Liangzhang:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Liangzhang:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        local progress = TalkHelper:getProgress(playerid, 2)
+        if (progress >= 6) then
+          if (not(self.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY5
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostKey = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+            end
+          else
+            player:thinkSelf(0, '他身上似乎没有钥匙了。')
+          end
+        else
+          player:thinkSelf(0, '还是不要惊动他比较好。')
+        end
+      else
+        player:thinkSelf(0, '还是不要惊动他比较好。')
+      end
+    else
+      self.action:stopRun()
+      -- self.action:playStretch()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
+        self:beat1(player)
+      else
+        TalkHelper:talkWith(playerid, self)
+      end
+    end
+  end
+end
+
+function Liangzhang:collidePlayer (playerid, isPlayerInFront)
+  -- 检测玩家手里的东西
+  local itemid = PlayerHelper:getCurToolID(playerid)
+  if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
+    local player = PlayerHelper:getPlayer(playerid)
+    if (player:isHostPlayer()) then
+      self:beat1(player)
+    end
+  end
+end
+
+function Liangzhang:candleEvent (player, candle)
+  
+end
+
+function Liangzhang:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有！')
+    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+function Liangzhang:beat2 (player)
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    self:lookAt(player)
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢来偷东西！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '你听我解释……')
+    self:speakTo(player.objid, ws:use(), '不需要解释了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('梁上者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
 -- 甄道
 Zhendao = BaseActor:new(MyMap.ACTOR.ZHENDAO)
 
@@ -652,24 +886,22 @@ end
 
 -- 默认想法
 function Zhendao:defaultWant ()
-  self:wantDoNothing()
+  self:doItNow()
 end
 
 -- 在几点想做什么
 function Zhendao:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea({ self.secondFloorAreaPositions })
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 
@@ -861,9 +1093,9 @@ function Chuyi:new ()
               if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去包
                 TalkHelper:setProgress(player.objid, 2, 17)
                 PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
-                local want = chuyi:wantApproach('nothing', { chuyi.boxPos })
+                local want = chuyi:wantApproach('forceDoNothing', { chuyi.boxPos })
                 ActorActionHelper:callback(want, function ()
-                  local want2 = chuyi:wantApproach('nothing', { player:getMyPosition() })
+                  local want2 = chuyi:wantApproach('forceDoNothing', { player:getMyPosition() })
                   ActorActionHelper:callback(want2, function ()
                     local itemid = MyMap.ITEM.SWORD3
                     if (BackpackHelper:addItem(player.objid, itemid, 1)) then
@@ -933,19 +1165,17 @@ end
 
 -- 在几点想做什么
 function Chuyi:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea({ self.secondFloorAreaPositions })
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 
@@ -1147,19 +1377,17 @@ end
 
 -- 在几点想做什么
 function Mochi:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea({ self.secondFloorAreaPositions })
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 
@@ -1352,24 +1580,22 @@ end
 
 -- 默认想法
 function Linyin:defaultWant ()
-  self:wantDoNothing()
+  self:doItNow()
 end
 
 -- 在几点想做什么
 function Linyin:wantAtHour (hour)
-  if (not(self:isWantsExist()) or self.wants[1].think ~= 'forceDoNothing') then
-    if (hour == 6) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 13) then
-      self:wantFreeInArea(self.secondFloorAreaPositions)
-    elseif (hour == 15) then
-      self:wantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 19) then
-      self:lightCandle('free', true, self.candlePositions)
-      self:nextWantFreeInArea({ self.hallAreaPositions })
-    elseif (hour == 22) then
-      self:putOutCandleAndGoToBed(self.candlePositions)
-    end
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea(self.secondFloorAreaPositions)
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
   end
 end
 

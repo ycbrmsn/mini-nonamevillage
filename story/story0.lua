@@ -54,8 +54,10 @@ function Story0:enter (objid)
     -- meigao.lostBag = true
   end, 2)
   TalkHelper:addTask(objid, 2)
-  TalkHelper:setProgress(objid, 2, 21)
+  TalkHelper:setProgress(objid, 2, 22)
   player:setPosition(-8, 7, 32) -- 池末门外
+  player:setPosition(-28, 7, 84) -- 梁杖门外
+
   -- player:setPosition(40, 7, 32) -- 莫迟门外
   if (1 == 1) then
     return
