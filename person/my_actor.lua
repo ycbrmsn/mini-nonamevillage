@@ -1326,6 +1326,49 @@ function Mochi:new ()
         },
       }),
       TalkInfo:new({
+        id = 13,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 }),
+          TalkAnt:new({ t = 1, taskid = 7 }),
+          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.MIRROR }),
+        },
+        progress = {
+          [1] = {
+            TalkSession:new(3, '你看这道具行吗？', function (player)
+              player:takeOutItem(MyMap.ITEM.MIRROR)
+            end),
+            TalkSession:new(1, '这是……八卦镜。没想到你能寻得此物。'),
+            TalkSession:new(1, '若是与此物作为交换，我倒是可以借给你几天。'),
+            TalkSession:new(3, '好，那给你。'),
+            TalkSession:new(1, '你稍等。', function (player)
+              local itemid = MyMap.ITEM.MIRROR
+              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去八卦镜
+                TalkHelper:setProgress(player.objid, 2, 23)
+                PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
+                local want = mochi:wantApproach('forceDoNothing', { mochi.boxPos })
+                ActorActionHelper:callback(want, function ()
+                  local want2 = mochi:wantApproach('forceDoNothing', { player:getMyPosition() })
+                  ActorActionHelper:callback(want2, function ()
+                    local itemid = MyMap.ITEM.SWORD4
+                    if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                      PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                      TalkHelper:resetProgressContent(mochi, 2, 0, {
+                        TalkSession:new(1, '记得还给我。'),
+                        TalkSession:new(3, '一定归还。'),
+                      })
+                      mochi.wants = nil
+                    end
+                    mochi:speakTo(player.objid, 0, '用完记得还给我。')
+                    ChatHelper:showEndSeparate(player.objid)
+                    player:resetTalkIndex(1)
+                  end)
+                end)
+              end
+            end),
+          },
+        },
+      }),
+      TalkInfo:new({
         id = 2,
         ants = {
           TalkAnt:new({ t = 1, taskid = 2 })
@@ -1354,6 +1397,7 @@ function Mochi:new ()
             TalkSession:new(3, '那我试试吧。'),
             TalkSession:new(1, '在你没有拿来其他替代品之前，我是不会借的。'),
             TalkSession:new(4, '看来只能找到替代品了。', function (player)
+              TalkHelper:addTask(player.objid, 7)
               TalkHelper:setProgress(player.objid, 2, 21)
               TalkHelper:resetProgressContent(mochi, 2, 0, {
                 TalkSession:new(1, '我是不会随便借的。'),
