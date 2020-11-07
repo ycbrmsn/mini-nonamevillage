@@ -96,9 +96,10 @@ function MyPlayerHelper:playerAddItem (objid, itemid, itemnum)
   MyStoryHelper:playerAddItem(objid, itemid, itemnum)
   -- body
   if (itemid == MyMap.ITEM.SWORD1) then -- 甄道的桃木剑
-    if (StoryHelper:forward2(2, '梁上君子')) then
-      local story = StoryHelper:getStory()
-      story:wake(objid)
+    local progress = TalkHelper:getProgress(objid, 2)
+    if (progress == 6) then
+      TalkHelper:setProgress(objid, 2, 7)
+      Story1:wake(objid)
     end
   elseif (itemid == MyMap.ITEM.SWORD2) then -- 姚羔的桃木剑
 

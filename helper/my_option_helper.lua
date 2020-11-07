@@ -66,7 +66,7 @@ MyOptionHelper = {
           if (not(meigao.lostBag)) then -- 有包包
             local itemid = MyMap.ITEM.BAG
             if (BackpackHelper:addItem(playerid, itemid, 1)) then
-              self.lostBag = true
+              meigao.lostBag = true
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
               player:thinkSelf(1, '我为什么会这么做？')
             end
@@ -84,11 +84,11 @@ MyOptionHelper = {
     stealChuyi = {
       { '看看她身上有什么', function (player)
           player:enableMove(true, true)
-          if (not(self.lostKey)) then -- 有钥匙
+          if (not(chuyi.lostKey)) then -- 有钥匙
             local itemid = MyMap.ITEM.KEY7
-            if (BackpackHelper:addItem(playerid, itemid, 1)) then
-              self.lostKey = true
-              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              chuyi.lostKey = true
+              PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               player:thinkSelf(1, '我为什么会这么做？')
             end
           else

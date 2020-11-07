@@ -64,7 +64,7 @@ function Story0:enter (objid)
   -- if (1 == 1) then
   --   return
   -- end
-  
+
   --- test end ---
 
   if (PlayerHelper:isMainPlayer(objid)) then -- 房主
@@ -104,9 +104,12 @@ function Story0:think ()
     if (PlayerHelper:isMainPlayer(player.objid)) then
       player:runTo(self.inVillagePoses, function ()
         StoryHelper:forward2(1, 1)
+        PlayerHelper:changeVMode(player.objid, VIEWPORTTYPE.MAINVIEW)
       end)
     else
-      player:runTo(self.inVillagePoses)
+      player:runTo(self.inVillagePoses, function ()
+        PlayerHelper:changeVMode(player.objid, VIEWPORTTYPE.MAINVIEW)
+      end)
     end
   end, ws:get())
 end

@@ -145,7 +145,7 @@ function Chimo:new ()
             end),
           },
           [3] = {
-            TalkSession:new(1, '你借来桃木剑了吗？'),
+            TalkSession:new(1, '你去甄家借来桃木剑了吗？'),
             TalkSession:new(3, '还没。'),
           },
           [4] = {
@@ -184,7 +184,7 @@ function Chimo:new ()
             TalkSession:new(3, '我去看看。', function (player)
               TalkHelper:setProgress(player.objid, 2, 8)
               TalkHelper:resetProgressContent(chimo, 2, 0, {
-                TalkSession:new(1, '怎么样，借到剑了吗？'),
+                TalkSession:new(1, '怎么样，去储家借到剑了吗？'),
                 TalkSession:new(3, '还没。'),
               })
             end),
@@ -1669,7 +1669,7 @@ function Mochi:defaultPlayerClickEvent (playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
       if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
-        if (progress >= 21) then
+        if (progress >= 20) then
           player:enableMove(false, true)
           player:thinkSelf(0, '我要做什么？')
           MyOptionHelper:showOptions(player, 'stealMochi')
