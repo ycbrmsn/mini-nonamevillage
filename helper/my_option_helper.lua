@@ -60,6 +60,48 @@ MyOptionHelper = {
         end
       },
     },
+    stealMeigao = {
+      { '看看她身上有什么', function (player)
+          player:enableMove(true, true)
+          if (not(meigao.lostBag)) then -- 有包包
+            local itemid = MyMap.ITEM.BAG
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostBag = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '她身上似乎没有什么特别的东西了。')
+          end
+        end
+      },
+      { '不做什么', function (player)
+          player:enableMove(true, true)
+          player:thinkSelf(0, '还是不要做什么比较好。')
+        end
+      },
+    },
+    stealChuyi = {
+      { '看看她身上有什么', function (player)
+          player:enableMove(true, true)
+          if (not(self.lostKey)) then -- 有钥匙
+            local itemid = MyMap.ITEM.KEY7
+            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+              self.lostKey = true
+              PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
+              player:thinkSelf(1, '我为什么会这么做？')
+            end
+          else
+            player:thinkSelf(0, '她身上似乎没有钥匙了。')
+          end
+        end
+      },
+      { '不做什么', function (player)
+          player:enableMove(true, true)
+          player:thinkSelf(0, '还是不要做什么比较好。')
+        end
+      },
+    },
     stealMochi = {
       { '看看他身上有什么', function (player)
           player:enableMove(true, true)
@@ -80,7 +122,7 @@ MyOptionHelper = {
           player:thinkSelf(0, '还是不要做什么比较好。')
         end
       },
-    }
+    },
   }
 }
 

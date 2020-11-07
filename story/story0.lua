@@ -43,6 +43,7 @@ function Story0:enter (objid)
   -- local mainProgress = StoryHelper:getMainStoryProgress()
   local player = PlayerHelper:getPlayer(objid)
   -- test begin ---
+
   -- StoryHelper:goTo(2, 7)
   -- TimeHelper:setHour(23)
   -- player:setPosition(-28, 7, 31)
@@ -53,16 +54,17 @@ function Story0:enter (objid)
   TimeHelper:callFnAfterSecond(function ()
     -- meigao.lostBag = true
   end, 2)
-  TalkHelper:addTask(objid, 2)
-  TalkHelper:addTask(objid, 7)
-  TalkHelper:setProgress(objid, 2, 22)
-  player:setPosition(-8, 7, 32) -- 池末门外
+  -- TalkHelper:addTask(objid, 2)
+  -- TalkHelper:addTask(objid, 7)
+  -- TalkHelper:setProgress(objid, 2, 22)
+  -- player:setPosition(-8, 7, 32) -- 池末门外
   -- player:setPosition(-28, 7, 84) -- 梁杖门外
 
   -- player:setPosition(40, 7, 32) -- 莫迟门外
-  if (1 == 1) then
-    return
-  end
+  -- if (1 == 1) then
+  --   return
+  -- end
+  
   --- test end ---
 
   if (PlayerHelper:isMainPlayer(objid)) then -- 房主
