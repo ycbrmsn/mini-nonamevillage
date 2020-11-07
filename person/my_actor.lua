@@ -1287,82 +1287,13 @@ function Yaogao:new ()
         },
       }),
       TalkInfo:new({
-        id = 13,
-        ants = {
-          TalkAnt:new({ t = 1, taskid = 2 }),
-          TalkAnt:new({ t = 4, itemid = MyMap.ITEM.BAG }),
-        },
-        progress = {
-          [1] = {
-            TalkSession:new(3, '你看看是这个包吗？', function (player)
-              player:takeOutItem(MyMap.ITEM.BAG)
-            end),
-            TalkSession:new(1, '没错，就是这个呢。', function (player)
-              player:takeOutItem(MyMap.ITEM.BAG)
-            end),
-            TalkSession:new(3, '那给你。', function (player)
-              player:takeOutItem(MyMap.ITEM.BAG)
-            end),
-            TalkSession:new(1, '太好了。你等等，我这就去取剑。', function (player)
-              local itemid = MyMap.ITEM.BAG
-              if (BackpackHelper:removeGridItemByItemID(player.objid, itemid, 1)) then -- 失去包
-                TalkHelper:setProgress(player.objid, 2, 17)
-                PlayerHelper:showToast(player.objid, '失去', ItemHelper:getItemName(itemid))
-                local want = chuyi:wantApproach('forceDoNothing', { chuyi.boxPos })
-                ActorActionHelper:callback(want, function ()
-                  local want2 = chuyi:wantApproach('forceDoNothing', { player:getMyPosition() })
-                  ActorActionHelper:callback(want2, function ()
-                    local itemid = MyMap.ITEM.SWORD3
-                    if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-                      PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-                      TalkHelper:setProgress(player.objid, 2, 18)
-                      TalkHelper:resetProgressContent(chuyi, 2, 0, {
-                        TalkSession:new(1, '用完记得还给我。'),
-                        TalkSession:new(3, '一定归还。'),
-                      })
-                      chuyi.wants = nil
-                    end
-                    chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
-                    ChatHelper:showEndSeparate(player.objid)
-                    player:resetTalkIndex(1)
-                  end)
-                end)
-              end
-            end),
-          },
-        },
-      }),
-      TalkInfo:new({
         id = 2,
         ants = {
           TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
-          [8] = {
-            TalkSession:new(1, '我家的床还没修好。'),
-            TalkSession:new(3, '今天不是为了借宿的事情。我发现你们村子被一股邪气笼罩。'),
-            TalkSession:new(1, '啊，有吗？'),
-            TalkSession:new(3, '不错，我正是为此而来。你可发现今天天空的阴云更浓了。'),
-            TalkSession:new(1, '啊，好像是的。'),
-            TalkSession:new(3, '那便是受邪气聚集的影响。我需要几把桃木剑，摆出剑阵驱散邪气。'),
-            TalkSession:new(3, '听闻祖上有一把桃木剑，特来借剑一用。'),
-            TalkSession:new(1, '啊，我家的桃木剑不能随便借的。'),
-            TalkSession:new(3, '我只是借用两天，完成剑阵驱散邪气后即可还你。'),
-            TalkSession:new(2, '两天应该关系不大吧……'),
-            TalkSession:new(1, '要借你也不是不行。我好喜欢梅姐姐的包包，如果你能借来让我背几天，我就借给你。'),
-            TalkSession:new(3, '你的梅姐姐？'),
-            TalkSession:new(1, '梅姐姐家在村的东南方。如果你借来包包，我就借剑给你。'),
-            TalkSession:new(3, '好的，一言为定。', function (player)
-              TalkHelper:setProgress(player.objid, 2, 9)
-              TalkHelper:resetProgressContent(chuyi, 2, 0, {
-                TalkSession:new(1, '如果你借来梅姐姐的包包，我就借剑给你。'),
-              })
-            end),
-          },
-          [17] = {
-            TalkSession:new(1, '我先去取剑。', function (player)
-              chuyi:actionRightNow()
-            end),
+          [0] = {
+            TalkSession:new(1, '我家的床可能短时间内修不好了。'),
           },
         },
       }),
@@ -1424,18 +1355,7 @@ function Yaogao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
-        local progress = TalkHelper:getProgress(playerid, 2)
-        if (progress >= 8) then
-          player:enableMove(false, true)
-          player:thinkSelf(0, '我要做什么？')
-          MyOptionHelper:showOptions(player, 'stealYaogao')
-        else
-          player:thinkSelf(0, '这么晚了，还是不要惊动她比较好。')
-        end
-      else
-        player:thinkSelf(0, '这么晚了，还是不要惊动她比较好。')
-      end
+      player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
     else
       self.action:stopRun()
       self:lookAt(playerid)
@@ -1956,6 +1876,344 @@ function Mochi:candleEvent (player, candle)
 end
 
 function Mochi:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '误会误会！')
+    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+-- 陆仁
+Luren = BaseActor:new(MyMap.ACTOR.LUREN)
+
+function Luren:new ()
+  local o = {
+    objid = self.actorid,
+    isSingleton = true,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(-27.5, 9.5, 73.5), -- 床尾位置
+      ActorHelper.FACE_YAW.EAST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(-31.5, 9.5, 67.5), -- 客厅
+      MyPosition:new(-25.5, 9.5, 75.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(-26.5, 8.5, 65.5), -- 进门旁
+      MyPosition:new(-30.5, 8.5, 71.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      {
+        MyPosition:new(-22.5, 8.5, 73.5), -- 门旁
+        MyPosition:new(-26.5, 8.5, 74.5), -- 床旁
+      },
+      {
+        MyPosition:new(-26.5, 8.5, 74.5), -- 床旁
+        MyPosition:new(-28.5, 8.5, 75.5), -- 铁门旁
+      }
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(-31.5, 13.5, 67.5), -- 二楼对角
+      MyPosition:new(-24.5, 13.5, 72.5), -- 二楼对角
+    },
+    boxPos = MyPosition:new(-32, 8, 74), -- 箱子的位置
+    defaultTalkMsg = '我家的床还没修好。',
+    talkInfos = {
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
+            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(3, '这样啊，那打扰了。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 })
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '我家的床可能短时间内修不好了。'),
+          },
+        },
+      }),
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Luren:defaultWant ()
+  self:doItNow()
+end
+
+-- 在几点想做什么
+function Luren:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Luren:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Luren:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Luren:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      TalkHelper:talkWith(playerid, self)
+    end
+  end
+end
+
+function Luren:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Luren:candleEvent (player, candle)
+  
+end
+
+function Luren:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '啊，你竟然！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '误会误会！')
+    self:speakTo(player.objid, ws:use(), '解释也没用！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('迷路者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+-- 贾义
+Jiayi = BaseActor:new(MyMap.ACTOR.JIAYI)
+
+function Jiayi:new ()
+  local o = {
+    objid = self.actorid,
+    isSingleton = true,
+    unableBeKilled = true,
+    bedData = {
+      MyPosition:new(40.5, 9.5, 73.5), -- 床尾位置
+      ActorHelper.FACE_YAW.EAST, -- 床尾朝向
+    },
+    candlePositions = {
+      MyPosition:new(36.5, 9.5, 67.5), -- 客厅
+      MyPosition:new(42.5, 9.5, 75.5), -- 卧室
+    },
+    hallAreaPositions = {
+      MyPosition:new(41.5, 8.5, 65.5), -- 进门旁
+      MyPosition:new(37.5, 8.5, 71.5), -- 楼梯旁
+    },
+    bedroomAreaPositions = {
+      {
+        MyPosition:new(45.5, 8.5, 73.5), -- 门旁
+        MyPosition:new(41.5, 8.5, 74.5), -- 床旁
+      },
+      {
+        MyPosition:new(41.5, 8.5, 74.5), -- 床旁
+        MyPosition:new(39.5, 8.5, 75.5), -- 铁门旁
+      }
+    },
+    secondFloorAreaPositions = {
+      MyPosition:new(36.5, 13.5, 67.5), -- 二楼对角
+      MyPosition:new(43.5, 13.5, 72.5), -- 二楼对角
+    },
+    boxPos = MyPosition:new(36, 8, 74), -- 箱子的位置
+    defaultTalkMsg = '我家的床还没修好。',
+    talkInfos = {
+      TalkInfo:new({
+        id = 1,
+        ants = {
+          TalkAnt:new({ t = 2, taskid = 2 }),
+          TalkAnt:new({ t = 2, taskid = 3 }),
+          TalkAnt:new({ t = 2, taskid = 4 }),
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
+            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(3, '这样啊，那打扰了。'),
+          },
+        },
+      }),
+      TalkInfo:new({
+        id = 2,
+        ants = {
+          TalkAnt:new({ t = 1, taskid = 2 })
+        },
+        progress = {
+          [0] = {
+            TalkSession:new(1, '我家的床可能短时间内修不好了。'),
+          },
+        },
+      }),
+    }, -- 对话信息
+  }
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end
+
+-- 默认想法
+function Jiayi:defaultWant ()
+  self:doItNow()
+end
+
+-- 在几点想做什么
+function Jiayi:wantAtHour (hour)
+  if (hour == 6) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 13) then
+    self:wantFreeInArea({ self.secondFloorAreaPositions })
+  elseif (hour == 15) then
+    self:wantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 19) then
+    self:lightCandle('free', true, self.candlePositions)
+    self:nextWantFreeInArea({ self.hallAreaPositions })
+  elseif (hour == 22) then
+    self:putOutCandleAndGoToBed(self.candlePositions)
+  end
+end
+
+function Jiayi:doItNow ()
+  local hour = TimeHelper:getHour()
+  if (hour >= 6 and hour < 13) then
+    self:wantAtHour(6)
+  elseif (hour >= 13 and hour < 15) then
+    self:wantAtHour(13)
+  elseif (hour >= 15 and hour < 19) then
+    self:wantAtHour(15)
+  elseif (hour >= 19 and hour < 22) then
+    self:wantAtHour(19)
+  else
+    self:wantAtHour(22)
+  end
+end
+
+-- 初始化
+function Jiayi:init ()
+  local initSuc = self:initActor()
+  if (initSuc) then
+    self:doItNow()
+  end
+  return initSuc
+end
+
+function Jiayi:defaultPlayerClickEvent (playerid)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      TalkHelper:talkWith(playerid, self)
+    end
+  end
+end
+
+function Jiayi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      local player = PlayerHelper:getPlayer(playerid)
+      self:beat1(player)
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
+end
+
+function Jiayi:candleEvent (player, candle)
+  
+end
+
+function Jiayi:beat1 (player)
   if (not(self.isHappened1)) then
     self.isHappened1 = true
     player:enableMove(false, true)

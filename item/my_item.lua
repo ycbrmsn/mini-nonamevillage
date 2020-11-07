@@ -70,6 +70,16 @@ Key8 = Key:new({
 
 Key9 = Key:new({ 
   id = MyMap.ITEM.KEY9,
+  doorPos = MyPosition:new(-29.5, 8.5, 75.5),
+})
+
+Key10 = Key:new({ 
+  id = MyMap.ITEM.KEY10,
+  doorPos = MyPosition:new(38.5, 8.5, 75.5),
+})
+
+Key11 = Key:new({ 
+  id = MyMap.ITEM.KEY11,
   doorPos = MyPosition:new(7.5, 8.5, 75.5),
 })
 

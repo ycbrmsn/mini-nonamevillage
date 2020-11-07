@@ -11,8 +11,10 @@ function MyActorHelper:init ()
   yaogao = Yaogao:new()
   chuyi = Chuyi:new()
   mochi = Mochi:new()
+  luren = Luren:new()
+  jiayi = Jiayi:new()
   linyin = Linyin:new()
-  local myActors = { chimo, meigao, wangyi, liangzhang, zhendao, yaogao, chuyi, mochi, linyin }
+  local myActors = { chimo, meigao, wangyi, liangzhang, zhendao, yaogao, chuyi, mochi, luren, jiayi, linyin }
   for i, v in ipairs(myActors) do
     TimeHelper:initActor(v)
   end
