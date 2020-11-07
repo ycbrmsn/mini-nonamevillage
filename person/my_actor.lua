@@ -35,7 +35,8 @@ function Chimo:new ()
       MyPosition:new(-4.5, 13.5, 46.5), -- 二楼对角
     },
     cakePos = MyPosition:new(-13, 9, 41), -- 蛋糕的位置
-    aroundCakePos = MyPosition:new(-11.5, 8.5, 42.5), -- 蛋糕旁边
+    aroundCakePos = MyPosition:new(-12.5, 9.5, 42.5), -- 蛋糕旁边
+    standAround = MyPosition:new(-10.5, 8.5, 42.5), -- 站在旁边
     talkInfos = {
       TalkInfo:new({
         id = 1,
