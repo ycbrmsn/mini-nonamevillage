@@ -68,8 +68,7 @@ MyOptionHelper = {
             if (BackpackHelper:addItem(playerid, itemid, 1)) then
               meigao.lostBag = true
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
-              player:thinkSelf(1, '我为什么会这么做？')
-              player:addStealTimes()
+              MyOptionHelper:stealThink(player)
             end
           else
             player:thinkSelf(0, '她身上似乎没有什么特别的东西了。')
@@ -90,11 +89,10 @@ MyOptionHelper = {
             if (BackpackHelper:addItem(player.objid, itemid, 1)) then
               chuyi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-              player:thinkSelf(1, '我为什么会这么做？')
-              player:addStealTimes()
+              MyOptionHelper:stealThink(player)
             end
           else
-            player:thinkSelf(0, '她身上似乎没有钥匙了。')
+            player:thinkSelf(0, '她身上似乎没有什么特别的东西了。')
           end
         end
       },
@@ -112,8 +110,7 @@ MyOptionHelper = {
             if (BackpackHelper:addItem(player.objid, itemid, 1)) then
               mochi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-              player:thinkSelf(1, '我为什么会这么做？')
-              player:addStealTimes()
+              MyOptionHelper:stealThink(player)
             end
           else
             player:thinkSelf(0, '他身上似乎没有什么特别的东西了。')
@@ -149,4 +146,16 @@ function MyOptionHelper:showOptions (player, optionname)
   local arr = self.optionMap[optionname]
   ChatHelper:showChooseItems(player.objid, arr, 1)
   player.whichChoose = optionname
+end
+
+-- 偷后想
+function MyOptionHelper:stealThink (player)
+  if (player.stealTimes == 0) then
+    player:thinkSelf(1, '我为什么会这么做？')
+  elseif (player.stealTimes == 1) then
+    player:thinkSelf(1, '难道我也受邪气影响了？')
+  else
+    player:thinkSelf(1, '为什么我控制不了自己了？')
+  end
+  player:addStealTimes()
 end

@@ -98,8 +98,8 @@ end
 
 function Story0:think ()
   local ws = WaitSeconds:new()
-  PlayerHelper:everyPlayerThinkToSelf(ws:use(), '嗯……这种感觉……')
-  PlayerHelper:everyPlayerThinkToSelf(ws:get(), '进去看看再说。')
+  PlayerHelper:everyPlayerThinkToSelf(ws:use(), '嗯……这空中……')
+  PlayerHelper:everyPlayerThinkToSelf(ws:get(), '似乎很不一般。先进去看看再说。')
   PlayerHelper:everyPlayerDoSomeThing(function (player)
     if (PlayerHelper:isMainPlayer(player.objid)) then
       player:runTo(self.inVillagePoses, function ()

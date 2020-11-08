@@ -1033,16 +1033,17 @@ function Zhendao:new ()
             TalkSession:new(3, '可否借我一用，待我完成剑阵驱散邪气即可还你。'),
             TalkSession:new(1, '不可能。'),
             TalkSession:new(3, '邪气不除，恐生祸端。'),
-            TalkSession:new(1, '再见。不送。', function (player)
+            TalkSession:new(1, '我自有打算。不送。', function (player)
               TalkHelper:setProgress(player.objid, 2, 4)
-              local actor = player:getClickActor()
-              if (actor) then
-                actor.defaultTalkMsg = '我是不会借剑给你的。'
-              end
+              TalkHelper:resetProgressContent(Zhendao, 2, 0, {
+                TalkSession:new(1, '我是不会借剑给你的。'),
+                TalkSession:new(3, '……'),
+              })
             end),
           },
           [4] = {
-            TalkSession:new(1, '再见。不送。'),
+            TalkSession:new(1, '我自有打算。不送。'),
+            TalkSession:new(4, '态度很坚决啊……'),
           },
         },
       }),
@@ -1114,7 +1115,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
             end
           else
-            player:thinkSelf(0, '他身上似乎没有钥匙了。')
+            player:thinkSelf(0, '已经拿到钥匙，还是不要再做什么比较好。')
           end
         else
           player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
@@ -2416,7 +2417,7 @@ function Linyin:beat1 (player)
     player:enableMove(false, true)
     self:speakTo(player.objid, 0, '！！！')
     local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '没想到你居心叵测！')
+    self:speakTo(player.objid, ws:get(), '没想到，真是居心叵测！')
     self.action:playAngry(ws:use())
     player:speakSelf(ws:use(), '不，不是的！')
     self:speakTo(player.objid, ws:use(), '永别了！受死吧！')
