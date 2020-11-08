@@ -1,7 +1,8 @@
 -- 我的方块工具类
 MyBlockHelper = {
   unableBeoperated = {
-    BlockHelper.bedid
+    BlockHelper.bedid, -- 舒适的床
+    883, -- 精致木床
   },
   unableDestroyed = {},
   switchPos = MyPosition:new(4, 6, 73),
