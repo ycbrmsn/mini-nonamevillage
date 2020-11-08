@@ -31,8 +31,22 @@ function MyBlockHelper:clickVase (objid, blockid, x, y, z)
     local pos = MyPosition:new(x, y, z)
     local distance = MathHelper:getDistance(self.vasePos, pos)
     if (distance < 1) then -- 位置正确
+      ChatHelper:sendMsg(objid, '你发现这个花盆还挺好看')
+      return true
+    end
+  end
+  return false
+end
+
+-- 旋转花瓶
+function MyBlockHelper:rotateVase (objid, blockid, x, y, z)
+  if (blockid == self.vaseid) then
+    local pos = MyPosition:new(x, y, z)
+    local distance = MathHelper:getDistance(self.vasePos, pos)
+    if (distance < 1) then -- 位置正确
       if (PlayerHelper:isMainPlayer(objid)) then -- 房主
         BlockHelper:toggleSwitch(self.switchPos)
+        ChatHelper:sendMsg(objid, '你转动了一下花盆，似乎听到了什么声音')
       else
         ChatHelper:sendMsg(objid, '你发现你转不动，也许应该让其他人试试')
       end
@@ -42,6 +56,7 @@ function MyBlockHelper:clickVase (objid, blockid, x, y, z)
   return false
 end
 
+-- 点击床睡觉
 function MyBlockHelper:clickBed (objid, blockid, x, y, z)
   if (blockid == BlockHelper.bedid) then
     local player = PlayerHelper:getPlayer(objid)
@@ -78,6 +93,8 @@ end
 function MyBlockHelper:blockDigEnd (objid, blockid, x, y, z)
   BlockHelper:blockDigEnd(objid, blockid, x, y, z)
   -- body
+  if (MyBlockHelper:rotateVase(objid, blockid, x, y, z)) then
+  end
 end
 
 -- 方块被放置
