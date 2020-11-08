@@ -50,7 +50,7 @@ function MyGameHelper:startGame ()
   MyAreaHelper:init()
   MyStoryHelper:init()
   -- body
-  TimeHelper:setHour(14)
+  TimeHelper:setHour(15)
 end
 
 -- 游戏运行时
