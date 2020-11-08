@@ -1061,8 +1061,9 @@ function Zhendao:new ()
         },
         progress = {
           [0] = {
-            TalkSession:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+            TalkSession:new(1, '你好，外地人。'),
             TalkSession:new(3, '你好。'),
+            TalkSession:new(1, '我正忙着，如果没事不要打扰我。'),
             -- TalkSession:new(4, '要不要借宿一宿呢？'),
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
@@ -1071,7 +1072,7 @@ function Zhendao:new ()
             --   end),
             --   PlayerTalk:new('不要', 1),
             -- }),
-            TalkSession:new(3, '我不小心走错门了，抱歉。'),
+            TalkSession:new(3, '抱歉，我这就离开。'),
           }
         }
       }),
@@ -1093,7 +1094,7 @@ function Zhendao:new ()
             TalkSession:new(3, '邪气不除，恐生祸端。'),
             TalkSession:new(1, '我自有打算。不送。', function (player)
               TalkHelper:setProgress(player.objid, 2, 4)
-              TalkHelper:resetProgressContent(Zhendao, 2, 0, {
+              TalkHelper:resetProgressContent(zhendao, 2, 0, {
                 TalkSession:new(1, '我是不会借剑给你的。'),
                 TalkSession:new(3, '……'),
               })
@@ -1101,7 +1102,7 @@ function Zhendao:new ()
           },
           [4] = {
             TalkSession:new(1, '我自有打算。不送。'),
-            TalkSession:new(4, '意志很坚决啊……'),
+            TalkSession:new(4, '很有主见啊……'),
           },
         },
       }),
@@ -1337,8 +1338,9 @@ function Yaogao:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
-            TalkSession:new(1, '真不巧，我家的床坏了。'),
-            TalkSession:new(3, '这样啊，那打扰了。'),
+            TalkSession:new(1, '这要问村长了。'),
+            TalkSession:new(4, '？？？'),
+            TalkSession:new(3, '那打扰了。'),
           },
         },
       }),
@@ -1500,7 +1502,7 @@ function Chuyi:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
-            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(1, '不太方便。'),
             TalkSession:new(3, '这样啊，那打扰了。'),
           },
         },
@@ -1559,8 +1561,10 @@ function Chuyi:new ()
                       })
                       chuyi.wants = nil
                       chuyi:speakTo(player.objid, 0, '我的剑不见了，暂时不能借你了。别让我找到这个贼！')
-                      player:speakSelf(2, '……')
-                      ChatHelper:showEndSeparate(player.objid)
+                      TimeHelper:callFnAfterSecond(function ()
+                        player:speakSelf(0, '……')
+                        ChatHelper:showEndSeparate(player.objid)
+                      end)
                       player:resetTalkIndex(1)
                     end)
                   end
@@ -1804,7 +1808,7 @@ function Mochi:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
-            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(1, '真不巧，我正要准备修床。'),
             TalkSession:new(3, '这样啊，那打扰了。'),
           },
         },
@@ -1860,8 +1864,10 @@ function Mochi:new ()
                       })
                       mochi.wants = nil
                       mochi:speakTo(player.objid, 0, '我的剑失踪了，暂时不能借你了。')
-                      player:speakSelf(2, '……')
-                      ChatHelper:showEndSeparate(player.objid)
+                      TimeHelper:callFnAfterSecond(function ()
+                        player:speakSelf(0, '……')
+                        ChatHelper:showEndSeparate(player.objid)
+                      end)
                       player:resetTalkIndex(1)
                     end)
                   end
@@ -2113,7 +2119,7 @@ function Luren:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
-            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(1, '真不巧，我家的床塌了。'),
             TalkSession:new(3, '这样啊，那打扰了。'),
           },
         },
@@ -2282,7 +2288,7 @@ function Jiayi:new ()
         progress = {
           [0] = {
             TalkSession:new(3, '你好。我想借宿一宿，不知方不方便？'),
-            TalkSession:new(1, '真不巧，我家的床坏了。'),
+            TalkSession:new(1, '真不巧，我家的床烂了。'),
             TalkSession:new(3, '这样啊，那打扰了。'),
           },
         },
@@ -2450,8 +2456,9 @@ function Linyin:new ()
         },
         progress = {
           [0] = {
-            TalkSession:new(1, '你好，外地人。'), -- index -> progress -> 1a说，2a想，3b说，4b想，5选择
+            TalkSession:new(1, '你好，外地人。'),
             TalkSession:new(3, '你好。'),
+            TalkSession:new(1, '我是村里的村长，你有事吗？'),
             -- TalkSession:new(4, '要不要借宿一宿呢？'),
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
@@ -2470,6 +2477,10 @@ function Linyin:new ()
           TalkAnt:new({ t = 1, taskid = 2 })
         },
         progress = {
+          [0] = {
+            TalkSession:new(1, '你好，有事吗？'),
+            TalkSession:new(3, '没。'),
+          },
           [4] = {
             TalkSession:new(1, '你好，外地人。'),
             TalkSession:new(3, '你好。'),
