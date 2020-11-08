@@ -471,6 +471,7 @@ function Meigao:new ()
             end),
             TalkSession:new(1, '没错。包就借给你几天。', function (player)
               TalkHelper:setProgress(player.objid, 2, 16)
+              player:resetTalkIndex(0)
               meigao.lostBag = true
               local itemid = MyMap.ITEM.BAG
               if (BackpackHelper:addItem(player.objid, itemid, 1)) then
@@ -1188,7 +1189,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
       if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
-        self:beat1(player)
+        self:beat2(player)
       else
         TalkHelper:talkWith(playerid, self)
       end
@@ -1196,13 +1197,13 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   end
 end
 
-function Zhendao:collidePlayer (playerid, isPlayerInFront)
+function Zhendao:defaultCollidePlayerEvent (playerid, isPlayerInFront)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
-      local player = PlayerHelper:getPlayer(playerid)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
       if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
@@ -1216,10 +1217,7 @@ function Zhendao:collidePlayer (playerid, isPlayerInFront)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
       if (itemid and itemid == MyMap.ITEM.SWORD1) then -- 拿着甄道的剑
-        local player = PlayerHelper:getPlayer(playerid)
-        if (player:isHostPlayer()) then
-          self:beat2(player)
-        end
+        self:beat2(player)
       end
     end
   end
@@ -1251,8 +1249,8 @@ end
 
 -- 手持
 function Zhendao:beat2 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
     player:enableMove(false, true)
     self:speakTo(player.objid, 0, '！！！')
     local ws = WaitSeconds:new(2)
@@ -1272,8 +1270,8 @@ end
 
 -- 偷剑被发现
 function Zhendao:beat3 (player)
-  if (not(self.isHappened2)) then
-    self.isHappened2 = true
+  if (not(self.isHappened3)) then
+    self.isHappened3 = true
     player:enableMove(false, true)
     self:speakTo(player.objid, 0, '！！！')
     self:lookAt(player)
@@ -1532,21 +1530,40 @@ function Chuyi:new ()
                 local want = chuyi:wantApproach('forceDoNothing', { chuyi.boxPos })
                 ActorActionHelper:callback(want, function ()
                   local want2 = chuyi:wantApproach('forceDoNothing', { player:getMyPosition() })
-                  ActorActionHelper:callback(want2, function ()
-                    local itemid = MyMap.ITEM.SWORD3
-                    if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-                      PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                  local itemid = MyMap.ITEM.SWORD3
+                  if (not(BackpackHelper:hasItem(player.objid, itemid))) then -- 玩家没有剑
+                    WorldContainerHelper:removeStorageItemByID(chuyi.boxPos.x, 
+                      chuyi.boxPos.y, chuyi.boxPos.z, itemid, 1) -- 删除箱子里的剑
+                    ActorActionHelper:callback(want2, function ()
+                      if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                        PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                        TalkHelper:setProgress(player.objid, 2, 18)
+                        TalkHelper:resetProgressContent(chuyi, 2, 0, {
+                          TalkSession:new(1, '用完记得还给我。'),
+                          TalkSession:new(3, '一定归还。'),
+                        })
+                        chuyi.wants = nil
+                      end
+                      chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
+                      ChatHelper:showEndSeparate(player.objid)
+                      player:resetTalkIndex(1)
+                    end)
+                  else -- 无剑
+                    chuyi:speakAround(nil, 0, '我的剑呢？！！！')
+                    TalkHelper:addTask(player.objid, 8)
+                    ActorActionHelper:callback(want2, function ()
                       TalkHelper:setProgress(player.objid, 2, 18)
                       TalkHelper:resetProgressContent(chuyi, 2, 0, {
-                        TalkSession:new(1, '用完记得还给我。'),
-                        TalkSession:new(3, '一定归还。'),
+                        TalkSession:new(1, '这可恶的贼！'),
+                        TalkSession:new(3, '……'),
                       })
                       chuyi.wants = nil
-                    end
-                    chuyi:speakTo(player.objid, 0, '剑借你两天，用完记得还给我。')
-                    ChatHelper:showEndSeparate(player.objid)
-                    player:resetTalkIndex(1)
-                  end)
+                      chuyi:speakTo(player.objid, 0, '我的剑不见了，暂时不能借你了。别让我找到这个贼！')
+                      player:speakSelf(2, '……')
+                      ChatHelper:showEndSeparate(player.objid)
+                      player:resetTalkIndex(1)
+                    end)
+                  end
                 end)
               end
             end),
@@ -1661,7 +1678,13 @@ function Chuyi:defaultPlayerClickEvent (playerid)
       self.action:stopRun()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
-      TalkHelper:talkWith(playerid, self)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+        self:beat2(player)
+      else
+        TalkHelper:talkWith(playerid, self)
+      end
     end
   end
 end
@@ -1670,13 +1693,24 @@ function Chuyi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
-      local player = PlayerHelper:getPlayer(playerid)
-      self:beat1(player)
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+        self:beat2(player)
+      else
+        self:beat1(player)
+      end
+    else
+      self.action:stopRun()
+      self:wantLookAt(nil, playerid)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+        self:beat2(player)
+      end
     end
-    self.action:stopRun()
-    self:wantLookAt(nil, playerid)
   end
 end
 
@@ -1699,6 +1733,27 @@ function Chuyi:beat1 (player)
     player:thinkSelf(ws:use(), '真是没想到……')
     TimeHelper:callFnAfterSecond(function ()
       MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+-- 手持
+function Chuyi:beat2 (player)
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有！')
+    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
       GameHelper:doGameEnd()
     end, ws:get())
   end
@@ -1777,20 +1832,39 @@ function Mochi:new ()
                 local want = mochi:wantApproach('forceDoNothing', { mochi.boxPos })
                 ActorActionHelper:callback(want, function ()
                   local want2 = mochi:wantApproach('forceDoNothing', { player:getMyPosition() })
-                  ActorActionHelper:callback(want2, function ()
-                    local itemid = MyMap.ITEM.SWORD4
-                    if (BackpackHelper:addItem(player.objid, itemid, 1)) then
-                      PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
-                      TalkHelper:resetProgressContent(mochi, 2, 0, {
-                        TalkSession:new(1, '记得还给我。'),
-                        TalkSession:new(3, '一定归还。'),
+                  local itemid = MyMap.ITEM.SWORD4
+                  if (not(BackpackHelper:hasItem(player.objid, itemid))) then -- 玩家没有剑
+                    WorldContainerHelper:removeStorageItemByID(mochi.boxPos.x, 
+                      mochi.boxPos.y, mochi.boxPos.z, itemid, 1) -- 删除箱子里的剑
+                    ActorActionHelper:callback(want2, function ()
+                      if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                        PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
+                        TalkHelper:resetProgressContent(mochi, 2, 0, {
+                          TalkSession:new(1, '记得还给我。'),
+                          TalkSession:new(3, '一定归还。'),
+                        })
+                        mochi.wants = nil
+                      end
+                      mochi:speakTo(player.objid, 0, '用完记得还给我。')
+                      ChatHelper:showEndSeparate(player.objid)
+                      player:resetTalkIndex(1)
+                    end)
+                  else
+                    mochi:speakAround(nil, 0, '岂有此理！！！')
+                    TalkHelper:addTask(player.objid, 9)
+                    ActorActionHelper:callback(want2, function ()
+                      TalkHelper:setProgress(player.objid, 2, 18)
+                      TalkHelper:resetProgressContent(chuyi, 2, 0, {
+                        TalkSession:new(1, '这该如何是好？'),
+                        TalkSession:new(3, '……'),
                       })
                       mochi.wants = nil
-                    end
-                    mochi:speakTo(player.objid, 0, '用完记得还给我。')
-                    ChatHelper:showEndSeparate(player.objid)
-                    player:resetTalkIndex(1)
-                  end)
+                      mochi:speakTo(player.objid, 0, '我的剑失踪了，暂时不能借你了。')
+                      player:speakSelf(2, '……')
+                      ChatHelper:showEndSeparate(player.objid)
+                      player:resetTalkIndex(1)
+                    end)
+                  end
                 end)
               end
             end),
@@ -1910,7 +1984,13 @@ function Mochi:defaultPlayerClickEvent (playerid)
       self.action:stopRun()
       self:lookAt(playerid)
       self:wantLookAt(nil, playerid, 60)
-      TalkHelper:talkWith(playerid, self)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+        self:beat2(player)
+      else
+        TalkHelper:talkWith(playerid, self)
+      end
     end
   end
 end
@@ -1919,13 +1999,24 @@ function Mochi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
-      local player = PlayerHelper:getPlayer(playerid)
-      self:beat1(player)
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+        self:beat2(player)
+      else
+        self:beat1(player)
+      end
+    else
+      self.action:stopRun()
+      self:wantLookAt(nil, playerid)
+      -- 检测玩家手里的东西
+      local itemid = PlayerHelper:getCurToolID(playerid)
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+        self:beat2(player)
+      end
     end
-    self.action:stopRun()
-    self:wantLookAt(nil, playerid)
   end
 end
 
@@ -1948,6 +2039,28 @@ function Mochi:beat1 (player)
     player:thinkSelf(ws:use(), '真是没想到……')
     TimeHelper:callFnAfterSecond(function ()
       MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+
+-- 手持
+function Mochi:beat2 (player)
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我没有！')
+    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
       GameHelper:doGameEnd()
     end, ws:get())
   end

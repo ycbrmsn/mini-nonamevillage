@@ -433,7 +433,7 @@ function BaseActor:initActor ()
     LogHelper:debug('初始化', self:getName(), '完成')
     return true
   else
-    LogHelper:debug('未找到', self.actorid)
+    -- LogHelper:debug('未找到', self.actorid)
     return false
   end
 end
