@@ -5,7 +5,7 @@ Chimo = BaseActor:new(MyMap.ACTOR.CHIMO)
 
 function Chimo:new ()
   local o = {
-    objid = 4300067952,
+    objid = self.actorid,
     isSingleton = true,
     unableBeKilled = true,
     bedData = {
