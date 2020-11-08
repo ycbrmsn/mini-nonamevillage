@@ -11,6 +11,7 @@ BasePlayer = {
   active = true, -- 是否活跃，即未离开房间
   talkWithActor = nil, -- 与生物交谈
   whichChoose = nil, -- 在选择什么
+  runTime = 0, -- 自动寻路时间，超时后直接移动过去
 }
 
 function BasePlayer:new (o)
