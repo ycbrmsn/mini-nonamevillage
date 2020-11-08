@@ -69,6 +69,7 @@ MyOptionHelper = {
               meigao.lostBag = true
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
               player:thinkSelf(1, '我为什么会这么做？')
+              player:addStealTimes()
             end
           else
             player:thinkSelf(0, '她身上似乎没有什么特别的东西了。')
@@ -90,6 +91,7 @@ MyOptionHelper = {
               chuyi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               player:thinkSelf(1, '我为什么会这么做？')
+              player:addStealTimes()
             end
           else
             player:thinkSelf(0, '她身上似乎没有钥匙了。')
@@ -111,6 +113,7 @@ MyOptionHelper = {
               mochi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               player:thinkSelf(1, '我为什么会这么做？')
+              player:addStealTimes()
             end
           else
             player:thinkSelf(0, '他身上似乎没有什么特别的东西了。')

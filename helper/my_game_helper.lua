@@ -22,7 +22,13 @@ function MyGameHelper:setGBattleUI ()
     UIHelper:setGBattleUI('left_desc', self.desc)
     UIHelper:setLeftTitle('获得称号：')
     -- UIHelper:setRightTitle(story.name)
-    UIHelper:setRightTitle(self.name)
+    if (player.stealTimes == 0) then
+      UIHelper:setRightTitle(self.name)
+    elseif (player.stealTimes == 1) then
+      UIHelper:setRightTitle('小偷')
+    else
+      UIHelper:setRightTitle('惯偷')
+    end
   end
   UIHelper:setGBattleUI('result', false)
 end
