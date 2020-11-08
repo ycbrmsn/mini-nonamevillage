@@ -95,19 +95,6 @@ function MyPlayerHelper:playerAddItem (objid, itemid, itemnum)
   PlayerHelper:playerAddItem(objid, itemid, itemnum)
   MyStoryHelper:playerAddItem(objid, itemid, itemnum)
   -- body
-  if (itemid == MyMap.ITEM.SWORD1) then -- 甄道的桃木剑
-    local progress = TalkHelper:getProgress(objid, 2)
-    if (progress == 6) then
-      TalkHelper:setProgress(objid, 2, 7)
-      Story1:wake(objid)
-    end
-  elseif (itemid == MyMap.ITEM.SWORD2) then -- 姚羔的桃木剑
-
-  elseif (itemid == MyMap.ITEM.SWORD3) then -- 储依的桃木剑
-
-  elseif (itemid == MyMap.ITEM.SWORD4) then -- 莫迟的桃木剑
-
-  end
 end
 
 -- 玩家使用道具
