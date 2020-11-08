@@ -47,7 +47,7 @@ end
 -- 玩家进入区域
 function MyStoryHelper:playerEnterArea (objid, areaid)
   -- body
-  local story = StoryHelper:getStory()
+  local story = StoryHelper:getStory(1)
   if (story and story:enterArea(objid, areaid)) then
   end
 end

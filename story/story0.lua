@@ -103,7 +103,7 @@ function Story0:think ()
   PlayerHelper:everyPlayerDoSomeThing(function (player)
     if (PlayerHelper:isMainPlayer(player.objid)) then
       player:runTo(self.inVillagePoses, function ()
-        StoryHelper:forward2(1, 1)
+        TalkHelper:addTask(player.objid, 1)
         PlayerHelper:changeVMode(player.objid, VIEWPORTTYPE.MAINVIEW)
       end)
     else
@@ -115,16 +115,21 @@ function Story0:think ()
 end
 
 function Story0:enterArea (objid, areaid)
-  local player = PlayerHelper:getPlayer(objid)
-  local mainProgress = StoryHelper:getMainStoryProgress()
-  if (areaid == self.sureGoOutArea) then -- 离开村庄确认
-    if (mainProgress > 1) then
-      if (player:isHostPlayer()) then -- 房主
+  if (areaid == self.sureGoOutArea) then -- 离开村庄
+    if (TalkHelper:hasTask(objid, 1)) then -- 进入村庄
+      local player = PlayerHelper:getPlayer(objid)
+      if (TalkHelper:hasTask(objid, 2) or TalkHelper:hasTask(objid, 3) or TalkHelper:hasTask(objid, 4)) then
+        player:enableMove(false, true)
+        player:thinks(0, '问题未解决，我不能轻易离开。')
+        local ws = WaitSeconds:new(2)
+        TimeHelper:callFnAfterSecond(function ()
+          player:enableMove(true, true)
+          player:runTo(self.inVillagePoses)
+        end, ws:get())
+      else
         player:enableMove(false, true)
         player:thinks(0, '此处不详，我要不要离开呢？')
         MyOptionHelper:showOptions(player, 'leave')
-        -- ChatHelper:showChooseItems(playerid, { '不离开', '离开' })
-        -- player.whichChoose = 'leave'
       end
     end
     return true
