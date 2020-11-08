@@ -286,24 +286,81 @@ function Chimo:defaultPlayerClickEvent (playerid)
   local actorTeam = CreatureHelper:getTeam(self.objid)
   local playerTeam = PlayerHelper:getTeam(playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      self.wants[1].style = 'wake'
-      self.action:playStretch()
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        player:thinkSelf(0, '这么晚了，还是天亮再跟他说好了。')
+      else
+        player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
+      end
+    else
+      self.action:stopRun()
+      self:lookAt(playerid)
+      self:wantLookAt(nil, playerid, 60)
+      TalkHelper:talkWith(playerid, self)
     end
-    self.action:stopRun()
-    self:lookAt(playerid)
-    self:wantLookAt(nil, playerid, 60)
-    TalkHelper:talkWith(playerid, self)
   end
 end
 
-function Chimo:collidePlayer (playerid, isPlayerInFront)
-  -- local nickname = PlayerHelper:getNickname(playerid)
-  -- self:speakTo(playerid, 0, '你找我可有要事？')
+function Chimo:defaultCollidePlayerEvent (playerid, isPlayerInFront)
+  local actorTeam = CreatureHelper:getTeam(self.objid)
+  local playerTeam = PlayerHelper:getTeam(playerid)
+  if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
+    local player = PlayerHelper:getPlayer(playerid)
+    if (self.wants and self.wants[1].style == 'sleeping') then
+      self.wants[1].style = 'wake'
+      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+        self:beat2(player)
+      else
+        self:beat1(player)
+      end
+    end
+    self.action:stopRun()
+    self:wantLookAt(nil, playerid)
+  end
 end
 
 function Chimo:candleEvent (player, candle)
   
+end
+
+function Chimo:beat1 (player)
+  if (not(self.isHappened1)) then
+    self.isHappened1 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '！！！')
+    local ws = WaitSeconds:new(2)
+    self:speakTo(player.objid, ws:get(), '小子，你想作甚！')
+    self.action:playAngry(ws:use())
+    player:speakSelf(ws:use(), '我，我不想做什么！')
+    self:speakTo(player.objid, ws:use(), '别多说了！受死吧！')
+    self.action:playAttack(ws:use(1))
+    player.action:playDie(ws:use(1))
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
+end
+
+function Chimo:beat2 (player)
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '啊哒！')
+    local ws = WaitSeconds:new()
+    self.action:playAttack(ws:use(1))
+    player:speakSelf(ws:get(), '啊！')
+    self.action:playAttack(ws:get())
+    player.action:playDie(ws:use(1))
+    self:speakTo(player.objid, ws:use(), '不好意思，习惯动作……')
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('无辜者', '你倒在了村民的自责情绪中')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 -- 梅膏
@@ -1043,7 +1100,7 @@ function Zhendao:new ()
           },
           [4] = {
             TalkSession:new(1, '我自有打算。不送。'),
-            TalkSession:new(4, '态度很坚决啊……'),
+            TalkSession:new(4, '意志很坚决啊……'),
           },
         },
       }),
@@ -2318,7 +2375,9 @@ function Linyin:new ()
             TalkSession:new(1, '嗯……我村里人每家都有一个物品柜，重要东西放在其内，外有铁门锁着。'),
             TalkSession:new(1, '钥匙在每人手中，他若不愿借剑给你，那也没有办法。'),
             TalkSession:new(4, '？？？'),
-            TalkSession:new(3, '这样啊……', function (player)
+            TalkSession:new(3, '这样啊……'),
+            TalkSession:new(1, '希望你能找到别的办法。'),
+            TalkSession:new(3, '嗯，我不会放弃的。', function (player)
               TalkHelper:setProgress(player.objid, 2, 5)
             end),
           },

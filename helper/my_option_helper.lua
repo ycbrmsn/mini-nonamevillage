@@ -134,7 +134,7 @@ function MyOptionHelper:storyForward (player)
       local progress = TalkHelper:getProgress(player.objid, taskid)
       if (progress == 1) then
         TalkHelper:setProgress(player.objid, taskid, 2)
-        player:thinkSelf(1, '有点精神了。或许我可以找主人家问问情况。')
+        player:thinkSelf(1, '睡了一觉，终于有点精神了。或许我可以找主人家问问情况。')
       end
       break
     end
