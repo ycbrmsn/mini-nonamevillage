@@ -9,7 +9,8 @@ SkillHelper = {
   huitianData = {}, -- { objid -> {} }
   airArmourData = {
     bodyEffect = BaseConstant.BODY_EFFECT.LIGHT64
-  }
+  },
+  shunData = {}, -- { objid -> {} }
 }
 
 function SkillHelper:getItem (item, weaponName)
@@ -365,7 +366,7 @@ end
 -- 气甲术 对象、范围大小、持续时间
 function SkillHelper:airArmour (objid, size, time)
   size = size or 3
-  time = time or 8
+  time = time or 5
   local dim = { x = size + 1, y = size + 1, z = size + 1 }
   local teamid = ActorHelper:getTeam(objid)
   local idx = 1
@@ -386,6 +387,7 @@ function SkillHelper:airArmour (objid, size, time)
       for i, v in ipairs(missiles) do
         local itemid = ItemHelper:getItemId(v)
         if (itemid == MyWeaponAttr.controlSword.projectileid) then -- 御仙剑不作处理
+        elseif (itemid == MyWeaponAttr.shunSword.projectileid) then -- 瞬仙剑不作处理
         elseif (itemid == MyWeaponAttr.huixianSword.projectileid 
           and ItemHelper:getMissileTeam(v) == -1) then -- 找不到队伍信息的回仙剑不作处理
         else
@@ -482,7 +484,8 @@ function SkillHelper:huitian (objid, item, num, size, changeAngle, distance)
               if (speedVector3) then
                 ActorHelper:appendSpeed(v.objid, -speedVector3.x, -speedVector3.y, -speedVector3.z)
               end
-              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p, ActorHelper:getMyPosition(targetObjid))
+              local sv3 = ActorHelper:appendFixedSpeed(v.objid, 0.8, p,
+                ActorHelper:getEyeHeightPosition(targetObjid))
               ItemHelper:recordMissileSpeed(v.objid, sv3)
             end
           end
@@ -516,7 +519,7 @@ end
 -- 清除环绕飞剑
 function SkillHelper:clearHuitian (objid)
   local projectiles = self.huitianData[objid]
-  if (projectiles) then
+  if (projectiles and #projectiles > 0) then
     for i, v in ipairs(projectiles) do
       if (v.flag == 0) then
         WorldHelper:despawnActor(v.objid)
@@ -622,5 +625,60 @@ function SkillHelper:luanJianJue3 (objid, item, arr, projectiles)
     TimeHelper:callFnFastRuns(function ()
       SkillHelper:luanJianJue3(objid, item, arr, projectiles)
     end, 0.1)
+  end
+end
+
+-- 瞬仙剑分身是否存在
+function SkillHelper:shunExists (objid)
+  local data = SkillHelper:getShunData(objid)
+  return data.projectileid and ActorHelper:getMyPosition(data.projectileid)
+end
+
+function SkillHelper:getShunData (objid)
+  local data = self.shunData[objid]
+  if (not(data)) then
+    data = {}
+    self.shunData[objid] = data
+  end
+  return data
+end
+
+-- 瞬移术
+function SkillHelper:shunyi (objid, item, dstPos)
+  item = SkillHelper:getItem(item, 'shunSword')
+  local data = SkillHelper:getShunData(objid)
+  local player = PlayerHelper:getPlayer(objid)
+  if (data.projectileid) then
+    local pos = ActorHelper:getMyPosition(data.projectileid)
+    if (pos) then
+      if (player:setMyPosition(pos)) then
+        WorldHelper:despawnActor(data.projectileid)
+        ItemHelper:recordUseSkill(objid, item.id, item.cd)
+      end
+    end
+  else
+    local pos = ActorHelper:getEyeHeightPosition(objid)
+    if (not(dstPos)) then
+      if (ActorHelper:isPlayer(objid)) then -- 玩家
+        dstPos = player:getAimPos(objid)
+      else
+        dstPos = ActorHelper:getFaceDistancePosition(objid, 20)
+      end
+    end
+    local projectileid = WorldHelper:spawnProjectileByDirPos(objid, 
+      item.projectileid, pos, pos, 0)
+    data.projectileid = projectileid -- 记录剑分身
+    local speedVector3 = ActorHelper:appendFixedSpeed(projectileid, 0.8, pos, dstPos)
+    ItemHelper:recordMissileSpeed(projectileid, speedVector3)
+    local existTime = item.existTime + item.level * item.addExistTimePerLevel
+    PlayerHelper:setSkillCD(objid, item.id, existTime)
+    -- 时间到删除剑分身
+    TimeHelper:callFnFastRuns(function ()
+      local pos = ActorHelper:getMyPosition(data.projectileid)
+      if (pos) then
+        WorldHelper:despawnActor(data.projectileid)
+      end
+      data.projectileid = nil
+    end, existTime)
   end
 end

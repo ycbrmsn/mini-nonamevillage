@@ -16,7 +16,7 @@ BaseActor = {
   sealTimes = 0, -- 封魔叠加次数
   talkIndex = {}, -- 对话进度 { playerid -> index }
   talkInfos = {}, -- 对话信息
-  defaultTalkMsg = '你好。', -- 默认对话
+  defaultTalkMsg = nil, -- 默认对话
   speakDim = { x = 30, y = 30, z = 30 }, -- 默认说话声音传播范围
 }
 
@@ -166,6 +166,11 @@ end
 
 function BaseActor:setFacePitch (pitch)
   return ActorHelper:setFacePitch(self.objid, pitch)
+end
+
+-- 额外伤害（目前用于怪物）
+function BaseActor:getCollateralDamage ()
+  return 0
 end
 
 -- 看向某人/某处

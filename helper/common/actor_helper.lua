@@ -132,6 +132,18 @@ function ActorHelper:setMyPosition (objid, x, y, z)
   end
 end
 
+-- 获得人物眼睛高度的位置
+function ActorHelper:getEyeHeightPosition (objid)
+  local pos = ActorHelper:getMyPosition(objid)
+  if (pos) then
+    local height = ActorHelper:getEyeHeight(objid)
+    if (height) then
+      pos.y = pos.y + height
+    end
+  end
+  return pos
+end
+
 --[[  获取距离生物多远的位置，因生物的朝向变化
       参数distance，正数表示前方，负数表示背后；参数angle表示偏转角度顺时针方向偏转]]--
 function ActorHelper:getDistancePosition (objid, distance, angle)
@@ -881,6 +893,7 @@ end
 
 -- 生物攻击命中
 function ActorHelper:actorAttackHit (objid, toobjid)
+  MonsterHelper:actorAttackHit(objid, toobjid)
   local actor = ActorHelper:getActor(objid)
   if (actor) then
     actor:attackHit(toobjid)
