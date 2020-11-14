@@ -43,6 +43,7 @@ MyOptionHelper = {
         end
       },
       { '离开', function (player) -- 离开
+          PlayerHelper:changeVMode(player.objid)
           local story = StoryHelper:getStory(1)
           player:thinks(0, '君子不立于危墙之下。我还是暂且离开。')
           local ws = WaitSeconds:new(2)
