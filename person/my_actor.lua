@@ -325,42 +325,43 @@ function Chimo:candleEvent (player, candle)
 end
 
 function Chimo:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '小子，你想作甚！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '我，我不想做什么！')
-    self:speakTo(player.objid, ws:use(), '别多说了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '小子，你想作甚！',
+    '我，我不想做什么！',
+    '别多说了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 function Chimo:beat2 (player)
-  if (not(self.isHappened2)) then
-    self.isHappened2 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '啊哒！')
-    local ws = WaitSeconds:new()
-    self.action:playAttack(ws:use(1))
-    player:speakSelf(ws:get(), '啊！')
-    self.action:playAttack(ws:get())
-    player.action:playDie(ws:use(1))
-    self:speakTo(player.objid, ws:use(), '不好意思，习惯动作……')
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('无辜者', '你倒在了村民的自责情绪中')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened2', {
+    '啊哒！',
+    '啊，是你啊！',
+    '你……',
+    '不好意思，习惯动作……',
+    '真是没想到……',
+    '无辜者',
+    '你倒在了村民的自责情绪中',
+  })
+  -- if (not(self.isHappened2)) then
+  --   self.isHappened2 = true
+  --   player:enableMove(false, true)
+  --   self:speakTo(player.objid, 0, '啊哒！')
+  --   local ws = WaitSeconds:new()
+  --   self.action:playAttack(ws:use(1))
+  --   player:speakSelf(ws:get(), '啊！')
+  --   self.action:playAttack(ws:get())
+  --   player.action:playDie(ws:use(1))
+  --   self:speakTo(player.objid, ws:use(), '不好意思，习惯动作……')
+  --   player:thinkSelf(ws:use(), '真是没想到……')
+  --   TimeHelper:callFnAfterSecond(function ()
+  --     MyGameHelper:setNameAndDesc('无辜者', '你倒在了村民的自责情绪中')
+  --     GameHelper:doGameEnd()
+  --   end, ws:get())
+  -- end
 end
 
 -- 梅膏
@@ -619,23 +620,15 @@ function Meigao:candleEvent (player, candle)
 end
 
 function Meigao:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '可恶，你想干嘛！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '我没有干什么！')
-    self:speakTo(player.objid, ws:use(), '三更半夜潜入我房里！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '可恶，你想干嘛！',
+    '我没有干什么！',
+    '三更半夜潜入我房里！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 王毅
@@ -787,23 +780,15 @@ function Wangyi:candleEvent (player, candle)
 end
 
 function Wangyi:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '你不怕黑暗吗？')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '你要做什么！')
-    self:speakTo(player.objid, ws:use(), '送你去沉睡！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '你不怕黑暗吗？',
+    '你要做什么！',
+    '送你去沉睡！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 梁杖
@@ -1001,23 +986,15 @@ function Liangzhang:candleEvent (player, candle)
 end
 
 function Liangzhang:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '你果然不是好人！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '啥啥啥！')
-    self:speakTo(player.objid, ws:use(), '我要打死你！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '你果然不是好人！',
+    '啥啥啥！',
+    '我要打死你！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 甄道
@@ -1229,66 +1206,41 @@ function Zhendao:candleEvent (player, candle)
 end
 
 function Zhendao:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '你果然不是好人！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '啥啥啥！')
-    self:speakTo(player.objid, ws:use(), '我要打死你！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '你果然不是好人！',
+    '啥啥啥！',
+    '我要打死你！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 手持
 function Zhendao:beat2 (player)
-  if (not(self.isHappened2)) then
-    self.isHappened2 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '我没有！')
-    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened2', {
+    '！！！',
+    '可恶，你竟敢偷我的剑！',
+    '我没有！',
+    '还敢狡辩！你手上拿的是什么！受死吧！',
+    '真是没想到……',
+    '愚蠢者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 偷剑被发现
 function Zhendao:beat3 (player)
-  if (not(self.isHappened3)) then
-    self.isHappened3 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    self:lookAt(player)
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '可恶，你竟敢来偷东西！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '你听我解释……')
-    self:speakTo(player.objid, ws:use(), '不需要解释了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('梁上者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened3', {
+    '！！！',
+    '可恶，你竟敢偷我的剑！',
+    '你听我解释……',
+    '不需要解释了！受死吧！',
+    '真是没想到……',
+    '愚蠢者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 姚羔
@@ -1442,23 +1394,15 @@ function Yaogao:candleEvent (player, candle)
 end
 
 function Yaogao:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '误会误会！')
-    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '啊，你要做什么！',
+    '误会误会！',
+    '别解释了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 储依
@@ -1723,44 +1667,28 @@ function Chuyi:candleEvent (player, candle)
 end
 
 function Chuyi:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '误会误会！')
-    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '啊，你要做什么！',
+    '误会误会！',
+    '别解释了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 手持
 function Chuyi:beat2 (player)
-  if (not(self.isHappened2)) then
-    self.isHappened2 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '我没有！')
-    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened2', {
+    '！！！',
+    '可恶，你竟敢偷我的剑！',
+    '我没有！',
+    '还敢狡辩！你手上拿的是什么！受死吧！',
+    '真是没想到……',
+    '愚蠢者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 莫迟
@@ -2031,45 +1959,29 @@ function Mochi:candleEvent (player, candle)
 end
 
 function Mochi:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '误会误会！')
-    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '啊，你要做什么！',
+    '误会误会！',
+    '别解释了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 
 -- 手持
 function Mochi:beat2 (player)
-  if (not(self.isHappened2)) then
-    self.isHappened2 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '可恶，你竟敢偷我的剑！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '我没有！')
-    self:speakTo(player.objid, ws:use(), '还敢狡辩！你手上拿的是什么！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('烧身者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened2', {
+    '！！！',
+    '可恶，你竟敢偷我的剑！',
+    '我没有！',
+    '还敢狡辩！你手上拿的是什么！受死吧！',
+    '真是没想到……',
+    '愚蠢者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 陆仁
@@ -2222,23 +2134,15 @@ function Luren:candleEvent (player, candle)
 end
 
 function Luren:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '啊，你竟然！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '误会误会！')
-    self:speakTo(player.objid, ws:use(), '解释也没用！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '啊，你竟然！',
+    '误会误会！',
+    '解释也没用！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 贾义
@@ -2391,23 +2295,15 @@ function Jiayi:candleEvent (player, candle)
 end
 
 function Jiayi:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '啊，你要做什么！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '误会误会！')
-    self:speakTo(player.objid, ws:use(), '别解释了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '啊，你要做什么！',
+    '误会误会！',
+    '别解释了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end
 
 -- 林隐
@@ -2598,21 +2494,13 @@ function Linyin:candleEvent (player, candle)
 end
 
 function Linyin:beat1 (player)
-  if (not(self.isHappened1)) then
-    self.isHappened1 = true
-    player:enableMove(false, true)
-    self:speakTo(player.objid, 0, '！！！')
-    local ws = WaitSeconds:new(2)
-    self:speakTo(player.objid, ws:get(), '没想到，真是居心叵测！')
-    self.action:playAngry(ws:use())
-    player:speakSelf(ws:use(), '不，不是的！')
-    self:speakTo(player.objid, ws:use(), '永别了！受死吧！')
-    self.action:playAttack(ws:use(1))
-    player.action:playDie(ws:use(1))
-    player:thinkSelf(ws:use(), '真是没想到……')
-    TimeHelper:callFnAfterSecond(function ()
-      MyGameHelper:setNameAndDesc('鬼祟者', '你倒在了村民的怒火之下')
-      GameHelper:doGameEnd()
-    end, ws:get())
-  end
+  MyTalkHelper:beatTalks(player, self, 'isHappened1', {
+    '！！！',
+    '没想到，真是居心叵测！',
+    '不，不是的！',
+    '永别了！受死吧！',
+    '真是没想到……',
+    '鬼祟者',
+    '你倒在了村民的怒火之下',
+  })
 end

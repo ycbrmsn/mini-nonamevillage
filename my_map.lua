@@ -24,6 +24,7 @@ MyMap = {
     BAG = 4125, -- 梅膏的背包
     LETTER = 4126, -- 池末写的信
     MIRROR = 4127, -- 八卦镜
+    CONFUSE_CHARM = 4128, -- 迷惑符
   },
   ACTOR = {
     CHIMO = 2, -- 池末
