@@ -52,7 +52,7 @@ function Chimo:new ()
             TalkSession:new(4, '要不要借宿一宿呢？'),
             TalkSession:new(5, {
               PlayerTalk:new('要', 1, nil, function (player)
-                TalkHelper:addTask(player.objid, 2)
+                TaskHelper:addTask(player.objid, 2)
                 player:resetTalkIndex(0)
               end),
               PlayerTalk:new('不要', 1),
@@ -110,7 +110,7 @@ function Chimo:new ()
             TalkSession:new(3, '我感觉邪气又浓了一些。'),
             TalkSession:new(1, '啊，是吗？还有一把也摆脱你了。在东南方的莫家。'),
             TalkSession:new(3, '事不宜迟，我这就前往。', function (player)
-              TalkHelper:addTask(player.objid, 5)
+              TaskHelper:addTask(player.objid, 5)
               TalkHelper:setProgress(player.objid, 2, 20)
               TalkHelper:resetProgressContent(chimo, 2, 0, {
                 TalkSession:new(1, '怎么样，在莫家借到剑了吗？'),
@@ -288,7 +288,7 @@ function Chimo:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         player:thinkSelf(0, '这么晚了，还是天亮再跟他说好了。')
       else
         player:thinkSelf(0, '这么晚了，还是不要惊动他比较好。')
@@ -309,7 +309,7 @@ function Chimo:defaultCollidePlayerEvent (playerid, isPlayerInFront)
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         self:beat2(player)
       else
         self:beat1(player)
@@ -579,7 +579,7 @@ function Meigao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
         if (progress >= 9) then
           player:enableMove(false, true)
@@ -954,7 +954,7 @@ function Liangzhang:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
-      -- if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      -- if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
       --   local progress = TalkHelper:getProgress(playerid, 2)
       --   if (progress >= 6) then
       --     if (not(self.lostKey)) then -- 有钥匙
@@ -1067,7 +1067,7 @@ function Zhendao:new ()
             -- TalkSession:new(4, '要不要借宿一宿呢？'),
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
-            --     TalkHelper:addTask(player.objid, 3)
+            --     TaskHelper:addTask(player.objid, 3)
             --     player:resetTalkIndex(0)
             --   end),
             --   PlayerTalk:new('不要', 1),
@@ -1164,7 +1164,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then -- 在睡觉
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
         if (progress >= 6) then
           if (not(self.lostKey)) then -- 有钥匙
@@ -1552,7 +1552,7 @@ function Chuyi:new ()
                     end)
                   else -- 无剑
                     chuyi:speakAround(nil, 0, '我的剑呢？！！！')
-                    TalkHelper:addTask(player.objid, 8)
+                    TaskHelper:addTask(player.objid, 8)
                     ActorActionHelper:callback(want2, function ()
                       TalkHelper:setProgress(player.objid, 2, 18)
                       TalkHelper:resetProgressContent(chuyi, 2, 0, {
@@ -1666,7 +1666,7 @@ function Chuyi:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
         if (progress >= 8) then
           player:enableMove(false, true)
@@ -1684,7 +1684,7 @@ function Chuyi:defaultPlayerClickEvent (playerid)
       self:wantLookAt(nil, playerid, 60)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TaskHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
         self:beat2(player)
       else
         TalkHelper:talkWith(playerid, self)
@@ -1701,7 +1701,7 @@ function Chuyi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TaskHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
         self:beat2(player)
       else
         self:beat1(player)
@@ -1711,7 +1711,7 @@ function Chuyi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
       self:wantLookAt(nil, playerid)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD3 and TalkHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD3 and TaskHelper:hasTask(playerid, 8)) then -- 拿着储依的剑
         self:beat2(player)
       end
     end
@@ -1855,7 +1855,7 @@ function Mochi:new ()
                     end)
                   else
                     mochi:speakAround(nil, 0, '岂有此理！！！')
-                    TalkHelper:addTask(player.objid, 9)
+                    TaskHelper:addTask(player.objid, 9)
                     ActorActionHelper:callback(want2, function ()
                       TalkHelper:setProgress(player.objid, 2, 18)
                       TalkHelper:resetProgressContent(chuyi, 2, 0, {
@@ -1906,7 +1906,7 @@ function Mochi:new ()
             TalkSession:new(3, '那我试试吧。'),
             TalkSession:new(1, '在你没有拿来其他替代品之前，我是不会借的。'),
             TalkSession:new(4, '看来只能找到替代品了。', function (player)
-              TalkHelper:addTask(player.objid, 7)
+              TaskHelper:addTask(player.objid, 7)
               TalkHelper:setProgress(player.objid, 2, 21)
               TalkHelper:resetProgressContent(mochi, 2, 0, {
                 TalkSession:new(1, '我是不会随便借的。'),
@@ -1974,7 +1974,7 @@ function Mochi:defaultPlayerClickEvent (playerid)
   if (actorTeam ~= 0 and actorTeam == playerTeam) then -- 有队伍并且同队
     local player = PlayerHelper:getPlayer(playerid)
     if (self.wants and self.wants[1].style == 'sleeping') then
-      if (TalkHelper:hasTask(playerid, 2)) then -- 任务二
+      if (TaskHelper:hasTask(playerid, 2)) then -- 任务二
         local progress = TalkHelper:getProgress(playerid, 2)
         if (progress >= 20) then
           player:enableMove(false, true)
@@ -1992,7 +1992,7 @@ function Mochi:defaultPlayerClickEvent (playerid)
       self:wantLookAt(nil, playerid, 60)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TaskHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
         self:beat2(player)
       else
         TalkHelper:talkWith(playerid, self)
@@ -2009,7 +2009,7 @@ function Mochi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
     if (self.wants and self.wants[1].style == 'sleeping') then
       self.wants[1].style = 'wake'
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TaskHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
         self:beat2(player)
       else
         self:beat1(player)
@@ -2019,7 +2019,7 @@ function Mochi:defaultCollidePlayerEvent (playerid, isPlayerInFront)
       self:wantLookAt(nil, playerid)
       -- 检测玩家手里的东西
       local itemid = PlayerHelper:getCurToolID(playerid)
-      if (itemid and itemid == MyMap.ITEM.SWORD4 and TalkHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
+      if (itemid and itemid == MyMap.ITEM.SWORD4 and TaskHelper:hasTask(playerid, 9)) then -- 拿着莫迟的剑
         self:beat2(player)
       end
     end
@@ -2462,7 +2462,7 @@ function Linyin:new ()
             -- TalkSession:new(4, '要不要借宿一宿呢？'),
             -- TalkSession:new(5, {
             --   PlayerTalk:new('要', 1, nil, function (player)
-            --     TalkHelper:addTask(player.objid, 4)
+            --     TaskHelper:addTask(player.objid, 4)
             --     player:resetTalkIndex(0)
             --   end),
             --   PlayerTalk:new('不要', 1),

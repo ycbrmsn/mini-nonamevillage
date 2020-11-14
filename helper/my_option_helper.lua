@@ -130,7 +130,7 @@ MyOptionHelper = {
 function MyOptionHelper:storyForward (player)
   local taskids = { 2, 3, 4 }
   for i, taskid in ipairs(taskids) do
-    if (TalkHelper:hasTask(player.objid, taskid)) then
+    if (TaskHelper:hasTask(player.objid, taskid)) then
       local progress = TalkHelper:getProgress(player.objid, taskid)
       if (progress == 1) then
         TalkHelper:setProgress(player.objid, taskid, 2)

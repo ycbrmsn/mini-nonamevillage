@@ -54,8 +54,8 @@ function Story0:enter (objid)
   TimeHelper:callFnAfterSecond(function ()
     -- meigao.lostBag = true
   end, 2)
-  -- TalkHelper:addTask(objid, 2)
-  -- TalkHelper:addTask(objid, 7)
+  -- TaskHelper:addTask(objid, 2)
+  -- TaskHelper:addTask(objid, 7)
   -- TalkHelper:setProgress(objid, 2, 22)
   -- player:setPosition(-8, 7, 32) -- 池末门外
   -- player:setPosition(-28, 7, 84) -- 梁杖门外
@@ -103,7 +103,7 @@ function Story0:think ()
   PlayerHelper:everyPlayerDoSomeThing(function (player)
     if (PlayerHelper:isMainPlayer(player.objid)) then
       player:runTo(self.inVillagePoses, function ()
-        TalkHelper:addTask(player.objid, 1)
+        TaskHelper:addTask(player.objid, 1)
         PlayerHelper:changeVMode(player.objid, VIEWPORTTYPE.MAINVIEW)
       end)
     else
@@ -116,9 +116,9 @@ end
 
 function Story0:enterArea (objid, areaid)
   if (areaid == self.sureGoOutArea) then -- 离开村庄
-    if (TalkHelper:hasTask(objid, 1)) then -- 进入村庄
+    if (TaskHelper:hasTask(objid, 1)) then -- 进入村庄
       local player = PlayerHelper:getPlayer(objid)
-      if (TalkHelper:hasTask(objid, 2) or TalkHelper:hasTask(objid, 3) or TalkHelper:hasTask(objid, 4)) then
+      if (TaskHelper:hasTask(objid, 2) or TaskHelper:hasTask(objid, 3) or TaskHelper:hasTask(objid, 4)) then
         player:enableMove(false, true)
         player:thinks(0, '问题未解决，我不能轻易离开。')
         local ws = WaitSeconds:new(2)
