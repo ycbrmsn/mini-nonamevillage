@@ -93,7 +93,7 @@ function Story0:enter (objid)
     local hostPlayer = PlayerHelper:getHostPlayer()
     player:setPosition(hostPlayer:getMyPosition())
   end
-  -- BackpackHelper:addItem(objid, MyMap.ITEM.SWORD, 1)
+  -- BackpackHelper:gainItem(objid, MyMap.ITEM.SWORD, 1)
 end
 
 function Story0:think ()

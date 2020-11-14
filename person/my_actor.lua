@@ -202,7 +202,7 @@ function Chimo:new ()
           [11] = {
             TalkSession:new(1, '好了，你拿去吧。', function (player)
               local itemid = MyMap.ITEM.LETTER
-              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                 TalkHelper:setProgress(player.objid, 2, 12)
                 chimo.lostLetter = true
                 PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
@@ -474,7 +474,7 @@ function Meigao:new ()
               player:resetTalkIndex(0)
               meigao.lostBag = true
               local itemid = MyMap.ITEM.BAG
-              if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+              if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                 PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               end
               TalkHelper:resetProgressContent(meigao, 2, 0, {
@@ -490,7 +490,7 @@ function Meigao:new ()
                 player:resetTalkIndex(0)
               else
                 local itemid = MyMap.ITEM.BAG
-                if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                   PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                   TalkHelper:setProgress(player.objid, 2, 16)
                   player:resetTalkIndex(0)
@@ -878,7 +878,7 @@ function Liangzhang:new ()
                 local want2 = liangzhang:wantApproach('forceDoNothing', { player:getMyPosition() })
                 ActorActionHelper:callback(want2, function ()
                   local itemid = MyMap.ITEM.MIRROR
-                  if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                  if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                     PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                     TalkHelper:setProgress(player.objid, 2, 23)
                     TalkHelper:resetProgressContent(liangzhang, 2, 0, {
@@ -959,7 +959,7 @@ function Liangzhang:defaultPlayerClickEvent (playerid)
       --   if (progress >= 6) then
       --     if (not(self.lostKey)) then -- 有钥匙
       --       local itemid = MyMap.ITEM.KEY5
-      --       if (BackpackHelper:addItem(playerid, itemid, 1)) then
+      --       if (BackpackHelper:gainItem(playerid, itemid, 1)) then
       --         self.lostKey = true
       --         PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
       --       end
@@ -1169,7 +1169,7 @@ function Zhendao:defaultPlayerClickEvent (playerid)
         if (progress >= 6) then
           if (not(self.lostKey)) then -- 有钥匙
             local itemid = MyMap.ITEM.KEY5
-            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+            if (BackpackHelper:gainItem(playerid, itemid, 1)) then
               self.lostKey = true
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
             end
@@ -1537,7 +1537,7 @@ function Chuyi:new ()
                     WorldContainerHelper:removeStorageItemByID(chuyi.boxPos.x, 
                       chuyi.boxPos.y, chuyi.boxPos.z, itemid, 1) -- 删除箱子里的剑
                     ActorActionHelper:callback(want2, function ()
-                      if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                      if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                         PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                         TalkHelper:setProgress(player.objid, 2, 18)
                         TalkHelper:resetProgressContent(chuyi, 2, 0, {
@@ -1841,7 +1841,7 @@ function Mochi:new ()
                     WorldContainerHelper:removeStorageItemByID(mochi.boxPos.x, 
                       mochi.boxPos.y, mochi.boxPos.z, itemid, 1) -- 删除箱子里的剑
                     ActorActionHelper:callback(want2, function ()
-                      if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+                      if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
                         PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
                         TalkHelper:resetProgressContent(mochi, 2, 0, {
                           TalkSession:new(1, '记得还给我。'),

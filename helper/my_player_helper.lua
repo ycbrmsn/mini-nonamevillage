@@ -25,7 +25,7 @@ function MyPlayerHelper:diffPersonDiffPresents (objid)
   for k, v in pairs(self.presents) do
     if (objid == k) then
       for i, itemInfo in ipairs(v.items) do
-        BackpackHelper:addItem(objid, itemInfo[1], itemInfo[2])
+        BackpackHelper:gainItem(objid, itemInfo[1], itemInfo[2])
       end
       local msgMap = v.msgMap
       msgMap.name = player:getName()
@@ -44,12 +44,6 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- body
   local story = StoryHelper:getStory()
   story:enter(objid)
-  -- local story = MyStoryHelper:getStory()
-  -- PlayerHelper:setActionAttrState(objid, PLAYERATTR.ENABLE_BEATTACKED, false) -- 不可被攻击
-  -- BackpackHelper:setGridItem(objid, 1007, MyMap.ITEM.JUMP, 1) -- 跳跃键
-  -- PlayerHelper:setItemDisableThrow(objid, MyMap.ITEM.JUMP) -- 不可丢弃
-  -- BackpackHelper:addItem(objid, MyMap.ITEM.PILL, 5) -- 五颗续命药丸
-  -- MyPlayerHelper:diffPersonDiffPresents(objid)
   -- 播放背景音乐
   -- MusicHelper:startBGM(objid, 1, true)
 end

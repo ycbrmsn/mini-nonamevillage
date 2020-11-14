@@ -65,7 +65,7 @@ MyOptionHelper = {
           player:enableMove(true, true)
           if (not(meigao.lostBag)) then -- 有包包
             local itemid = MyMap.ITEM.BAG
-            if (BackpackHelper:addItem(playerid, itemid, 1)) then
+            if (BackpackHelper:gainItem(playerid, itemid, 1)) then
               meigao.lostBag = true
               PlayerHelper:showToast(playerid, '获得', ItemHelper:getItemName(itemid))
               MyOptionHelper:stealThink(player)
@@ -86,7 +86,7 @@ MyOptionHelper = {
           player:enableMove(true, true)
           if (not(chuyi.lostKey)) then -- 有钥匙
             local itemid = MyMap.ITEM.KEY7
-            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+            if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
               chuyi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               MyOptionHelper:stealThink(player)
@@ -107,7 +107,7 @@ MyOptionHelper = {
           player:enableMove(true, true)
           if (not(mochi.lostKey)) then -- 有钥匙
             local itemid = MyMap.ITEM.KEY8
-            if (BackpackHelper:addItem(player.objid, itemid, 1)) then
+            if (BackpackHelper:gainItem(player.objid, itemid, 1)) then
               mochi.lostKey = true
               PlayerHelper:showToast(player.objid, '获得', ItemHelper:getItemName(itemid))
               MyOptionHelper:stealThink(player)
