@@ -2029,6 +2029,10 @@ function Luren:new ()
           [0] = {
             TalkSession:new(1, '我家的床可能短时间内修不好了。'),
           },
+          [4] = {
+            TalkSession:new(1, '甄道很认死理的，他决定的事情从来就没有改变过。'),
+            TalkSession:new(4, '看来不好办啊……'),
+          },
         },
       }),
     }, -- 对话信息
@@ -2189,6 +2193,9 @@ function Jiayi:new ()
         progress = {
           [0] = {
             TalkSession:new(1, '我家的床可能短时间内修不好了。'),
+          },
+          [4] = {
+            TalkSession:new(1, '我们村的人，就属甄道最固执了。'),
           },
         },
       }),
