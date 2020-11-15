@@ -3,20 +3,22 @@ MyPlayerHelper = {
   presents = {
     [807364131] = {
       items = {
-        { MyMap.ITEM.PILL, 5 }, -- 续命药丸
-        { MyMap.ITEM.TIME_SUPPLY, 1 }, -- 时间补给
-        { MyMap.ITEM.DETECTOR, 1 }, -- 探测器
-        { MyMap.ITEM.PERMIT, 1 }, -- 通行证
-        -- { MyMap.ITEM.COIN, 60 }, -- 幸运币
+        { MyMap.ITEM.CONFUSE_CHARM, 1 }, -- 迷惑符
       },
-      msgMap = { present = '一些道具' }
+      msgMap = { present = '一张迷惑符' }
     }, -- 作者
     [865147101] = {
       items = {
-        { MyMap.ITEM.PILL, 5 }
+        { MyMap.ITEM.CONFUSE_CHARM, 1 }, -- 迷惑符
       },
-      msgMap = { present = '5颗续命药丸' }
+      msgMap = { present = '一张迷惑符' }
     }, -- 懒懒
+    [958294913] = {
+      items = {
+        { MyMap.ITEM.CONFUSE_CHARM, 1 }, -- 迷惑符
+      },
+      msgMap = { present = '一张迷惑符' }
+    }, -- 海绵海棠
   },
 }
 
@@ -44,6 +46,7 @@ function MyPlayerHelper:playerEnterGame (objid)
   -- body
   local story = StoryHelper:getStory()
   story:enter(objid)
+  MyPlayerHelper:diffPersonDiffPresents(objid)
   -- 播放背景音乐
   -- MusicHelper:startBGM(objid, 1, true)
 end
