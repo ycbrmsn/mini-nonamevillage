@@ -337,31 +337,31 @@ function Chimo:beat1 (player)
 end
 
 function Chimo:beat2 (player)
-  MyTalkHelper:beatTalks(player, self, 'isHappened2', {
-    '啊哒！',
-    '啊，是你啊！',
-    '你……',
-    '不好意思，习惯动作……',
-    '真是没想到……',
-    '无辜者',
-    '你倒在了村民的自责情绪中',
-  })
-  -- if (not(self.isHappened2)) then
-  --   self.isHappened2 = true
-  --   player:enableMove(false, true)
-  --   self:speakTo(player.objid, 0, '啊哒！')
-  --   local ws = WaitSeconds:new()
-  --   self.action:playAttack(ws:use(1))
-  --   player:speakSelf(ws:get(), '啊！')
-  --   self.action:playAttack(ws:get())
-  --   player.action:playDie(ws:use(1))
-  --   self:speakTo(player.objid, ws:use(), '不好意思，习惯动作……')
-  --   player:thinkSelf(ws:use(), '真是没想到……')
-  --   TimeHelper:callFnAfterSecond(function ()
-  --     MyGameHelper:setNameAndDesc('无辜者', '你倒在了村民的自责情绪中')
-  --     GameHelper:doGameEnd()
-  --   end, ws:get())
-  -- end
+  -- MyTalkHelper:beatTalks(player, self, 'isHappened2', {
+  --   '啊哒！',
+  --   '啊，是你啊！',
+  --   '你……',
+  --   '不好意思，习惯动作……',
+  --   '真是没想到……',
+  --   '无辜者',
+  --   '你倒在了村民的自责情绪中',
+  -- })
+  if (not(self.isHappened2)) then
+    self.isHappened2 = true
+    player:enableMove(false, true)
+    self:speakTo(player.objid, 0, '啊哒！')
+    local ws = WaitSeconds:new()
+    self.action:playAttack(ws:use(1))
+    player:speakSelf(ws:get(), '啊！')
+    self.action:playAttack(ws:get())
+    player.action:playDie(ws:use(1))
+    self:speakTo(player.objid, ws:use(), '不好意思，习惯动作……')
+    player:thinkSelf(ws:use(), '真是没想到……')
+    TimeHelper:callFnAfterSecond(function ()
+      MyGameHelper:setNameAndDesc('无辜者', '你倒在了村民的自责情绪中')
+      GameHelper:doGameEnd()
+    end, ws:get())
+  end
 end
 
 -- 梅膏
