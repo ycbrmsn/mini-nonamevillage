@@ -34,6 +34,7 @@ function MyTalkHelper:beatTalks (player, actor, situation, talks)
           if (BackpackHelper:hasItem(player.objid, MyMap.ITEM.CONFUSE_CHARM)) then
             ActorHelper:playAndStopBodyEffect(player.objid, BaseConstant.BODY_EFFECT.LIGHT4)
             BackpackHelper:removeGridItemByItemID(player.objid, MyMap.ITEM.CONFUSE_CHARM, 1)
+            ActorHelper:playAndStopBodyEffect(actor.objid, BaseConstant.BODY_EFFECT.LIGHT31)
             local ws = WaitSeconds:new(2)
             TimeHelper:callFnAfterSecond(function ()
               player:enableMove(true, true)
