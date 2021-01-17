@@ -23,16 +23,25 @@ end
 
 -- 事件
 
+-- 生物被创建
+function MyActorHelper:actorCreate (objid, toobjid)
+  ActorHelper:actorCreate(objid, toobjid)
+  MyStoryHelper:actorCreate(objid, toobjid)
+  -- body
+end
+
 -- actor进入区域
 function MyActorHelper:actorEnterArea (objid, areaid)
   ActorHelper:actorEnterArea(objid, areaid)
   MyStoryHelper:actorEnterArea(objid, areaid)
+  -- body
 end
 
 -- actor离开区域
 function MyActorHelper:actorLeaveArea (objid, areaid)
   ActorHelper:actorLeaveArea(objid, areaid)
   MyStoryHelper:actorLeaveArea(objid, areaid)
+  -- body
 end
 
 -- 生物碰撞
@@ -46,12 +55,14 @@ end
 function MyActorHelper:actorAttackHit (objid, toobjid)
   ActorHelper:actorAttackHit(objid, toobjid)
   MyStoryHelper:actorAttackHit(objid, toobjid)
+  -- body
 end
 
 -- 生物击败目标
 function MyActorHelper:actorBeat (objid, toobjid)
   ActorHelper:actorBeat(objid, toobjid)
   MyStoryHelper:actorBeat(objid, toobjid)
+  -- body
 end
 
 -- 生物行为改变
@@ -72,6 +83,7 @@ end
 function MyActorHelper:actorDie (objid, toobjid)
   ActorHelper:actorDie(objid, toobjid)
   MyStoryHelper:actorDie(objid, toobjid)
+  -- body
 end
 
 -- 生物获得状态效果
@@ -85,5 +97,12 @@ end
 function MyActorHelper:actorRemoveBuff (objid, buffid, bufflvl)
   ActorHelper:actorRemoveBuff(objid, buffid, bufflvl)
   MyStoryHelper:actorRemoveBuff(objid, buffid, bufflvl)
+  -- body
+end
+
+-- 生物属性变化
+function MyActorHelper:actorChangeAttr (objid, actorattr)
+  ActorHelper:actorChangeAttr(objid, actorattr)
+  MyStoryHelper:actorChangeAttr(objid, actorattr)
   -- body
 end
