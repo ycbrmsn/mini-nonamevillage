@@ -1,19 +1,24 @@
 -- 任务类
-BaseTask = {}
+BaseTask = {
+  name = '空',
+  desc = '无描述',
+  category = 3,
+  rewards = {},
+}
 
 --[[
   id
   name(任务名称)
   desc(任务描述)
-  category(任务类型：1击败生物；2交付道具)
+  category(任务类型：1击败生物；2交付道具；3不做什么)
   beatInfos(击败生物信息) { actorid = actorid, actorname = actorname, num = num, curnum = curnum }
   itemInfos(交付道具信息) { itemid = itemid, num = num }
   rewards(任务奖励)
 ]]-- 
 function BaseTask:new (o)
   o = o or {}
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -96,7 +101,7 @@ TaskReward = {}
 ]]-- 
 function TaskReward:new (o)
   o = o or {}
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
