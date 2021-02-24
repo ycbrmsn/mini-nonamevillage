@@ -7,9 +7,12 @@ TaskHelper = {
 -- 玩家是否有该任务
 function TaskHelper:hasTask (playerid, taskid)
   local tasks = TaskHelper:getTasks(playerid)
+  -- LogHelper:debug(tasks)
   if (tasks[taskid]) then
+    -- LogHelper:debug('has task: ', taskid)
     return true
   else
+    -- LogHelper:debug('no task: ', taskid)
     return false
   end
 end
