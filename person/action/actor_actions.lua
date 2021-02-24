@@ -6,8 +6,8 @@ BaseAction = {
 
 function BaseAction:new (o)
   o = o or {}
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -39,8 +39,8 @@ function MoveAction:new (actor, think, positions, isNegDir, index, restTime, spe
     speed = speed,
     toPos = toPos,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -68,8 +68,8 @@ function ApproachAction:new (actor, think, positions, isNegDir, index, restTime,
     speed = speed,
     toPos = toPos,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -97,8 +97,8 @@ function PatrolAction:new (actor, think, positions, isNegDir, index, restTime, s
     speed = speed,
     toPos = toPos,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -119,8 +119,8 @@ function FollowAction:new (actor, think, toobjid, speed)
     toobjid = toobjid,
     speed = speed,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -159,8 +159,8 @@ function DontMoveAction:new (actor, think)
     think = think,
     style = style,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -183,8 +183,8 @@ function FreeTimeAction:new (actor, think)
     think = think,
     style = style,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -208,8 +208,8 @@ function FreeAndAlertAction:new (actor, think, speed)
     style = style,
     speed = speed,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -231,8 +231,8 @@ function FreeInAreaAction:new (actor, think, restTime, speed)
     restTime = restTime,
     speed = speed,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -254,8 +254,8 @@ function FreeAttackAction:new (actor, think, restTime, speed)
     restTime = restTime,
     speed = speed,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -274,8 +274,8 @@ function DoNothingAction:new (actor, think)
     think = think,
     style = style,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -295,8 +295,8 @@ function SleepAction:new (actor, think, faceYaw)
     style = style,
     faceYaw = faceYaw,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -329,8 +329,8 @@ function WaitAction:new (actor, think, restTime)
     style = style,
     restTime = restTime,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -350,8 +350,8 @@ function ToggleCandleAction:new (actor, think, isLitCandle)
     style = style,
     restTime = 2,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -384,21 +384,24 @@ function LookAtAction:new (actor, think, myPosition, restTime)
     actor = actor,
     think = think,
     style = style,
-    myPosition = myPosition,
+    dst = myPosition,
     restTime = restTime,
+    currentRestTime = restTime,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
 function LookAtAction:execute ()
+  -- LogHelper:debug('lookat execute')
   if (self.currentRestTime > 0) then
     self.currentRestTime = self.currentRestTime - 1
     if (self.style == 'lookAt') then
       self.style = 'lookingAt'
       TimeHelper:callFnContinueRuns(function ()
         self.actor:lookAt(self.dst)
+        -- LogHelper:debug('looking at')
       end, self.currentRestTime, self.actor.objid .. 'lookat')
     end
   else
@@ -426,8 +429,8 @@ function ForceDoNothingAction:new (actor, think)
     currentRestTime = 1,
     times = 1,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
@@ -451,8 +454,8 @@ function BattleAction:new (actor, think)
     think = think,
     style = style,
   }
-  setmetatable(o, self)
   self.__index = self
+  setmetatable(o, self)
   return o
 end
 
